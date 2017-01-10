@@ -1,0 +1,20 @@
+
+# Cmake files
+*/source/CMakeFiles/
+
+source/CMakeFiles/*
+*/CMakeCache.txt
+*/Makefile
+*.cmake
+*.tmp
+
+# Datasets files
+base/*
+
+#outputs
+source/Similarities.txt
+source/clusters.txt
+source/testX.txt
+source/testY.txt
+source/trainX.txt
+source/trainY.txt
