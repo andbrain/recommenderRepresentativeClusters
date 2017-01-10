@@ -20,6 +20,7 @@ void Parser::LoadDataSetTypes()
 	mDatasets["netflixPrize"] = NETFLIXPRIZE;
 	mDatasets["ml10M100K"] = ML10M100K;
 	mDatasets["ml2k"] = ML2K;
+	mDatasets["ml100k"] = ML100K;
 }
 
 void Parser::GetDataSetType(string dataset_name)
@@ -64,6 +65,14 @@ void Parser::Process()
 			{
 				cout << "Movie Lens 2K processing.." << endl;
 				mDatasetBase = new ml2k(mDataSetPath);
+				mDatasetBase->Process();
+				mSimMatrix = mDatasetBase->GetMatrix();
+			}
+			break;
+		case ML100K:
+			{
+				cout << "Movie Lens 100K processing.." << endl;
+				mDatasetBase = new ml100k(mDataSetPath);
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
 			}
