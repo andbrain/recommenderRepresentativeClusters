@@ -27,3 +27,16 @@
 *.exe
 *.out
 *.app
+
+# Cmake files
+*/source/CMakeFiles/
+
+source/CMakeFiles/*
+*/CMakeCache.txt
+*/source/Makefile
+/cmake_install.cmake
+*.tmp
+
+# Datasets files
+base/*
+tests/*
