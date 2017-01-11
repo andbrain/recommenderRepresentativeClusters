@@ -23,6 +23,6 @@ list(APPEND SOURCES cpp/datasets/ml100k.cpp)
 add_executable(clustering ${SOURCES})
 
 #Set name of executable
-set_target_properties(clustering PROPERTIES OUTPUT_NAME ap.out PREFIX "")
+set_target_properties(clustering PROPERTIES OUTPUT_NAME rec.out PREFIX "")
 
 target_compile_features(clustering PRIVATE cxx_range_for)
