@@ -20,13 +20,12 @@ int main(int argc, char *argv[])
 
 	Graph *graph = p->GetSimMatrix();
 	Graph *ratings = p->GetRatings();
-
-	ratings->Show();
-	
-	AP *ap = new AP(50, 0.5);
+	AP *ap = new AP(2, 0.5);
 	ap->SetSimMatrix(graph);
 	ap->SetRatings(ratings);
 	ap->Process();
+	
+	ratings->Print("ratings.txt");
 
 	delete ap;
 	delete p;

@@ -46,11 +46,15 @@ void AP::AffinityPropagation()
 
 	cout << "Start AP iteration: " << endl;
 	for(int m=0; m < mIter; m++) {
-		cout << "( " << m + 1 << "/" << mIter << " )"<< endl;
+		cout << m + 1 << " ";
+
+		if((m+1) % 25 == 0)
+			cout << endl;
+
 		UpdateResponsability();
 		UpdateAvailability();
 	}
-
+	cout << endl;
 	PrintCluster();
 }
 
@@ -397,26 +401,26 @@ void AP::CalculateRepresentative(map<int,vector<int>> *clusters)
 {
 	map<int, map<int, vector<double>>> accumList = AccumulateRatings(clusters);
 
-	for (map<int, map<int, vector<double>> >::iterator it = accumList.begin(); it != accumList.end(); ++it)
-	{
-		cout << endl;
-		cout << "Cluster (" << it->first << ")" << endl << endl;
+	// for (map<int, map<int, vector<double>> >::iterator it = accumList.begin(); it != accumList.end(); ++it)
+	// {
+	// 	cout << endl;
+	// 	cout << "Cluster (" << it->first << ")" << endl << endl;
 
-		map<int, vector<double>> movieAux = it->second;
+	// 	map<int, vector<double>> movieAux = it->second;
 
-		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
-		{
-			cout << "Item: " << it2->first << endl;
+	// 	for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
+	// 	{
+	// 		cout << "Item: " << it2->first << endl;
 
-			vector<double> userRatings = it2->second;
-			cout << "\tRatings: ";
-			for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
-			{
-				cout << (*i) << " ";
-			}
-			cout << endl;
-		}
-	}
+	// 		vector<double> userRatings = it2->second;
+	// 		cout << "\tRatings: ";
+	// 		for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
+	// 		{
+	// 			cout << (*i) << " ";
+	// 		}
+	// 		cout << endl;
+	// 	}
+	// }
 
 	MakeRepresentativeByFrequency(&accumList);
 	// MakeRepresentativeByMean(&accumList);
@@ -485,8 +489,6 @@ void AP::MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accum
 
 		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
 		{
-			
-
 			// calculate highest frequency of rating
 			vector<double> userRatings = it2->second;
 			map<double,int> counter;

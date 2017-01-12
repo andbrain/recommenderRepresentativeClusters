@@ -115,8 +115,12 @@ int ml100k::AccumulateRatings()
 	for(; itX != mRatings->end(); ++itX)
 	{
 		actual_user++;
-		cout << "( " << actual_user << "/" << nro_users << " )" << endl;
+
+		cout << actual_user << " ";
 		
+		if(actual_user % 30 == 0)
+			cout << endl;
+
 		//Loop over users
 		itY = itX;
 		
@@ -164,7 +168,7 @@ int ml100k::AccumulateRatings()
 		}
 		
 	}
-	// mCounter->Show();
+	cout << endl;
 
 	return 0;
 }

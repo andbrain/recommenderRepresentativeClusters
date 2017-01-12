@@ -65,6 +65,7 @@ void Vertex::Show()
 	}
 }
 
+
 bool Graph::HasVertex(int v)
 {
 	G::iterator it = mGraph->find(v);
@@ -162,6 +163,25 @@ void Graph::Clear(double vDefault)
 		{
 			itEdge->second = vDefault;
 		}
+	}
+}
+
+void Graph::Print(string outputName)
+{
+	fstream fs(outputName, ios::out);
+	Vertex* v;
+
+	for (G::iterator it = mGraph->begin(); it!=mGraph->end(); ++it)
+	{
+		v = it->second;
+		fs << it->first << " " << v->GetId() << endl;    		
+
+		for (Edge::iterator it_v = v->begin(); it_v!= v->end(); ++it_v)
+		{
+			fs << it_v->first << " " << it_v->second << " ";
+		}
+
+		fs << endl;
 	}
 }
 

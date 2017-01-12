@@ -79,6 +79,7 @@ public:
 	G::iterator end();
 	Vertex* at(int v);
 	void PrintForAP();
+	void Print(string outputName);
 
 private:
 	G *mGraph;
