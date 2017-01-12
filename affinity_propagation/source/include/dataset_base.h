@@ -13,6 +13,7 @@ public:
 	virtual ~Dataset_Base() {}; //let destructor enable for children classes
 	virtual int Process() = 0; //pure virtual function for processing dataset
 	virtual Graph* GetMatrix() = 0;
+	virtual Graph* GetRatings() = 0;
 protected:
 	string mPath;
 };

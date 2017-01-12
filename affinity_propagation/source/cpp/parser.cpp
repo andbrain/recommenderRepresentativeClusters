@@ -67,6 +67,7 @@ void Parser::Process()
 				mDatasetBase = new ml2k(mDataSetPath);
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
+				mRatings = mDatasetBase->GetRatings();
 			}
 			break;
 		case ML100K:
@@ -75,6 +76,7 @@ void Parser::Process()
 				mDatasetBase = new ml100k(mDataSetPath);
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
+				mRatings = mDatasetBase->GetRatings();
 			}
 			break;
 		default:
@@ -88,4 +90,9 @@ void Parser::Process()
 Graph* Parser::GetSimMatrix()
 {
 	return mSimMatrix;
+}
+
+Graph* Parser::GetRatings()
+{
+	return mRatings;
 }

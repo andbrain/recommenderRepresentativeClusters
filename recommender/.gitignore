@@ -7,10 +7,3 @@ source/CMakeFiles/*
 */Makefile
 *.cmake
 *.tmp
-
-# Datasets files
-base/*
-
-#outputs
-source/*.txt
-

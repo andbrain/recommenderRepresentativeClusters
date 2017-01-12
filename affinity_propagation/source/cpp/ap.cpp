@@ -20,6 +20,11 @@ void AP::SetSimMatrix(Graph* hash)
 	mS = hash;
 }
 
+void AP::SetRatings(Graph* hash)
+{
+	mRatings = hash;
+}
+
 void AP::Process()
 {
 	cout << "Processing AP.." << endl;
@@ -293,7 +298,10 @@ void AP::PrintCluster()
 	cout << "Total of clusters: " << clusters.size() << endl;
 	OutputClusters(&clusters);
 	//Output train and test files
-	CreateTrainFile(idx, mS->Size(), &clusters, 0.7);	
+	CreateTrainFile(idx, mS->Size(), &clusters, 0.7);
+
+	//Output representative clusters
+	CalculateRepresentative(&clusters);
 }
 
 void AP::OutputClusters(map<int,vector<int>> *clusters)
@@ -383,4 +391,152 @@ void AP::CreateTrainFile(int *users, int size, map<int,vector<int>> *clusters, d
 
 	fsTest.close();
 	cout << "Output TestY created: " << output << endl;	
+}
+
+void AP::CalculateRepresentative(map<int,vector<int>> *clusters)
+{
+	map<int, map<int, vector<double>>> accumList = AccumulateRatings(clusters);
+
+	for (map<int, map<int, vector<double>> >::iterator it = accumList.begin(); it != accumList.end(); ++it)
+	{
+		cout << endl;
+		cout << "Cluster (" << it->first << ")" << endl << endl;
+
+		map<int, vector<double>> movieAux = it->second;
+
+		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
+		{
+			cout << "Item: " << it2->first << endl;
+
+			vector<double> userRatings = it2->second;
+			cout << "\tRatings: ";
+			for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
+			{
+				cout << (*i) << " ";
+			}
+			cout << endl;
+		}
+	}
+
+	MakeRepresentativeByFrequency(&accumList);
+	// MakeRepresentativeByMean(clusters);
+}
+
+map<int, map<int, vector<double>> > AP::AccumulateRatings(map<int,vector<int>> *clusters)
+{
+	map<int, map<int, vector<double>> > accClusterRatings; //<cluster, <movie, vector of ratings> >
+	map<int,vector<int>>::iterator it = clusters->begin();
+	map<int,vector<double>>::iterator foundMov;
+	//run over all clusers
+	for(; it != clusters->end(); ++it)
+	{
+		map<int, vector<double> > accRatings; // <movie, vector of ratings>
+		vector<int> users;
+		users = it->second;
+
+		Vertex *v;
+		//get user ratings
+		for (vector<int>::iterator i = users.begin(); i != users.end(); ++i)
+		{
+			v = mRatings->at((*i));
+
+			//for each movie rated by user
+			Edge::iterator itAux;
+			for(itAux = v->begin(); itAux!= v->end(); ++itAux)
+			{
+				vector<double> accVec;
+				foundMov = accRatings.find(itAux->first);
+
+				//if found movie, add rating
+				if(foundMov != accRatings.end())
+				{
+					accVec = foundMov->second;
+					accVec.push_back(itAux->second);
+					foundMov->second = accVec;
+				}
+				else
+				{
+
+					accVec.push_back(itAux->second);
+					accRatings[itAux->first] = accVec;
+				}
+			}
+		}
+
+		//add in cluster acc
+		accClusterRatings[it->first] = accRatings;
+	}
+
+
+	return accClusterRatings;
+}
+
+bool funcDec (PairValue i,PairValue j) { return (i.freq > j.freq); }
+
+void AP::MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accumList)
+{
+	string output = "representativeClustersByFreq.txt";
+	fstream fs(output, ios::out);
+
+	
+	
+	for (map<int, map<int, vector<double>> >::iterator it = accumList->begin(); it != accumList->end(); ++it)
+	{
+		fs << it->first << endl;
+		map<int, vector<double>> movieAux = it->second;
+
+		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
+		{
+			fs << it2->first << " ";
+
+			// calculate highest frequency of rating
+			vector<double> userRatings = it2->second;
+			map<double,int> counter;
+			map<double,int>::iterator itCounter;
+
+			for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
+			{
+				itCounter = counter.find((*i));
+
+				if(itCounter == counter.end())
+				{
+					counter[(*i)] = 1;
+				}
+				else
+				{
+					itCounter->second++;
+				}
+			}
+
+			vector<PairValue> vecMax;
+
+			for (itCounter = counter.begin(); itCounter != counter.end(); ++itCounter)
+			{
+				PairValue pv;
+				pv.index = itCounter->first;
+				pv.freq = itCounter->second;
+				vecMax.push_back(pv);
+			}
+
+			sort(vecMax.begin(), vecMax.end(), funcDec);
+
+			if(vecMax[0].freq == vecMax[1].freq)
+				fs << 0;
+			else
+				fs << vecMax[0].index;
+			
+			fs << endl;
+		}
+	}
+
+	fs.close();
+}
+
+void AP::MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList)
+{
+	string output = "representativeClustersByMean.txt";
+	fstream fs(output, ios::out);
+
+	fs.close();
+
 }

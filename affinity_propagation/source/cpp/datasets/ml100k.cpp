@@ -73,17 +73,19 @@ int ml100k::LoadRatings()
 		}
 		else indexUser = itUser->second;
 
-		map<string,int>::iterator itMovie = movies.find(movieId);
-		if(itMovie == movies.end())
-		{
-			indexMovie = movies.size();
-			movies.insert(make_pair(movieId, movies.size()));
-		}
-		else indexMovie = itMovie->second;
+		// map<string,int>::iterator itMovie = movies.find(movieId);
+		// if(itMovie == movies.end())
+		// {
+		// 	indexMovie = movies.size();
+		// 	movies.insert(make_pair(movieId, movies.size()));
+		// }
+		// else indexMovie = itMovie->second;
 		
-		mMovies.AddVertex(indexMovie, movieId);
+		// mMovies.AddVertex(indexMovie, movieId);
+		mMovies.AddVertex(atoi(movieId.c_str()), movieId);
 		mRatings->AddVertex(indexUser, userId);
-		mRatings->AddEdge(indexUser, indexMovie, stod(rating));
+		// mRatings->AddEdge(indexUser, indexMovie, stod(rating));
+		mRatings->AddEdge(indexUser, atoi(movieId.c_str()), stod(rating));
 		count++;
 	}
 
@@ -236,6 +238,12 @@ int ml100k::SetPreferencesMedian(vector<double> *tmpS)
 Graph* ml100k::GetMatrix()
 {
 	return mSim->Clone();
+}
+
+
+Graph* ml100k::GetRatings()
+{
+	return mRatings->Clone();
 }
 
 void ml100k::CreateTrainFile(double percTrain)

@@ -22,6 +22,7 @@ public:
 	~ml2k();
 	int Process();
 	Graph* GetMatrix();
+	Graph* GetRatings();
 private:
 	string mRatingFile;
 	fstream mFs;

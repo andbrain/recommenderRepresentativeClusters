@@ -19,13 +19,14 @@ public:
 	~Parser();
 	void Process();
 	Graph* GetSimMatrix();
+	Graph* GetRatings();
 private:
 	
 	unordered_map<string,Dataset_t> mDatasets;
 	Dataset_t mDatasetType;
 	string mDataSetPath;
 	Dataset_Base *mDatasetBase;
-	Graph *mSimMatrix;
+	Graph *mSimMatrix, *mRatings;
 
 	// Methods
 	void LoadDataSetTypes();

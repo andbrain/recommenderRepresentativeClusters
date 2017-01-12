@@ -19,11 +19,14 @@ int main(int argc, char *argv[])
 	p->Process();
 
 	Graph *graph = p->GetSimMatrix();
-	
-	AP *ap = new AP(50, 0.9);
-	ap->SetSimMatrix(graph);
-	ap->Process();
+	Graph *ratings = p->GetRatings();
 
+	ratings->Show();
+	
+	AP *ap = new AP(50, 0.5);
+	ap->SetSimMatrix(graph);
+	ap->SetRatings(ratings);
+	ap->Process();
 
 	delete ap;
 	delete p;
