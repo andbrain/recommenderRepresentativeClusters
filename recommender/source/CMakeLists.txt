@@ -7,16 +7,9 @@ set(CMAKE_BUILD_TYPE Debug)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES recommender.cpp ) 
-#list(APPEND SOURCES cpp/parser.cpp cpp/util.cpp)
-#list(APPEND SOURCES cpp/graph.cpp)
-
-#datasets
-#list(APPEND SOURCES cpp/datasets/ml10m100k.cpp)
-#list(APPEND SOURCES cpp/datasets/ml2k.cpp)
-#list(APPEND SOURCES cpp/datasets/ml100k.cpp)
-
-#However, the file(GLOB...) allows for wildcard additions:
-#file(GLOB_RECURSE SOURCES "cpp/*.cpp")
+list(APPEND SOURCES cpp/graph.cpp)
+list(APPEND SOURCES cpp/parser.cpp)
+list(APPEND SOURCES cpp/util.cpp)
 
 add_executable(recommender ${SOURCES})
 
