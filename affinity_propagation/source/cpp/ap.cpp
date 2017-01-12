@@ -419,7 +419,7 @@ void AP::CalculateRepresentative(map<int,vector<int>> *clusters)
 	}
 
 	MakeRepresentativeByFrequency(&accumList);
-	// MakeRepresentativeByMean(clusters);
+	// MakeRepresentativeByMean(&accumList);
 }
 
 map<int, map<int, vector<double>> > AP::AccumulateRatings(map<int,vector<int>> *clusters)
@@ -477,9 +477,60 @@ void AP::MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accum
 {
 	string output = "representativeClustersByFreq.txt";
 	fstream fs(output, ios::out);
+	
+	for (map<int, map<int, vector<double>> >::iterator it = accumList->begin(); it != accumList->end(); ++it)
+	{
+		fs << it->first << endl;
+		map<int, vector<double>> movieAux = it->second;
 
-	
-	
+		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
+		{
+			
+
+			// calculate highest frequency of rating
+			vector<double> userRatings = it2->second;
+			map<double,int> counter;
+			map<double,int>::iterator itCounter;
+
+			for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
+			{
+				itCounter = counter.find((*i));
+
+				if(itCounter == counter.end())
+				{
+					counter[(*i)] = 1;
+				}
+				else
+				{
+					itCounter->second++;
+				}
+			}
+
+			vector<PairValue> vecMax;
+
+			for (itCounter = counter.begin(); itCounter != counter.end(); ++itCounter)
+			{
+				PairValue pv;
+				pv.index = itCounter->first;
+				pv.freq = itCounter->second;
+				vecMax.push_back(pv);
+			}
+
+			sort(vecMax.begin(), vecMax.end(), funcDec);
+
+			if(vecMax[0].freq != vecMax[1].freq)
+				fs << it2->first << " " << vecMax[0].index << endl;
+		}
+	}
+
+	fs.close();
+}
+
+void AP::MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList)
+{
+	string output = "representativeClustersByMean.txt";
+	fstream fs(output, ios::out);
+
 	for (map<int, map<int, vector<double>> >::iterator it = accumList->begin(); it != accumList->end(); ++it)
 	{
 		fs << it->first << endl;
@@ -530,13 +581,4 @@ void AP::MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accum
 	}
 
 	fs.close();
-}
-
-void AP::MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList)
-{
-	string output = "representativeClustersByMean.txt";
-	fstream fs(output, ios::out);
-
-	fs.close();
-
 }
