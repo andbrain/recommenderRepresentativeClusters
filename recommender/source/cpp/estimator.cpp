@@ -29,9 +29,9 @@ void Estimator::SetItemClusters(map<int,map<int,double>> *movieClusters)
 void Estimator::Process()
 {
 	vector<int> randomUsers = RandomTestData(1.0);
-	int nTest = randomUsers.size();
-
-	double estimRating, realRating, diff, RMSE = 0;
+	// int nTest = randomUsers.size();
+	int nTest = 0;
+	double estimRating, realRating, diff, RMSE, MAE, error = 0, squareError = 0;
 	int uCluster;
 
 	for (std::vector<int>::iterator i = randomUsers.begin(); i != randomUsers.end(); ++i)
@@ -64,15 +64,22 @@ void Estimator::Process()
 			realRating = mRatings->at(*i)->at(*it); 
 			// cout << "\t\tReal rating: " << realRating << endl;
 			diff = realRating - estimRating;
-			RMSE += pow(diff, 2);
+
+			error += (diff < 0)? diff*(-1): diff;
+			squareError += pow(diff, 2);
+			nTest++;
 		}
 		// cout << endl;
 	}
 
-	cout << "Square Error: " << RMSE << endl;
+	cout << "Error: " << error << endl;
+	cout << "Square Error: " << squareError << endl;
 	//Root Mean Square Error for system
-	RMSE = RMSE/nTest;
+	RMSE = squareError/nTest;
 	RMSE = sqrt(RMSE);
+
+	MAE = error/nTest;
+	cout << "MAE: " << MAE << endl;
 	cout << "RMSE: " << RMSE << endl;
 }
 
