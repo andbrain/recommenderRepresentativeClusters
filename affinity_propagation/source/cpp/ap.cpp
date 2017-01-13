@@ -46,10 +46,7 @@ void AP::AffinityPropagation()
 
 	cout << "Start AP iteration: " << endl;
 	for(int m=0; m < mIter; m++) {
-		cout << m + 1 << " ";
-
-		if((m+1) % 25 == 0)
-			cout << endl;
+		cout << "(" << m + 1 << "/" << mIter << ")" << endl;
 
 		UpdateResponsability();
 		UpdateAvailability();

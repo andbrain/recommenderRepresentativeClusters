@@ -8,6 +8,8 @@ using namespace std;
 
 string dataset_name;
 string dataset_path;
+int iteration;
+double dampingFactor;
 
 void GetDatasetName(int argc, char *argv[]);
 
@@ -20,7 +22,7 @@ int main(int argc, char *argv[])
 
 	Graph *graph = p->GetSimMatrix();
 	Graph *ratings = p->GetRatings();
-	AP *ap = new AP(2, 0.5);
+	AP *ap = new AP(iteration, dampingFactor);
 	ap->SetSimMatrix(graph);
 	ap->SetRatings(ratings);
 	ap->Process();
@@ -38,6 +40,15 @@ void GetDatasetName(int argc, char *argv[])
 	{
 		dataset_name = argv[1];
 		dataset_path = argv[2];
+		iteration = 10;
+		dampingFactor = 0.9;
+	}
+	else if(argc == 5)
+	{
+		dataset_name = argv[1];
+		dataset_path = argv[2];
+		iteration = atoi(argv[3]);
+		dampingFactor = stod(argv[4]);
 	}
 	else
 	{
