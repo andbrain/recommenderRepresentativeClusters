@@ -51,7 +51,14 @@ void Estimator::Process()
 			if(itFound == mMovieReprCluster->end())
 				estimRating = 0;
 			else
-				estimRating = mMovieReprCluster->at(*it).at(uCluster);
+			{
+				Edge::iterator itEdge = mMovieReprCluster->at(*it).find(uCluster);
+
+				if(itEdge == mMovieReprCluster->at(*it).end())
+					estimRating = 0;
+				else
+					estimRating = mMovieReprCluster->at(*it).at(uCluster);	
+			}
 
 			// cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
 			realRating = mRatings->at(*i)->at(*it); 
@@ -64,8 +71,8 @@ void Estimator::Process()
 
 	cout << "Square Error: " << RMSE << endl;
 	//Root Mean Square Error for system
-	RMSE = sqrt(RMSE);
 	RMSE = RMSE/nTest;
+	RMSE = sqrt(RMSE);
 	cout << "RMSE: " << RMSE << endl;
 }
 
