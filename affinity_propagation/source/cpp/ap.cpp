@@ -5,6 +5,8 @@ AP::AP(int iterations, double lambda)
 	cout << "Initializing ap.." << endl;
 	mIter = iterations;
 	mLambda = lambda;
+	cout << "Iterations: " << mIter << endl;
+	cout << "Damping factor: " << mLambda << endl;
 }
 
 AP::~AP()
