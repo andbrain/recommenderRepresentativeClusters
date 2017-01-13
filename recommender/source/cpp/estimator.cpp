@@ -2,13 +2,13 @@
 
 Estimator::Estimator()
 {
-	cout << "Starting estimator.." << endl;
+	cout << "[Starting estimator..]" << endl;
 	srand(time(NULL));
 }
 
 Estimator::~Estimator()
 {
-	cout << "Finishing estimator.." << endl;
+	cout << "[Finishing estimator..]" << endl;
 }
 
 void Estimator::SetRatings(Graph *g)
@@ -31,20 +31,20 @@ void Estimator::Process()
 	vector<int> randomUsers = RandomTestData(1.0);
 	int nTest = randomUsers.size();
 
-	double estimRating, realRating, RMSE = 0;
+	double estimRating, realRating, diff, RMSE = 0;
 	int uCluster;
 
 	for (std::vector<int>::iterator i = randomUsers.begin(); i != randomUsers.end(); ++i)
 	{
 		vector<int> randomItems = RandomItems(*i,0.2);
 
-		cout << "User " << *i << endl;
+		// cout << "User " << *i << endl;
 		for (std::vector<int>::iterator it = randomItems.begin(); it != randomItems.end(); ++it)
 		{
-			cout << "\t[Selected Item] " << *it << endl;
+			// cout << "\t[Selected Item] " << *it << endl;
 			uCluster = mUsers->at(*i);
-			cout << "\t\tItem: " << *it << endl;
-			cout << "\t\tUser cluster: " << uCluster << endl;
+			// cout << "\t\tItem: " << *it << endl;
+			// cout << "\t\tUser cluster: " << uCluster << endl;
 
 			map<int,map<int,double>>::iterator itFound = mMovieReprCluster->find(*it);
 
@@ -53,13 +53,20 @@ void Estimator::Process()
 			else
 				estimRating = mMovieReprCluster->at(*it).at(uCluster);
 
-			cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
+			// cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
 			realRating = mRatings->at(*i)->at(*it); 
-			cout << "\t\tReal rating: " << realRating << endl;
+			// cout << "\t\tReal rating: " << realRating << endl;
+			diff = realRating - estimRating;
+			RMSE += pow(diff, 2);
 		}
-
-		cout << endl;
+		// cout << endl;
 	}
+
+	cout << "Square Error: " << RMSE << endl;
+	//Root Mean Square Error for system
+	RMSE = sqrt(RMSE);
+	RMSE = RMSE/nTest;
+	cout << "RMSE: " << RMSE << endl;
 }
 
 vector<int> Estimator::RandomTestData(double perc)
