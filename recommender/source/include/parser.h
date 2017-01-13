@@ -19,8 +19,8 @@ public:
 private:
 	string mRatingPath, mClusterPath, mReprClusterPath;
 	Graph *mRatings; // user ratings
-	map<int,map<int,double>> reprClusters; //<cluster, <item,rating>>
-	map<int,int> users; //<user, cluster>
+	map<int,int> mUsers; //<user, cluster>
+	map<int,map<int,double>> mMovieReprCluster; //<movie, <cluster,rating>>
 	fstream mFs;
 
 	void ReadRatingsList();
