@@ -18,8 +18,6 @@ void Parser::Process()
 	ReadRatingsList();
 	ReadClusters();
 	ReadRepresentatives();
-
-	Estimation();
 }
 
 void Parser::ReadRatingsList()
@@ -56,7 +54,7 @@ void Parser::ReadRatingsList()
 		isUser = !isUser;
 	}	
 	mFs.close();
-	mRatings->Show();
+	// mRatings->Show();
 }
 
 void Parser::ReadClusters()
@@ -123,7 +121,17 @@ void Parser::ReadRepresentatives()
 	mFs.close();
 }
 
-void Parser::Estimation()
+Graph* Parser::GetRatings()
 {
+	return mRatings;
+}
 
+map<int,int>* Parser::GetUsers()
+{
+	return &mUsers;
+}
+
+map<int,map<int,double>>* Parser::GetMovieClusters()
+{
+	return &mMovieReprCluster;
 }

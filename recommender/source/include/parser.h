@@ -15,6 +15,10 @@ public:
 	~Parser();
 	void Process();
 
+	Graph* GetRatings();
+	map<int,int>* GetUsers();
+	map<int,map<int,double>>* GetMovieClusters();
+
 	/* data */
 private:
 	string mRatingPath, mClusterPath, mReprClusterPath;
@@ -26,7 +30,6 @@ private:
 	void ReadRatingsList();
 	void ReadClusters();
 	void ReadRepresentatives();
-	void Estimation();
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "graph.h"
 #include "parser.h"
+#include "estimator.h"
 
 using namespace std;
 
@@ -14,6 +15,13 @@ int main(int argc, char *argv[])
 
 	Parser p(ratingsPath, clusterPath, reprClusterPath);
 	p.Process();
+
+	Estimator est;
+	est.SetRatings(p.GetRatings());
+	est.SetUsers(p.GetUsers());
+	est.SetItemClusters(p.GetMovieClusters());
+
+	est.Process();
 
 	return 0;
 }
