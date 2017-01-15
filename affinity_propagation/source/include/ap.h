@@ -39,7 +39,7 @@ private:
 	map<int, map<int, vector<double>> > AccumulateRatings(map<int,vector<int>> *clusters);
 	void CalculateRepresentative(map<int,vector<int>> *clusters);
 	void MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accumList);
-	void MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList);
+	void MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList, map<int,vector<int>> *clusters);
 };
 
 #endif

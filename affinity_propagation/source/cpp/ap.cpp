@@ -12,8 +12,8 @@ AP::AP(int iterations, double lambda)
 AP::~AP()
 {
 	delete mR;
-	// delete mA;
-	// delete mE;
+	delete mA;
+	delete mE;
 	cout << "Finishing ap.." << endl;
 }
 
@@ -422,7 +422,7 @@ void AP::CalculateRepresentative(map<int,vector<int>> *clusters)
 	// }
 
 	MakeRepresentativeByFrequency(&accumList);
-	// MakeRepresentativeByMean(&accumList);
+	MakeRepresentativeByMean(&accumList, clusters);
 }
 
 map<int, map<int, vector<double>> > AP::AccumulateRatings(map<int,vector<int>> *clusters)
@@ -525,61 +525,84 @@ void AP::MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accum
 	}
 
 	fs.close();
+	cout << "Output Representative cluster by Frequency created: " << output << endl;
+
 }
 
-void AP::MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList)
+void AP::MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList, map<int,vector<int>> *clusters)
 {
 	string output = "representativeClustersByMean.txt";
 	fstream fs(output, ios::out);
+	int upperBound; //value to validate mean of ratings
+	int p = 3; //parameter for delimite what is highest ratings or lowest ratings
+	double alpha = 0.6;
 
 	for (map<int, map<int, vector<double>> >::iterator it = accumList->begin(); it != accumList->end(); ++it)
 	{
 		fs << it->first << endl;
 		map<int, vector<double>> movieAux = it->second;
 
+		// get number of users for actual cluster
+		vector<int> users = clusters->at(it->first);
+		
+		upperBound = users.size() * alpha;
+
 		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
 		{
-			fs << it2->first << " ";
-
-			// calculate highest frequency of rating
 			vector<double> userRatings = it2->second;
+			// calculate frequency of rating highest than p
+			map<double,int> counterHighest;
+			// calculate frequency of rating lowest than p
+			map<double,int> counterLowest;
+			// the most frequency ratings for cluster
 			map<double,int> counter;
 			map<double,int>::iterator itCounter;
 
 			for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
 			{
-				itCounter = counter.find((*i));
+				if(*i > p)
+				{
+					itCounter = counterHighest.find((*i));
 
-				if(itCounter == counter.end())
-				{
-					counter[(*i)] = 1;
+					if(itCounter == counterHighest.end())
+						counterHighest[(*i)] = 1;
+					else
+						itCounter->second++;
 				}
-				else
+				else if(*i < p)
 				{
-					itCounter->second++;
+					itCounter = counterLowest.find((*i));
+
+					if(itCounter == counterLowest.end())
+						counterLowest[(*i)] = 1;
+					else
+						itCounter->second++;
 				}
 			}
 
-			vector<PairValue> vecMax;
+			if(counterHighest.size() == counterLowest.size())
+				continue;
+			else if( counterHighest.size() > counterLowest.size() )
+				counter = counterHighest;
+			else
+				counter = counterLowest;
+
+			double reprValue = 0;
+			int elements = 0;
 
 			for (itCounter = counter.begin(); itCounter != counter.end(); ++itCounter)
 			{
-				PairValue pv;
-				pv.index = itCounter->first;
-				pv.freq = itCounter->second;
-				vecMax.push_back(pv);
+				reprValue += itCounter->first * itCounter->second;
+				elements += itCounter->second;
 			}
 
-			sort(vecMax.begin(), vecMax.end(), funcDec);
+			reprValue = reprValue / elements;
 
-			if(vecMax[0].freq == vecMax[1].freq)
-				fs << 0;
-			else
-				fs << vecMax[0].index;
-			
-			fs << endl;
+			if(elements >= upperBound)
+				fs << it2->first << " " << reprValue << endl;
 		}
 	}
 
 	fs.close();
+	cout << "Output Representative cluster by Mean created: " << output << endl;
 }
