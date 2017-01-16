@@ -11,6 +11,7 @@ list(APPEND SOURCES cpp/parser.cpp cpp/util.cpp)
 list(APPEND SOURCES cpp/graph.cpp)
 list(APPEND SOURCES cpp/hash.cpp)
 list(APPEND SOURCES cpp/ap.cpp)
+list(APPEND SOURCES cpp/dataset_base.cpp)
 
 #datasets
 #list(APPEND SOURCES cpp/datasets/ml10m100k.cpp)

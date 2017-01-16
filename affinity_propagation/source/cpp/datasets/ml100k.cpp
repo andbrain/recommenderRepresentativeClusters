@@ -3,44 +3,11 @@
 ml100k::ml100k(string path):Dataset_Base(path)
 {
 	cout << "Starting ml100k.." << endl;
-	Initialize();	
 }
 
 ml100k::~ml100k()
 {
-	delete mRatings;
-	delete mSim;
-	delete mCounter;
 	cout << "Finishing ml100k.." << endl;
-}
-
-void ml100k::Initialize()
-{
-	// mRatingFile="rating10.dat";
-	// string basePath = mPath + "/" + mRatingFile;
-	string basePath = mPath;
-
-	cout << "Initializing dataset from [" << basePath << "]" << endl;
-	mFs.open(basePath.c_str(), ios::in);
-
-	if(!mFs.is_open())
-	{
-		cout << "[ERROR] Cannot open file: " << basePath << endl;
-		exit(1);
-	}
-
-	mRatings = new Graph();
-	mSim = new Graph();
-	mCounter = new Graph();
-}
-
-int ml100k::Process()
-{
-	LoadRatings();
-	AccumulateRatings();
-	GenerateSimUserMatrix();
-
-	return 0;
 }
 
 int ml100k::LoadRatings()
@@ -73,265 +40,132 @@ int ml100k::LoadRatings()
 		}
 		else indexUser = itUser->second;
 
-		// map<string,int>::iterator itMovie = movies.find(movieId);
-		// if(itMovie == movies.end())
-		// {
-		// 	indexMovie = movies.size();
-		// 	movies.insert(make_pair(movieId, movies.size()));
-		// }
-		// else indexMovie = itMovie->second;
-		
-		// mMovies.AddVertex(indexMovie, movieId);
-		mMovies.AddVertex(atoi(movieId.c_str()), movieId);
+		mQtdMovies++;
 		mRatings->AddVertex(indexUser, userId);
-		// mRatings->AddEdge(indexUser, indexMovie, stod(rating));
 		mRatings->AddEdge(indexUser, atoi(movieId.c_str()), stod(rating));
 		count++;
 	}
 
-	cout << "Movies: " << mMovies.Size() << endl;
+	cout << "Movies: " << mQtdMovies << endl;
 	cout << "Users: " << mRatings->Size() << endl;
 	cout << "Nro of Ratings: " << count << endl;
-	// mRatings->Show();
 
 	return 0;
 }
 
-int ml100k::AccumulateRatings()
-{
-	cout << "Accumulate Average Ratings.." << endl;
+// int ml100k::AccumulateRatings()
+// {
+// 	cout << "Accumulate Average Ratings.." << endl;
 
-	G::iterator itX = mRatings->begin();
-	G::iterator itY;
-	Vertex *listaAdjX, *listaAdjY;
-	Edge::iterator itListX, found;
-	double rx, ry, rating;
+// 	G::iterator itX = mRatings->begin();
+// 	G::iterator itY;
+// 	Vertex *listaAdjX, *listaAdjY;
+// 	Edge::iterator itListX, found;
+// 	double rx, ry, rating;
 
-	int nro_users = mRatings->Size();
-	int actual_user = 0;
-	cout << "Total of users: " << nro_users << endl;
+// 	int nro_users = mRatings->Size();
+// 	int actual_user = 0;
+// 	cout << "Total of users: " << nro_users << endl;
 
-	//Store up average rating				
-	for(; itX != mRatings->end(); ++itX)
-	{
-		actual_user++;
+// 	//Store up average rating				
+// 	for(; itX != mRatings->end(); ++itX)
+// 	{
+// 		actual_user++;
 
-		cout << actual_user << " ";
+// 		cout << actual_user << " ";
 		
-		if(actual_user % 30 == 0)
-			cout << endl;
+// 		if(actual_user % 30 == 0)
+// 			cout << endl;
 
-		//Loop over users
-		itY = itX;
+// 		//Loop over users
+// 		itY = itX;
 		
-		//get next user
-		itY++;
+// 		//get next user
+// 		itY++;
 
-		mCounter->AddVertex(itX->first, itX->second->GetId());			
+// 		mCounter->AddVertex(itX->first, itX->second->GetId());			
 
-		for(; itY != mRatings->end(); ++itY)
-		{
+// 		for(; itY != mRatings->end(); ++itY)
+// 		{
 			
-			listaAdjX = itX->second;
-			itListX = listaAdjX->begin();
+// 			listaAdjX = itX->second;
+// 			itListX = listaAdjX->begin();
 
-			if(!mCounter->HasVertex(itY->first))
-				mCounter->AddVertex(itY->first, itY->second->GetId());
+// 			if(!mCounter->HasVertex(itY->first))
+// 				mCounter->AddVertex(itY->first, itY->second->GetId());
 
-			listaAdjY = itY->second;
+// 			listaAdjY = itY->second;
 
-			//TODO:: check if listAdjX is smaller than listAdjY
-			for(itListX; itListX != listaAdjX->end(); ++itListX)
-			{
-				rx = 0;
-				ry = 0;
+// 			//TODO:: check if listAdjX is smaller than listAdjY
+// 			for(itListX; itListX != listaAdjX->end(); ++itListX)
+// 			{
+// 				rx = 0;
+// 				ry = 0;
 				
-				//check if userX rate same movies of userY
-				found = listaAdjY->find(itListX->first);
+// 				//check if userX rate same movies of userY
+// 				found = listaAdjY->find(itListX->first);
 
-				if(found != listaAdjY->end())
-				{
-					rx = itListX->second;
-					ry = found->second;
+// 				if(found != listaAdjY->end())
+// 				{
+// 					rx = itListX->second;
+// 					ry = found->second;
 
-					// cout << "\t\t Rx: " << rx << " Ry: " << ry << endl;
-					rating = mCounter->GetEdge(itX->first, itY->first);
-					mCounter->AddEdge(itX->first, itY->first, rating);
-					mCounter->AddEdge(itY->first, itX->first, rating);
+// 					// cout << "\t\t Rx: " << rx << " Ry: " << ry << endl;
+// 					rating = mCounter->GetEdge(itX->first, itY->first);
+// 					mCounter->AddEdge(itX->first, itY->first, rating);
+// 					mCounter->AddEdge(itY->first, itX->first, rating);
 
-					rating += (rx+ry)/2;
+// 					rating += (rx+ry)/2;
 
-					mCounter->SetEdge(itX->first, itY->first, rating);
-					mCounter->SetEdge(itY->first, itX->first, rating);
-				}
-			}
-		}
+// 					mCounter->SetEdge(itX->first, itY->first, rating);
+// 					mCounter->SetEdge(itY->first, itX->first, rating);
+// 				}
+// 			}
+// 		}
 		
-	}
-	cout << endl;
+// 	}
+// 	cout << endl;
 
-	return 0;
-}
+// 	return 0;
+// }
 
-int ml100k::GenerateSimUserMatrix()
-{
-	cout << "Generate Sim User Matrix..." << endl;
-	int nroMovies =	mMovies.Size();
+// int ml100k::GenerateSimUserMatrix()
+// {
+// 	cout << "Generate Sim User Matrix..." << endl;
+// 	int nroMovies =	mMovies.Size();
 
-	G::iterator itX = mCounter->begin();
-	Edge::iterator itListX;
-	Vertex *listaAdjX;
-	double result;
-	vector<double> tmpS;
+// 	G::iterator itX = mCounter->begin();
+// 	Edge::iterator itListX;
+// 	Vertex *listaAdjX;
+// 	double result;
+// 	vector<double> tmpS;
 
-	for(itX; itX != mCounter->end(); ++itX)
-	{
-		mSim->AddVertex(itX->first, itX->second->GetId());
+// 	for(itX; itX != mCounter->end(); ++itX)
+// 	{
+// 		mSim->AddVertex(itX->first, itX->second->GetId());
 		
-		listaAdjX = itX->second;
-		itListX = listaAdjX->begin();
+// 		listaAdjX = itX->second;
+// 		itListX = listaAdjX->begin();
 
-		for(itListX; itListX != listaAdjX->end(); ++itListX)
-		{
-			result = 0;
+// 		for(itListX; itListX != listaAdjX->end(); ++itListX)
+// 		{
+// 			result = 0;
 
-			if(!mSim->HasVertex(itListX->first))
-			{
-				mSim->AddVertex(itListX->first, mCounter->at(itListX->first)->GetId());
-			}
+// 			if(!mSim->HasVertex(itListX->first))
+// 			{
+// 				mSim->AddVertex(itListX->first, mCounter->at(itListX->first)->GetId());
+// 			}
 
-			result = itListX->second / (nroMovies * MAX_RATING);
-			result = log2(result);
-			mSim->AddEdge(itX->first, itListX->first, result);
-			mSim->AddEdge(itListX->first, itX->first, result);
+// 			result = itListX->second / (nroMovies * MAX_RATING);
+// 			result = log2(result);
+// 			mSim->AddEdge(itX->first, itListX->first, result);
+// 			mSim->AddEdge(itListX->first, itX->first, result);
 
-			//store each similarity
-			tmpS.push_back(result);
-		}
-	}
+// 			//store each similarity
+// 			tmpS.push_back(result);
+// 		}
+// 	}
 
-	CreateTrainFile(0.7); //train 70% test 30%
-	mSim->PrintForAP();
-	SetPreferencesMedian(&tmpS);	
-}
-
-int ml100k::SetPreferencesMedian(vector<double> *tmpS)
-{
-	////////////////////////////////////
-	//Assign median value for Sim Matrix
-	////////////////////////////////////
-	
-	sort(tmpS->begin(),tmpS->end());
-	double median = 0;
-	int N = mSim->Size();
-	int size = N*(N-1)/2;
-
-	if(size%2==0) 
-		median = (tmpS->at(size/2)+tmpS->at(size/2-1)/2);
-	else 
-		median = tmpS->at(size/2);
-
-	for(G::iterator it = mSim->begin(); it != mSim->end(); ++it)
-	{
-		mSim->AddEdge(it->first, it->first, median);
-	}
-
-	return 0;
-}
-
-Graph* ml100k::GetMatrix()
-{
-	return mSim->Clone();
-}
-
-
-Graph* ml100k::GetRatings()
-{
-	return mRatings->Clone();
-}
-
-void ml100k::CreateTrainFile(double percTrain)
-{
-	// trainX - matrix of rating user(line) x movies(column)
-	// testX - matrix of rating user(line) x movies(column)
-	
-
-	int qtdU = mRatings->Size();
-	int uTrain = ceil(qtdU*percTrain);
-	int uTest = qtdU - uTrain;
-
-	cout << "[Total of Users]: " << qtdU << endl;
-	cout << "[Users for train]: " << uTrain << endl;
-	cout << "[Users for test]: " << uTest << endl;
-
-	/////////////////////////
-	// Creating Train File //
-	/////////////////////////
-	string trainFile = "trainX.txt"; //features - ratings of user
-	fstream fsTrain(trainFile, ios::out);
-
-	Vertex *v;
-	Edge::iterator itMovie;
-	G::iterator itEnd = mRatings->begin();
-	advance(itEnd, uTrain);
-
-	for (G::iterator it = mRatings->begin(); it != itEnd; ++it)
-	{
-		v = it->second;
-
-		for (int i = 0; i < mMovies.Size(); ++i)
-		{
-			itMovie = it->second->find(i);
-
-			if(itMovie != it->second->end())
-			{
-				fsTrain << itMovie->second << " ";
-			}
-			else
-			{
-				fsTrain << 0 << " ";
-			}
-
-		}
-		fsTrain << endl;		
-	}
-
-	fsTrain.close();
-
-	cout << "Train file created: " << trainFile << endl;
-
-
-	/////////////////////////
-	// Creating Test File //
-	/////////////////////////
-	string testFile = "testX.txt"; //features - ratings of user
-	fstream fsTest(testFile, ios::out);
-
-	G::iterator it = mRatings->begin();
-	advance(it, uTrain);
-
-	for (; it != mRatings->end(); ++it)
-	{
-		v = it->second;
-
-		for (int i = 0; i < mMovies.Size(); ++i)
-		{
-			itMovie = it->second->find(i);
-
-			if(itMovie != it->second->end())
-			{
-				fsTest << itMovie->second << " ";
-			}
-			else
-			{
-				fsTest << 0 << " ";
-			}
-
-		}
-		fsTest << endl;		
-	}
-
-	fsTest.close();
-
-	cout << "Test file created: " << testFile << endl;
-}
+// 	mSim->PrintForAP();
+// 	SetPreferencesMedian(&tmpS);	
+// }
