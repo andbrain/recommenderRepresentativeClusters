@@ -24,7 +24,6 @@ public:
 	Graph* GetMatrix();
 	Graph* GetRatings();
 private:
-	string mRatingFile;
 	fstream mFs;
 	Graph *mRatings, *mSim, *mCounter, mMovies;
 	void Initialize();

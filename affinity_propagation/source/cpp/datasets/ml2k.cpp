@@ -17,8 +17,6 @@ ml2k::~ml2k()
 
 void ml2k::Initialize()
 {
-	// mRatingFile="rating10.dat";
-	// string basePath = mPath + "/" + mRatingFile;
 	string basePath = mPath;
 
 	cout << "Initializing dataset from [" << basePath << "]" << endl;
