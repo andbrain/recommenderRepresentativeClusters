@@ -1,17 +1,18 @@
 #include "parser.h"
 
-Parser::Parser(string dataset_name, string dataset_path)
+Parser::Parser(string dataset_name, string dataset_path, string sim_function)
 {
 	cout << "Init parser.." << endl;
 	this->LoadDataSetTypes();
 	this->GetDataSetType(dataset_name);
 	mDataSetPath = dataset_path;
+	mSimFunction = sim_function;
 }
 
 Parser::~Parser()
 {
-	// delete mDatasetBase;
 	delete mSimMatrix;
+	// delete mDatasetBase;
 	cout << "Finishing parser.." << endl;
 }
 
@@ -64,7 +65,7 @@ void Parser::Process()
 		case ML2K:
 			{
 				cout << "Movie Lens 2K processing.." << endl;
-				mDatasetBase = new ml2k(mDataSetPath);
+				mDatasetBase = new ml2k(mDataSetPath, mSimFunction);
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
 				mRatings = mDatasetBase->GetRatings();
@@ -73,7 +74,7 @@ void Parser::Process()
 		case ML100K:
 			{
 				cout << "Movie Lens 100K processing.." << endl;
-				mDatasetBase = new ml100k(mDataSetPath);
+				mDatasetBase = new ml100k(mDataSetPath, mSimFunction);
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
 				mRatings = mDatasetBase->GetRatings();

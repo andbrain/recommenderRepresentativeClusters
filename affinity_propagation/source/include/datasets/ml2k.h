@@ -12,12 +12,10 @@ using namespace std;
 class ml2k: public Dataset_Base
 {
 public:
-	ml2k(string path);
+	ml2k(string path, string sim_function);
 	~ml2k();
 protected:
 	int LoadRatings();
-	// int AccumulateRatings();
-	// int GenerateSimUserMatrix();
 };
 
 

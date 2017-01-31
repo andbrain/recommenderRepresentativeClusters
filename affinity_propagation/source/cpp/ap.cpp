@@ -301,7 +301,7 @@ void AP::PrintCluster()
 	cout << "Total of clusters: " << clusters.size() << endl;
 	OutputClusters(&clusters);
 	//Output train and test files
-	CreateTrainFile(idx, mS->Size(), &clusters, 0.7);
+	// CreateTrainFile(idx, mS->Size(), &clusters, 0.7);
 
 	//Output representative clusters
 	CalculateRepresentative(&clusters);

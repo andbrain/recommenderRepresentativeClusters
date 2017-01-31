@@ -5,18 +5,17 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
-#include <algorithm>
 #include <map>
 #include "graph.h"
-
-#define MAX_RATING 5
+#include "similarity_base.h"
+#include "similarities/cosine.h"
 
 using namespace std;
 
 class Dataset_Base //interface for dataset's
 {
 public:
-	Dataset_Base(string base_path);
+	Dataset_Base(string base_path, string simFunction);
 	virtual ~Dataset_Base(); //let destructor enable for children classes
 	int Process(); //pure virtual function for processing dataset
 	Graph* GetMatrix();
@@ -24,12 +23,16 @@ public:
 protected:
 	string mPath;
 	fstream mFs;
-	int mQtdMovies;
-	Graph *mRatings, *mSim;
-	void Initialize();
-	int SetPreferencesMedian(vector<double> *tmpS);
+	similarity_base *mSimFunction;
+	unordered_map<string,Similarity_t> mSimilarities;
+	int mQtdMovies; // must be updated in children classes
+	Graph *mRatings, *mSim; // must be updated in children classes
+
+	void Initialize(Similarity_t simType);
 	void CreateTrainFile(double percTrain);
 	virtual int LoadRatings() = 0;
+	void LoadSimTypes();
+	Similarity_t GetSimType(string sim_name);
 };
 
 #endif

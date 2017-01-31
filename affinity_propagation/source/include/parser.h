@@ -15,7 +15,7 @@ using namespace std;
 class Parser
 {
 public:
-	Parser(string dataset_name, string dataset_path);
+	Parser(string dataset_name, string dataset_path, string sim_function);
 	~Parser();
 	void Process();
 	Graph* GetSimMatrix();
@@ -24,7 +24,7 @@ private:
 	
 	unordered_map<string,Dataset_t> mDatasets;
 	Dataset_t mDatasetType;
-	string mDataSetPath;
+	string mDataSetPath, mSimFunction;
 	Dataset_Base *mDatasetBase;
 	Graph *mSimMatrix, *mRatings;
 

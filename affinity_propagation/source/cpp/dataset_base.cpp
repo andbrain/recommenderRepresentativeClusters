@@ -1,19 +1,51 @@
 #include "dataset_base.h"
 
-Dataset_Base::Dataset_Base(string base_path)
+Dataset_Base::Dataset_Base(string base_path, string simFunction)
 {
 	mPath = base_path;
-	Initialize();	
+	LoadSimTypes();
+	Similarity_t type = GetSimType(simFunction);
+	Initialize(type);	
 }
 
 Dataset_Base::~Dataset_Base()
 {
 	delete mRatings;
 	delete mSim;
+	delete mSimFunction;
 	mFs.close();
 }
 
-void Dataset_Base::Initialize()
+void Dataset_Base::LoadSimTypes()
+{
+	mSimilarities["euclidean"] = EUCLIDEAN;
+	mSimilarities["cosine"] = COSINE;
+	mSimilarities["correlation"] = CORRELATION;
+	mSimilarities["loglikelihood"] = LOGLIKELIHOOD;
+}
+
+Similarity_t Dataset_Base::GetSimType(string sim_name)
+{
+	unordered_map<string,Similarity_t>::iterator it = mSimilarities.find(sim_name);
+
+	if(it != mSimilarities.end())
+		return it->second;
+	else
+	{
+		cout << "[ERROR] Similarity function not found!" << endl;
+		cout << "[INFO] Available similarity functions:" << endl;
+		unordered_map<string, Similarity_t>::iterator itShow = mSimilarities.begin();
+
+		for (; itShow != mSimilarities.end(); ++itShow)
+		{
+			cout << "[INFO] " << itShow->first << endl;
+		}
+
+		exit(1);
+	}
+}
+
+void Dataset_Base::Initialize(Similarity_t simType)
 {
 	string basePath = mPath;
 
@@ -29,6 +61,34 @@ void Dataset_Base::Initialize()
 	mQtdMovies = 0;
 	mRatings = new Graph();
 	mSim = new Graph();
+
+	switch(simType){
+		case EUCLIDEAN:{
+			cout << "Using Euclidean similarity function..." << endl;
+			// mSimFunction = simFunction;
+			break;
+		}
+		case COSINE:{
+			cout << "Using Cosine similarity function..." << endl;
+			mSimFunction = new cosine();
+			break;
+		}
+		case CORRELATION:{
+			cout << "Using Correlation similarity function..." << endl;
+			// mSimFunction = new Cosine("cosine");
+			break;			
+		}
+		case LOGLIKELIHOOD:{
+			cout << "Using Log Likelihood similarity function..." << endl;
+			// mSimFunction = new Cosine("cosine");
+			break;
+		}
+		default:{
+			cout << "[ERROR] Cannot find similarity function..." << endl;
+			exit(1);
+		}
+	}
+
 }
 
 Graph* Dataset_Base::GetMatrix()
@@ -41,36 +101,11 @@ Graph* Dataset_Base::GetRatings()
 	return mRatings->Clone();
 }
 
-int Dataset_Base::SetPreferencesMedian(vector<double> *tmpS)
-{
-	////////////////////////////////////
-	//Assign median value for Sim Matrix
-	////////////////////////////////////
-	
-	sort(tmpS->begin(),tmpS->end());
-	double median = 0;
-	int N = mSim->Size();
-	int size = N*(N-1)/2;
-
-	if(size%2==0) 
-		median = (tmpS->at(size/2)+tmpS->at(size/2-1)/2);
-	else 
-		median = tmpS->at(size/2);
-
-	for(G::iterator it = mSim->begin(); it != mSim->end(); ++it)
-	{
-		mSim->AddEdge(it->first, it->first, median);
-	}
-
-	return 0;
-}
-
 void Dataset_Base::CreateTrainFile(double percTrain)
 {
 	// trainX - matrix of rating user(line) x movies(column)
 	// testX - matrix of rating user(line) x movies(column)
 	
-
 	int qtdU = mRatings->Size();
 	int uTrain = ceil(qtdU*percTrain);
 	int uTest = qtdU - uTrain;
@@ -154,10 +189,12 @@ void Dataset_Base::CreateTrainFile(double percTrain)
 int Dataset_Base::Process()
 {
 	LoadRatings();
-	// AccumulateRatings();
-	// GenerateSimUserMatrix();
-	
-	CreateTrainFile(0.7); //train 70% test 30%
+	//similarity function
+	mSimFunction->SetMatrix(mRatings, mSim);
+	mSimFunction->SetElementsSize(mQtdMovies);
+	mSimFunction->Process();
+	mSim = mSimFunction->GetMatrix();
+	// CreateTrainFile(0.7); //train 70% test 30%
 
 	return 0;
 }
