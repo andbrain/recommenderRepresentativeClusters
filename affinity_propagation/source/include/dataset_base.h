@@ -8,7 +8,11 @@
 #include <map>
 #include "graph.h"
 #include "similarity_base.h"
+#include "similarities/average.h"
 #include "similarities/cosine.h"
+#include "similarities/correlation.h"
+#include "similarities/euclidean.h"
+#include "similarities/loglikelihood.h"
 
 using namespace std;
 

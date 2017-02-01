@@ -22,6 +22,7 @@ void Dataset_Base::LoadSimTypes()
 	mSimilarities["cosine"] = COSINE;
 	mSimilarities["correlation"] = CORRELATION;
 	mSimilarities["loglikelihood"] = LOGLIKELIHOOD;
+	mSimilarities["average"] = AVERAGE;
 }
 
 Similarity_t Dataset_Base::GetSimType(string sim_name)
@@ -65,7 +66,7 @@ void Dataset_Base::Initialize(Similarity_t simType)
 	switch(simType){
 		case EUCLIDEAN:{
 			cout << "Using Euclidean similarity function..." << endl;
-			// mSimFunction = simFunction;
+			mSimFunction = new euclidean();
 			break;
 		}
 		case COSINE:{
@@ -75,17 +76,18 @@ void Dataset_Base::Initialize(Similarity_t simType)
 		}
 		case CORRELATION:{
 			cout << "Using Correlation similarity function..." << endl;
-			// mSimFunction = new Cosine("cosine");
+			mSimFunction = new correlation();
 			break;			
 		}
 		case LOGLIKELIHOOD:{
 			cout << "Using Log Likelihood similarity function..." << endl;
-			// mSimFunction = new Cosine("cosine");
+			mSimFunction = new loglikelihood();
 			break;
 		}
-		default:{
-			cout << "[ERROR] Cannot find similarity function..." << endl;
-			exit(1);
+		case AVERAGE:{
+			cout << "Using Average similarity function..." << endl;
+			mSimFunction = new average();
+			break;
 		}
 	}
 

@@ -12,6 +12,8 @@ Parser::Parser(string dataset_name, string dataset_path, string sim_function)
 Parser::~Parser()
 {
 	delete mSimMatrix;
+
+	// TODO:: Check why it's getting segmentation fault in destructor
 	// delete mDatasetBase;
 	cout << "Finishing parser.." << endl;
 }

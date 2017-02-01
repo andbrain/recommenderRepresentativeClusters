@@ -1,18 +1,19 @@
-#include "similarities/cosine.h"
+#include "similarities/average.h"
 
-cosine::cosine():similarity_base()
+average::average():similarity_base()
 {
-	cout << "Starting cosine.." << endl;
+	cout << "Starting average.." << endl;
+
 	mCounter = new Graph();
 }
 
-cosine::~cosine()
+average::~average()
 {
 	delete mCounter;
-	cout << "Finishing cosine.." << endl;
+	cout << "Finishing average.." << endl;
 }
 
-int cosine::Process()
+int average::Process()
 {
 	AccumulateRatings();
 	GenerateSimUserMatrix();
@@ -20,7 +21,7 @@ int cosine::Process()
 	return 0;
 }
 
-int cosine::AccumulateRatings()
+int average::AccumulateRatings()
 {
 	cout << "Accumulate Average Ratings.." << endl;
 
@@ -96,7 +97,7 @@ int cosine::AccumulateRatings()
 	return 0;
 }
 
-int cosine::GenerateSimUserMatrix()
+int average::GenerateSimUserMatrix()
 {
 	cout << "Generate Sim User Matrix..." << endl;
 

@@ -1,18 +1,18 @@
-#include "similarities/cosine.h"
+#include "similarities/loglikelihood.h"
 
-cosine::cosine():similarity_base()
+loglikelihood::loglikelihood():similarity_base()
 {
-	cout << "Starting cosine.." << endl;
+	cout << "Starting loglikelihood.." << endl;
 	mCounter = new Graph();
 }
 
-cosine::~cosine()
+loglikelihood::~loglikelihood()
 {
 	delete mCounter;
-	cout << "Finishing cosine.." << endl;
+	cout << "Finishing loglikelihood.." << endl;
 }
 
-int cosine::Process()
+int loglikelihood::Process()
 {
 	AccumulateRatings();
 	GenerateSimUserMatrix();
@@ -20,7 +20,7 @@ int cosine::Process()
 	return 0;
 }
 
-int cosine::AccumulateRatings()
+int loglikelihood::AccumulateRatings()
 {
 	cout << "Accumulate Average Ratings.." << endl;
 
@@ -96,7 +96,7 @@ int cosine::AccumulateRatings()
 	return 0;
 }
 
-int cosine::GenerateSimUserMatrix()
+int loglikelihood::GenerateSimUserMatrix()
 {
 	cout << "Generate Sim User Matrix..." << endl;
 

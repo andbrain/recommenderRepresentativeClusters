@@ -1,18 +1,18 @@
-#include "similarities/cosine.h"
+#include "similarities/euclidean.h"
 
-cosine::cosine():similarity_base()
+euclidean::euclidean():similarity_base()
 {
-	cout << "Starting cosine.." << endl;
-	mCounter = new Graph();
+	cout << "Starting euclidean.." << endl;
+	mCounter = new Graph(); 
 }
 
-cosine::~cosine()
+euclidean::~euclidean()
 {
 	delete mCounter;
-	cout << "Finishing cosine.." << endl;
+	cout << "Finishing euclidean.." << endl;
 }
 
-int cosine::Process()
+int euclidean::Process()
 {
 	AccumulateRatings();
 	GenerateSimUserMatrix();
@@ -20,7 +20,7 @@ int cosine::Process()
 	return 0;
 }
 
-int cosine::AccumulateRatings()
+int euclidean::AccumulateRatings()
 {
 	cout << "Accumulate Average Ratings.." << endl;
 
@@ -96,7 +96,7 @@ int cosine::AccumulateRatings()
 	return 0;
 }
 
-int cosine::GenerateSimUserMatrix()
+int euclidean::GenerateSimUserMatrix()
 {
 	cout << "Generate Sim User Matrix..." << endl;
 

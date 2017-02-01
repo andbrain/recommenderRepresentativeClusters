@@ -1,18 +1,18 @@
-#include "similarities/cosine.h"
+#include "similarities/correlation.h"
 
-cosine::cosine():similarity_base()
+correlation::correlation():similarity_base()
 {
-	cout << "Starting cosine.." << endl;
+	cout << "Starting correlation.." << endl;
 	mCounter = new Graph();
 }
 
-cosine::~cosine()
+correlation::~correlation()
 {
 	delete mCounter;
-	cout << "Finishing cosine.." << endl;
+	cout << "Finishing correlation.." << endl;
 }
 
-int cosine::Process()
+int correlation::Process()
 {
 	AccumulateRatings();
 	GenerateSimUserMatrix();
@@ -20,7 +20,7 @@ int cosine::Process()
 	return 0;
 }
 
-int cosine::AccumulateRatings()
+int correlation::AccumulateRatings()
 {
 	cout << "Accumulate Average Ratings.." << endl;
 
@@ -96,7 +96,7 @@ int cosine::AccumulateRatings()
 	return 0;
 }
 
-int cosine::GenerateSimUserMatrix()
+int correlation::GenerateSimUserMatrix()
 {
 	cout << "Generate Sim User Matrix..." << endl;
 

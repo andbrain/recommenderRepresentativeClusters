@@ -20,8 +20,11 @@ list(APPEND SOURCES cpp/datasets/ml2k.cpp)
 list(APPEND SOURCES cpp/datasets/ml100k.cpp)
 
 #similarities
+list(APPEND SOURCES cpp/similarities/average.cpp)
 list(APPEND SOURCES cpp/similarities/cosine.cpp)
-
+list(APPEND SOURCES cpp/similarities/correlation.cpp)
+list(APPEND SOURCES cpp/similarities/euclidean.cpp)
+list(APPEND SOURCES cpp/similarities/loglikelihood.cpp)
 
 #However, the file(GLOB...) allows for wildcard additions:
 #file(GLOB_RECURSE SOURCES "cpp/*.cpp")
