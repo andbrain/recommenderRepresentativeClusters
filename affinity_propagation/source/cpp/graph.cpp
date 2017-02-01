@@ -197,8 +197,8 @@ void Graph::PrintForAP()
 
 		for (Edge::iterator it_aresta = arestas->begin(); it_aresta!=arestas->end(); ++it_aresta)
 		{
-			fs << it->first << "  ";
-			fs << it_aresta->first << "  " << it_aresta->second << endl;
+			fs << it->first + 1<< "  ";
+			fs << it_aresta->first + 1 << "  " << it_aresta->second << endl;
 		}
 	}
 
