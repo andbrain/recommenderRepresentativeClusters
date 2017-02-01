@@ -26,7 +26,7 @@ int euclidean::AccumulateRatings()
 
 	G::iterator itX = mRatings->begin();
 	G::iterator itY;
-	Vertex *listaAdjX, *listaAdjY, *lHigher, *lSmaller;
+	Vertex *listaAdjX, *listaAdjY;
 	Edge::iterator itRX, itRY;
 	double rx, ry, rating;
 

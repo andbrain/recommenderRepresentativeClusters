@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
+#include <unordered_map>
+#include <map>
 #include "similarity_base.h"
 using namespace std;
 
@@ -14,10 +17,13 @@ public:
 	int Process();
 protected:
 	Graph *mCounter;
+	map<int,double> mNorma;
 
 private:
 	int AccumulateRatings();
 	int GenerateSimUserMatrix();
+	int CalculateNorma();
+	unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
 };
 
 
