@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <unordered_map>
 #include "similarity_base.h"
 using namespace std;
 
@@ -19,6 +20,7 @@ protected:
 private:
 	int AccumulateRatings();
 	int GenerateSimUserMatrix();
+	unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
 };
 
 
