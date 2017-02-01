@@ -114,7 +114,7 @@ int cosine::AccumulateRatings()
 		
 	}
 	cout << endl;
-	mCounter->Show();
+	// mCounter->Show();
 	
 	return 0;
 }

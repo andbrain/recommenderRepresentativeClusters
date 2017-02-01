@@ -46,7 +46,7 @@ int ml100k::LoadRatings()
 		count++;
 	}
 
-	cout << "Movies: " << mQtdMovies << endl;
+	// cout << "Movies: " << mQtdMovies << endl;
 	cout << "Users: " << mRatings->Size() << endl;
 	cout << "Nro of Ratings: " << count << endl;
 
