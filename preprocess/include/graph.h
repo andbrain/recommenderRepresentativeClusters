@@ -78,8 +78,8 @@ public:
 	G::iterator begin();
 	G::iterator end();
 	Vertex* at(int v);
-	void PrintForAP();
-	void Print(string outputName);
+	void PrintPair(string outputName);
+	void PrintList(string outputName, int start_pos = 0);
 
 private:
 	G *mGraph;

@@ -103,100 +103,17 @@ Graph* Dataset_Base::GetRatings()
 	return mRatings->Clone();
 }
 
-void Dataset_Base::CreateTrainFile(double percTrain)
-{
-	// trainX - matrix of rating user(line) x movies(column)
-	// testX - matrix of rating user(line) x movies(column)
-	
-	int qtdU = mRatings->Size();
-	int uTrain = ceil(qtdU*percTrain);
-	int uTest = qtdU - uTrain;
-
-	cout << "[Total of Users]: " << qtdU << endl;
-	cout << "[Users for train]: " << uTrain << endl;
-	cout << "[Users for test]: " << uTest << endl;
-
-	/////////////////////////
-	// Creating Train File //
-	/////////////////////////
-	string trainFile = "trainX.txt"; //features - ratings of user
-	fstream fsTrain(trainFile, ios::out);
-
-	Vertex *v;
-	Edge::iterator itMovie;
-	G::iterator itEnd = mRatings->begin();
-	advance(itEnd, uTrain);
-
-	for (G::iterator it = mRatings->begin(); it != itEnd; ++it)
-	{
-		v = it->second;
-
-		for (int i = 0; i < mQtdMovies; ++i)
-		{
-			itMovie = it->second->find(i);
-
-			if(itMovie != it->second->end())
-			{
-				fsTrain << itMovie->second << " ";
-			}
-			else
-			{
-				fsTrain << 0 << " ";
-			}
-
-		}
-		fsTrain << endl;		
-	}
-
-	fsTrain.close();
-
-	cout << "Train file created: " << trainFile << endl;
-
-
-	/////////////////////////
-	// Creating Test File //
-	/////////////////////////
-	string testFile = "testX.txt"; //features - ratings of user
-	fstream fsTest(testFile, ios::out);
-
-	G::iterator it = mRatings->begin();
-	advance(it, uTrain);
-
-	for (; it != mRatings->end(); ++it)
-	{
-		v = it->second;
-
-		for (int i = 0; i < mQtdMovies; ++i)
-		{
-			itMovie = it->second->find(i);
-
-			if(itMovie != it->second->end())
-			{
-				fsTest << itMovie->second << " ";
-			}
-			else
-			{
-				fsTest << 0 << " ";
-			}
-
-		}
-		fsTest << endl;		
-	}
-
-	fsTest.close();
-
-	cout << "Test file created: " << testFile << endl;
-}
-
 int Dataset_Base::Process()
 {
+	cout << "**********Information of dataset**********" << endl;
 	LoadRatings();
+	cout << "**********End of dataset**********" << endl;
+
 	//similarity function
 	mSimFunction->SetMatrix(mRatings, mSim);
 	mSimFunction->SetElementsSize(mQtdMovies);
 	mSimFunction->Process();
 	mSim = mSimFunction->GetMatrix();
-	// CreateTrainFile(0.7); //train 70% test 30%
 
 	return 0;
 }

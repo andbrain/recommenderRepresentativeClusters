@@ -33,10 +33,9 @@ protected:
 	Graph *mRatings, *mSim; // must be updated in children classes
 
 	void Initialize(Similarity_t simType);
-	void CreateTrainFile(double percTrain);
-	virtual int LoadRatings() = 0;
 	void LoadSimTypes();
 	Similarity_t GetSimType(string sim_name);
+	virtual int LoadRatings() = 0;
 };
 
 #endif

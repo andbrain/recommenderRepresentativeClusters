@@ -12,9 +12,8 @@ Parser::Parser(string dataset_name, string dataset_path, string sim_function)
 Parser::~Parser()
 {
 	delete mSimMatrix;
-
-	// TODO:: Check why it's getting segmentation fault in destructor
-	// delete mDatasetBase;
+	delete mRatings;
+	// delete mDatasetBase; -- deleted after Process method
 	cout << "Finishing parser.." << endl;
 }
 
@@ -49,8 +48,6 @@ void Parser::GetDataSetType(string dataset_name)
 
 void Parser::Process()
 {
-	cout << "Processing dataset.." << endl;
-
 	switch(mDatasetType)
 	{
 		case ML10M100K:
@@ -59,8 +56,8 @@ void Parser::Process()
 				// mDatasetBase = new ml10m100k(mDataSetPath);
 				// mDatasetBase->Process();
 				// mSimMatrix = mDatasetBase->GetMatrix();
+				break;
 			}
-			break;
 		case NETFLIXPRIZE:
 			cout << "Netflix prize processing.." << endl;
 			break;
@@ -71,8 +68,8 @@ void Parser::Process()
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
 				mRatings = mDatasetBase->GetRatings();
+				break;
 			}
-			break;
 		case ML100K:
 			{
 				cout << "Movie Lens 100K processing.." << endl;
@@ -80,8 +77,8 @@ void Parser::Process()
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
 				mRatings = mDatasetBase->GetRatings();
+				break;
 			}
-			break;
 		default:
 			cout << "...No dataset selected" << endl;
 			break;

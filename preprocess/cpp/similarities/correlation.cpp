@@ -153,7 +153,6 @@ int correlation::GenerateSimUserMatrix()
 	Edge::iterator itListX;
 	Vertex *listaAdjX;
 	double result, n1, n2;
-	vector<double> tmpS;
 
 	for(itX; itX != mCounter->end(); ++itX)
 	{
@@ -175,14 +174,8 @@ int correlation::GenerateSimUserMatrix()
 			// result = log2(result);
 			mSim->AddEdge(itX->first, itListX->first, result);
 			mSim->AddEdge(itListX->first, itX->first, result);
-
-			//store each similarity
-			tmpS.push_back(result);
 		}
 	}
-
-	mSim->PrintForAP();
-	SetPreferencesMedian(&tmpS);	
 }
 
 unordered_map<int,int> correlation::GetDistinctElements(Vertex *listX, Vertex *listY)

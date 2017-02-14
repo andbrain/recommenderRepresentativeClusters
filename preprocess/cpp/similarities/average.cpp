@@ -1,18 +1,19 @@
-#include "similarities/loglikelihood.h"
+#include "similarities/average.h"
 
-loglikelihood::loglikelihood():similarity_base()
+average::average():similarity_base()
 {
-	cout << "Starting loglikelihood.." << endl;
+	cout << "Starting average.." << endl;
+
 	mCounter = new Graph();
 }
 
-loglikelihood::~loglikelihood()
+average::~average()
 {
 	delete mCounter;
-	cout << "Finishing loglikelihood.." << endl;
+	cout << "Finishing average.." << endl;
 }
 
-int loglikelihood::Process()
+int average::Process()
 {
 	AccumulateRatings();
 	GenerateSimUserMatrix();
@@ -20,7 +21,7 @@ int loglikelihood::Process()
 	return 0;
 }
 
-int loglikelihood::AccumulateRatings()
+int average::AccumulateRatings()
 {
 	cout << "Accumulate Average Ratings.." << endl;
 
@@ -96,7 +97,7 @@ int loglikelihood::AccumulateRatings()
 	return 0;
 }
 
-int loglikelihood::GenerateSimUserMatrix()
+int average::GenerateSimUserMatrix()
 {
 	cout << "Generate Sim User Matrix..." << endl;
 
@@ -104,7 +105,6 @@ int loglikelihood::GenerateSimUserMatrix()
 	Edge::iterator itListX;
 	Vertex *listaAdjX;
 	double result;
-	vector<double> tmpS;
 
 	for(itX; itX != mCounter->end(); ++itX)
 	{
@@ -126,13 +126,7 @@ int loglikelihood::GenerateSimUserMatrix()
 			result = log2(result);
 			mSim->AddEdge(itX->first, itListX->first, result);
 			mSim->AddEdge(itListX->first, itX->first, result);
-
-			//store each similarity
-			tmpS.push_back(result);
 		}
 	}
-
-	mSim->PrintForAP();
-	SetPreferencesMedian(&tmpS);	
 }
 

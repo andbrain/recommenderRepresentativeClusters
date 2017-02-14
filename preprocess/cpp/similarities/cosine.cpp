@@ -1,26 +1,49 @@
-#include "similarities/euclidean.h"
+#include "similarities/cosine.h"
 
-euclidean::euclidean():similarity_base()
+cosine::cosine():similarity_base()
 {
-	cout << "Starting euclidean.." << endl;
-	mCounter = new Graph(); 
+	cout << "Starting cosine.." << endl;
+	mCounter = new Graph();
 }
 
-euclidean::~euclidean()
+cosine::~cosine()
 {
 	delete mCounter;
-	cout << "Finishing euclidean.." << endl;
+	cout << "Finishing cosine.." << endl;
 }
 
-int euclidean::Process()
+int cosine::Process()
 {
 	AccumulateRatings();
+	CalculateNorma();
 	GenerateSimUserMatrix();
 	
 	return 0;
 }
 
-int euclidean::AccumulateRatings()
+int cosine::CalculateNorma()
+{
+	G::iterator itX = mRatings->begin();
+	Vertex *listaAdjX;
+	Edge::iterator itListX;
+	double acc;
+
+	for(; itX != mRatings->end(); ++itX)
+	{
+		listaAdjX = itX->second;
+		itListX = listaAdjX->begin();
+		acc = 0;
+
+		for(itListX; itListX != listaAdjX->end(); ++itListX)
+		{
+			acc += pow(itListX->second, 2);
+		}
+		
+		mNorma[itX->first] = sqrt(acc);
+	}
+}
+
+int cosine::AccumulateRatings()
 {
 	cout << "Accumulate Average Ratings.." << endl;
 
@@ -82,7 +105,7 @@ int euclidean::AccumulateRatings()
 
 				mCounter->AddEdge(itY->first, itX->first, rating);
 
-				rating += pow(rx-ry, 2);
+				rating += rx*ry;
 				mCounter->SetEdge(itX->first, itY->first, rating);
 				mCounter->SetEdge(itY->first, itX->first, rating);
 			}
@@ -92,19 +115,18 @@ int euclidean::AccumulateRatings()
 	}
 	cout << endl;
 	// mCounter->Show();
-
+	
 	return 0;
 }
 
-int euclidean::GenerateSimUserMatrix()
+int cosine::GenerateSimUserMatrix()
 {
 	cout << "Generate Sim User Matrix..." << endl;
 
 	G::iterator itX = mCounter->begin();
 	Edge::iterator itListX;
 	Vertex *listaAdjX;
-	double result;
-	vector<double> tmpS;
+	double result, n1, n2;
 
 	for(itX; itX != mCounter->end(); ++itX)
 	{
@@ -119,22 +141,17 @@ int euclidean::GenerateSimUserMatrix()
 
 			if(!mSim->HasVertex(itListX->first))
 				mSim->AddVertex(itListX->first, mCounter->at(itListX->first)->GetId());
-
-			result = 1 / (double)(1 + sqrt(itListX->second));
+			n1 = mNorma[itX->first];
+			n2 = mNorma[itListX->first];
+			result = itListX->second / (n1 * n2);
 			// result = log2(result);
 			mSim->AddEdge(itX->first, itListX->first, result);
 			mSim->AddEdge(itListX->first, itX->first, result);
-
-			//store each similarity
-			tmpS.push_back(result);
 		}
 	}
-
-	mSim->PrintForAP();
-	SetPreferencesMedian(&tmpS);	
 }
 
-unordered_map<int,int> euclidean::GetDistinctElements(Vertex *listX, Vertex *listY)
+unordered_map<int,int> cosine::GetDistinctElements(Vertex *listX, Vertex *listY)
 {
 	unordered_map<int,int> m;
 	unordered_map<int,int>::iterator found;

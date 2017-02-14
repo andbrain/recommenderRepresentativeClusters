@@ -166,7 +166,7 @@ void Graph::Clear(double vDefault)
 	}
 }
 
-void Graph::Print(string outputName)
+void Graph::PrintPair(string outputName)
 {
 	fstream fs(outputName, ios::out);
 	Vertex* v;
@@ -185,10 +185,9 @@ void Graph::Print(string outputName)
 	}
 }
 
-void Graph::PrintForAP()
+void Graph::PrintList(string outputName, int start_pos)
 {
-	string simFile = "Similarities.txt";
-	fstream fs(simFile, ios::out);
+	fstream fs(outputName, ios::out);
 	Vertex *arestas;
 
 	for (G::iterator it = mGraph->begin(); it!=mGraph->end(); ++it)
@@ -197,12 +196,10 @@ void Graph::PrintForAP()
 
 		for (Edge::iterator it_aresta = arestas->begin(); it_aresta!=arestas->end(); ++it_aresta)
 		{
-			fs << it->first + 1<< "  ";
-			fs << it_aresta->first + 1 << "  " << it_aresta->second << endl;
+			fs << it->first + start_pos << "  ";
+			fs << it_aresta->first + start_pos << "  " << it_aresta->second << endl;
 		}
 	}
 
 	fs.close();
-
-	cout << "Similarity Matrix file created: " << simFile << endl;
 }
