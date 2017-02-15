@@ -45,15 +45,51 @@ def readSimMatrix():
 
 	return i,j,data, median
 
+def generateClustersFile(af):
+	indices = af.cluster_centers_indices_
+	labels = af.labels_
+	labels_len = len(labels)
+
+	clusters = {}
+
+	for i in range(0, labels_len):
+		print "Pos ", i + 1, " label: ", indices[labels[i]]
+
+		if(indices[labels[i]] in clusters):
+			c = clusters[indices[labels[i]]]
+			c.append(i)
+		else:
+			c = [i]
+
+		clusters[indices[labels[i]]] = c
+
+	print clusters
+
+	with open("clusters.dat", "w") as file:
+		for key in clusters:
+			# print key
+			file.write(str(key) + "\n")
+			users = clusters[key]
+			for u in users:
+				file.write(str(u) + " " + str(u) + "\n")
+				# print " " + str(u)
+
+	exit(1)
+
 def main():
 	i,j,data, median = readSimMatrix()
 
+	# convert to sparse matrix
 	simMatrix = coo_matrix((data,(i, j)))
-
-	# af = AffinityPropagation(damping=0.9, preferences=0.014035).fit(simMatrix)
-	# af = AffinityPropagation(damping=0.9, preference=0.014035, affinity='precomputed').fit(simMatrix.todense())
-	# af = AffinityPropagation(damping=0.9, preference=0.014035, affinity='precomputed').fit(simMatrix.toarray())
+	
+	# clustering method
 	af = AffinityPropagation(damping=0.9, preference=median,affinity='precomputed').fit(simMatrix.toarray())
+	# [DONE] generate clusters.dat
+	generateClustersFile(af)
+
+	# [TODO] read ratings
+
+	# [TODO] generate representative clusters
 
 	print('Clusters indices: ', af.cluster_centers_indices_)
 	print('Clusters labels: ', af.labels_)
