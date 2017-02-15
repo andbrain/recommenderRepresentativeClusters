@@ -84,8 +84,6 @@ def generateClustersFile(af):
 	clusters = {}
 
 	for i in range(0, labels_len):
-		# print "user (", i + 1, ") cluster: ", indices[labels[i]]
-
 		if(indices[labels[i]] in clusters):
 			c = clusters[indices[labels[i]]]
 			c.append(i)
@@ -96,7 +94,6 @@ def generateClustersFile(af):
 
 	with open("clusters.dat", "w") as file:
 		for key in clusters:
-			# print key
 			file.write(str(key) + "\n")
 			users = clusters[key]
 			for u in users:
