@@ -7,7 +7,8 @@ set(CMAKE_BUILD_TYPE Debug)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES preprocess.cpp ) 
-list(APPEND SOURCES cpp/parser.cpp cpp/util.cpp)
+list(APPEND SOURCES cpp/parser.cpp)
+list(APPEND SOURCES cpp/util.cpp)
 list(APPEND SOURCES cpp/graph.cpp)
 list(APPEND SOURCES cpp/dataset_base.cpp)
 list(APPEND SOURCES cpp/similarity_base.cpp)
