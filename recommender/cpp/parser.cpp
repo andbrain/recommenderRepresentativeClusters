@@ -73,7 +73,7 @@ void Parser::ReadClusters()
 		else
 		{
 			userIndex = relation[0];
-			userId = relation[1];
+			userId = relation[1]; //TODO:: nothing to do, remove someday
 			mUsers[atoi(userIndex.c_str())] = atoi(clusterId.c_str());
 		}
 	}
