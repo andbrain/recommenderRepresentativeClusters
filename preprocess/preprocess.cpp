@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
 
 	Graph *sim = p->GetSimMatrix();
 	Graph *ratings = p->GetRatings();
-	ratings->PrintPair("ratings.txt");
+	ratings->PrintPair("ratings.dat");
 	int start_at = 1;
-	sim->PrintList("similarities.txt", start_at);
+	sim->PrintList("similarities.dat", start_at);
 		
 	delete p;
 	
