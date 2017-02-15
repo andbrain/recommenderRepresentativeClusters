@@ -7,6 +7,4 @@ CMakeCache.txt
 Makefile
 *.cmake
 *.tmp
-
-#outputs
-*.txt
+*.dat
