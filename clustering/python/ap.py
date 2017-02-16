@@ -7,7 +7,6 @@ def getMedianValue(simValues):
 	# getting median value
 	dataSorted = sort(simValues)
 	size = len(dataSorted)
-	print "Tamanho: ", size
 
 	if(size % 2 == 0):
 		median = ( (dataSorted[size/2]) + (dataSorted[size/2 - 1]) )/2
@@ -16,7 +15,7 @@ def getMedianValue(simValues):
 
 	return median
 
-def readSimMatrix():
+def readSimMatrix(simMatPath):
 	i = array([])
 	j = array([])
 	data = array([])
@@ -26,7 +25,7 @@ def readSimMatrix():
 	print "[INFO] Reading sim matrix.."
 	# with open("Similarities_toy_Sim.txt") as f:
 	# with open("Similarities.txt") as f:
-	with open("similarities.dat") as f:
+	with open(simMatPath) as f:
 		content = f.readlines()
 
 	# content = [line.strip().split() for line in content]
@@ -45,6 +44,37 @@ def readSimMatrix():
 
 	return i,j,data, median
 
+def readRatings(ratingsPath):
+	# dict of users
+	# standard => user1 = [
+	# 	[movie1, ratingOfMovie1],
+	# 	[movie2, ratingOfMovie2],
+	# 	.
+	# 	..
+	# 	[movieN, ratingOfMovieN]
+	# ]
+	ratings = {}
+	print "[INFO] Reading user ratings.."
+
+	with open(ratingsPath) as f:
+		content = f.readlines()
+
+	user = ""
+
+	for i in range(0, len(content)):
+		line = content[i]
+		line = line.strip().split()
+		if(i % 2 == 0):
+			user = int(line[0])
+			ratings[user] = []
+		else:
+			rat = []
+			for j in range(0, len(line), 2):
+				rat.append([int(line[j]), float(line[j+1])]) 
+			ratings[user] = rat
+	
+	return ratings
+
 def generateClustersFile(af):
 	indices = af.cluster_centers_indices_
 	labels = af.labels_
@@ -53,7 +83,7 @@ def generateClustersFile(af):
 	clusters = {}
 
 	for i in range(0, labels_len):
-		print "Pos ", i + 1, " label: ", indices[labels[i]]
+		print "user (", i + 1, ") cluster: ", indices[labels[i]]
 
 		if(indices[labels[i]] in clusters):
 			c = clusters[indices[labels[i]]]
@@ -74,20 +104,17 @@ def generateClustersFile(af):
 				file.write(str(u) + " " + str(u) + "\n")
 				# print " " + str(u)
 
-	exit(1)
-
-def main():
-	i,j,data, median = readSimMatrix()
-
+def main(simMatPath, ratingsPath):
+	i,j,data, median = readSimMatrix(simMatPath)
 	# convert to sparse matrix
 	simMatrix = coo_matrix((data,(i, j)))
-	
 	# clustering method
 	af = AffinityPropagation(damping=0.9, preference=median,affinity='precomputed').fit(simMatrix.toarray())
-	# [DONE] generate clusters.dat
+	# generate clusters.dat
 	generateClustersFile(af)
 
-	# [TODO] read ratings
+	# read ratings
+	ratings = readRatings(ratingsPath)
 
 	# [TODO] generate representative clusters
 
@@ -96,4 +123,8 @@ def main():
 	print('Estimated number of clusters: %d' % len(af.cluster_centers_indices_))
 
 if __name__ == '__main__':
-	main()
+	if(len(sys.argv) != 3):
+		print "[ERROR] Mssing arguments"
+		print "$ python ap.py SIMILARITY_MATRIX_PATH RATINGS_PATH"
+		exit(1)
+	main(sys.argv[1], sys.argv[2])
