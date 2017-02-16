@@ -40,7 +40,7 @@ def readSimMatrix(simMatPath):
 		counter += 1
 	
 	median = getMedianValue(data)
-	print "Preferences: ", median, " (median of similarities)"
+	print "[INFO] Preferences: ", median, " (median of similarities)"
 
 	return i,j,data, median
 
@@ -83,7 +83,7 @@ def generateClustersFile(af):
 	clusters = {}
 
 	for i in range(0, labels_len):
-		print "user (", i + 1, ") cluster: ", indices[labels[i]]
+		# print "user (", i + 1, ") cluster: ", indices[labels[i]]
 
 		if(indices[labels[i]] in clusters):
 			c = clusters[indices[labels[i]]]
@@ -93,8 +93,6 @@ def generateClustersFile(af):
 
 		clusters[indices[labels[i]]] = c
 
-	print clusters
-
 	with open("clusters.dat", "w") as file:
 		for key in clusters:
 			# print key
@@ -103,6 +101,40 @@ def generateClustersFile(af):
 			for u in users:
 				file.write(str(u) + " " + str(u) + "\n")
 				# print " " + str(u)
+	return clusters
+
+def accumulateRatings(clusters, totalRatings):
+	# list of clusters -> list of movies -> list of ratings
+	accumulator = {}
+	for cluster, users in clusters.items():
+		accumCluster = {}
+		# print cluster, users
+		for user in users:
+			userRatings = totalRatings[user];
+			# print user, userRatings
+			for rating in userRatings:
+				movie = rating[0]
+				rat = rating[1]
+
+				if(movie in accumCluster):
+					m = accumCluster[movie]
+					m.append(rat)
+				else:
+					m = [rat]
+				accumCluster[movie] = m
+		accumulator[cluster] = accumCluster
+
+	return accumulator
+
+def generateReprByFrequence(ratingsAccumulated):
+	print ratingsAccumulated
+
+	exit(1)
+
+def generateReprByMean(ratingsAccumulated):
+	print ratingsAccumulated
+
+	exit(1)
 
 def main(simMatPath, ratingsPath):
 	i,j,data, median = readSimMatrix(simMatPath)
@@ -111,12 +143,17 @@ def main(simMatPath, ratingsPath):
 	# clustering method
 	af = AffinityPropagation(damping=0.9, preference=median,affinity='precomputed').fit(simMatrix.toarray())
 	# generate clusters.dat
-	generateClustersFile(af)
-
+	clusters = generateClustersFile(af)
 	# read ratings
 	ratings = readRatings(ratingsPath)
 
-	# [TODO] generate representative clusters
+	# generate representative clusters
+	# accumulate clusters
+	ratingsAccumulated = accumulateRatings(clusters, ratings)
+	# [TODO] generate repr. clusters by frequence
+	generateReprByFrequence(ratingsAccumulated)
+	# [TODO] generate repr. clusters by mean
+	generateReprByMean(ratingsAccumulated)
 
 	print('Clusters indices: ', af.cluster_centers_indices_)
 	print('Clusters labels: ', af.labels_)
