@@ -155,8 +155,31 @@ def generateReprByFrequence(ratingsAccumulated):
 				if(result != 0):
 					file.write(str(movie) + " " + str(result) + "\n")
 
-# def representativeByMean(ratings):
-	
+def representativeByMean(ratings):
+	# p as median element
+	p = 3
+	vHigh = []
+	vLow = []
+
+	for rating in ratings:
+		if(rating < p):
+			vLow.append(rating)
+		elif(rating > p):
+			vHigh.append(rating)
+
+	if(len(vLow) == len(vHigh)):
+		return 0
+	elif(len(vLow) > len(vHigh)):
+		mean = vLow
+	else:
+		mean = vHigh
+
+	acc = 0
+	for res in mean:
+		acc += res
+
+	return acc/len(mean)
+
 def generateReprByMean(ratingsAccumulated):
 	with open("reprClustersByMean.dat", "w") as file:
 		for cluster, movies in ratingsAccumulated.items():
@@ -181,10 +204,10 @@ def main(simMatPath, ratingsPath):
 	# generate representative clusters
 	# accumulate clusters
 	ratingsAccumulated = accumulateRatings(clusters, ratings)
-	# [TODO] generate repr. clusters by frequence
+	# generate repr. clusters by frequence
 	generateReprByFrequence(ratingsAccumulated)
 	# [TODO] generate repr. clusters by mean
-	# generateReprByMean(ratingsAccumulated)
+	generateReprByMean(ratingsAccumulated)
 
 	print('Clusters indices: ', af.cluster_centers_indices_)
 	print('Clusters labels: ', af.labels_)
