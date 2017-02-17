@@ -195,8 +195,10 @@ def main(simMatPath, ratingsPath):
 	# convert to sparse matrix
 	simMatrix = coo_matrix((data,(i, j)))
 	# clustering method
+	print "[INFO] Processing affinity propagation.."
 	af = AffinityPropagation(damping=0.9, preference=median,affinity='precomputed').fit(simMatrix.toarray())
 	# generate clusters.dat
+	print "[INFO] Clusters created.."	
 	clusters = generateClustersFile(af)
 	# read ratings
 	ratings = readRatings(ratingsPath)
@@ -205,13 +207,16 @@ def main(simMatPath, ratingsPath):
 	# accumulate clusters
 	ratingsAccumulated = accumulateRatings(clusters, ratings)
 	# generate repr. clusters by frequence
+	print "[INFO] Created representative cluster by frequence.."	
 	generateReprByFrequence(ratingsAccumulated)
-	# [TODO] generate repr. clusters by mean
+	# generate repr. clusters by mean
+	print "[INFO] Created representative cluster by mean.."	
 	generateReprByMean(ratingsAccumulated)
 
-	print('Clusters indices: ', af.cluster_centers_indices_)
-	print('Clusters labels: ', af.labels_)
-	print('Estimated number of clusters: %d' % len(af.cluster_centers_indices_))
+	print '[INFO] *************** Clusters Information ***************'
+	print '[INFO] Clusters indices: ', af.cluster_centers_indices_
+	print '[INFO] Clusters labels: ', af.labels_
+	print '[INFO] Number of clusters: %d' % len(af.cluster_centers_indices_)
 
 if __name__ == '__main__':
 	if(len(sys.argv) != 3):
