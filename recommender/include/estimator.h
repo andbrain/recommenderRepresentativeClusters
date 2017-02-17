@@ -14,7 +14,7 @@ class Estimator
 public:
 	Estimator();
 	~Estimator();
-	void Process();
+	void Process(int exp = 1);
 	void SetRatings(Graph *g);
 	void SetUsers(map<int,int> *users);
 	void SetItemClusters(map<int,map<int,double>> *movieClusters);

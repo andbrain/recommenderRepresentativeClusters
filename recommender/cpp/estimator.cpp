@@ -26,7 +26,7 @@ void Estimator::SetItemClusters(map<int,map<int,double>> *movieClusters)
 	mMovieReprCluster = movieClusters;
 }
 
-void Estimator::Process()
+void Estimator::Process(int exp)
 {
 	vector<int> randomUsers = RandomTestData(1.0);
 	// int nTest = randomUsers.size();
@@ -72,15 +72,18 @@ void Estimator::Process()
 		// cout << endl;
 	}
 
-	cout << "Error: " << error << endl;
-	cout << "Square Error: " << squareError << endl;
 	//Root Mean Square Error for system
 	RMSE = squareError/nTest;
 	RMSE = sqrt(RMSE);
 
 	MAE = error/nTest;
-	cout << "MAE: " << MAE << endl;
-	cout << "RMSE: " << RMSE << endl;
+
+	cout << "[" << exp << "o. experiment] ";
+	cout << "RMSE: " << RMSE;
+	cout << " MAE: " << MAE;
+	cout << " Error: " << error;
+	cout << " Square Error: " << squareError;
+	cout << endl;
 }
 
 vector<int> Estimator::RandomTestData(double perc)
