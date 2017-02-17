@@ -2,6 +2,7 @@ from sklearn.cluster import AffinityPropagation
 from scipy.sparse import coo_matrix
 from numpy import *
 import sys
+import operator
 
 def getMedianValue(simValues):
 	# getting median value
@@ -126,15 +127,45 @@ def accumulateRatings(clusters, totalRatings):
 
 	return accumulator
 
+def representativeByFreq(ratings):
+	values = {}
+
+	for rating in ratings:
+		if(rating in values):
+			values[rating] += 1
+		else:
+			values[rating] = 1
+	sortedRatings = sorted(values.items(), key=operator.itemgetter(1), reverse=True)
+	
+	# TODO:: Check if it returns 0 when 1st != 2nd element, and if the 2nd > 1(freq)
+	if(len(sortedRatings) <= 1):
+		return sortedRatings[0][0]
+	if(sortedRatings[0][1] != sortedRatings[1][1] and sortedRatings[1][1] <= 1):
+		return sortedRatings[0][0]
+	else:
+		return 0
+
 def generateReprByFrequence(ratingsAccumulated):
-	print ratingsAccumulated
+	with open("reprClustersByFreq.dat", "w") as file:
+		for cluster, movies in ratingsAccumulated.items():
+			file.write(str(cluster) + "\n")
 
-	exit(1)
+			for movie,ratings in movies.items():				
+				result = representativeByFreq(ratings)
+				if(result != 0):
+					file.write(str(movie) + " " + str(result) + "\n")
 
+# def representativeByMean(ratings):
+	
 def generateReprByMean(ratingsAccumulated):
-	print ratingsAccumulated
+	with open("reprClustersByMean.dat", "w") as file:
+		for cluster, movies in ratingsAccumulated.items():
+			file.write(str(cluster) + "\n")
 
-	exit(1)
+			for movie,ratings in movies.items():				
+				result = representativeByMean(ratings)
+				if(result != 0):
+					file.write(str(movie) + " " + str(result) + "\n")
 
 def main(simMatPath, ratingsPath):
 	i,j,data, median = readSimMatrix(simMatPath)
@@ -153,7 +184,7 @@ def main(simMatPath, ratingsPath):
 	# [TODO] generate repr. clusters by frequence
 	generateReprByFrequence(ratingsAccumulated)
 	# [TODO] generate repr. clusters by mean
-	generateReprByMean(ratingsAccumulated)
+	# generateReprByMean(ratingsAccumulated)
 
 	print('Clusters indices: ', af.cluster_centers_indices_)
 	print('Clusters labels: ', af.labels_)
