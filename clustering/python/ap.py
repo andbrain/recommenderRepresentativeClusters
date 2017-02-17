@@ -190,13 +190,13 @@ def generateReprByMean(ratingsAccumulated):
 				if(result != 0):
 					file.write(str(movie) + " " + str(result) + "\n")
 
-def main(simMatPath, ratingsPath):
+def main(simMatPath, ratingsPath, dpFactor, maxIter):
 	i,j,data, median = readSimMatrix(simMatPath)
 	# convert to sparse matrix
 	simMatrix = coo_matrix((data,(i, j)))
 	# clustering method
 	print "[INFO] Processing affinity propagation.."
-	af = AffinityPropagation(damping=0.9, preference=median,affinity='precomputed').fit(simMatrix.toarray())
+	af = AffinityPropagation(damping=float(dpFactor),max_iter=int(maxIter), preference=median,affinity='precomputed').fit(simMatrix.toarray())
 	# generate clusters.dat
 	print "[INFO] Clusters created.."	
 	clusters = generateClustersFile(af)
@@ -219,8 +219,8 @@ def main(simMatPath, ratingsPath):
 	print '[INFO] Number of clusters: %d' % len(af.cluster_centers_indices_)
 
 if __name__ == '__main__':
-	if(len(sys.argv) != 3):
-		print "[ERROR] Mssing arguments"
-		print "$ python ap.py SIMILARITY_MATRIX_PATH RATINGS_PATH"
+	if(len(sys.argv) != 5):
+		print "[ERROR] Missing arguments"
+		print "$ python ap.py SIMILARITY_MATRIX_PATH RATINGS_PATH DAMPING_FACTOR MAX_ITER"
 		exit(1)
-	main(sys.argv[1], sys.argv[2])
+	main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
