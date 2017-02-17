@@ -191,6 +191,9 @@ def generateReprByMean(ratingsAccumulated):
 					file.write(str(movie) + " " + str(result) + "\n")
 
 def main(simMatPath, ratingsPath, dpFactor, maxIter):
+	print "[INFO] Damping factor: ", dpFactor
+	print "[INFO] Max_iter: ", maxIter
+
 	i,j,data, median = readSimMatrix(simMatPath)
 	# convert to sparse matrix
 	simMatrix = coo_matrix((data,(i, j)))
