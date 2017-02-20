@@ -17,6 +17,7 @@ list(APPEND SOURCES cpp/similarity_base.cpp)
 #list(APPEND SOURCES cpp/datasets/ml10m100k.cpp)
 list(APPEND SOURCES cpp/datasets/ml2k.cpp)
 list(APPEND SOURCES cpp/datasets/ml100k.cpp)
+list(APPEND SOURCES cpp/datasets/comoda.cpp)
 
 #similarities
 list(APPEND SOURCES cpp/similarities/average.cpp)

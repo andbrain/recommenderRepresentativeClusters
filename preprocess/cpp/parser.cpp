@@ -23,6 +23,7 @@ void Parser::LoadDataSetTypes()
 	mDatasets["ml10M100K"] = ML10M100K;
 	mDatasets["ml2k"] = ML2K;
 	mDatasets["ml100k"] = ML100K;
+	mDatasets["comoda"] = COMODA;
 }
 
 void Parser::GetDataSetType(string dataset_name)
@@ -74,6 +75,15 @@ void Parser::Process()
 			{
 				cout << "Movie Lens 100K processing.." << endl;
 				mDatasetBase = new ml100k(mDataSetPath, mSimFunction);
+				mDatasetBase->Process();
+				mSimMatrix = mDatasetBase->GetMatrix();
+				mRatings = mDatasetBase->GetRatings();
+				break;
+			}
+		case COMODA:
+			{
+				cout << "CoMoDa processing.." << endl;
+				mDatasetBase = new comoda(mDataSetPath, mSimFunction);
 				mDatasetBase->Process();
 				mSimMatrix = mDatasetBase->GetMatrix();
 				mRatings = mDatasetBase->GetRatings();
