@@ -19,7 +19,7 @@ Parser::~Parser()
 
 void Parser::LoadDataSetTypes()
 {
-	mDatasets["netflixPrize"] = NETFLIXPRIZE;
+	mDatasets["netflix"] = NETFLIXPRIZE;
 	mDatasets["ml10M100K"] = ML10M100K;
 	mDatasets["ml2k"] = ML2K;
 	mDatasets["ml100k"] = ML100K;
@@ -57,10 +57,16 @@ void Parser::Process()
 				// mDatasetBase = new ml10m100k(mDataSetPath);
 				// mDatasetBase->Process();
 				// mSimMatrix = mDatasetBase->GetMatrix();
+				exit(1);
 				break;
 			}
 		case NETFLIXPRIZE:
 			cout << "Netflix prize processing.." << endl;
+			exit(1);
+			// mDatasetBase = new netflix(mDataSetPath, mSimFunction);
+			// mDatasetBase->Process();
+			// mSimMatrix = mDatasetBase->GetMatrix();
+			// mRatings = mDatasetBase->GetRatings();
 			break;
 		case ML2K:
 			{
