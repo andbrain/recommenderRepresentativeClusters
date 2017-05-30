@@ -1,12 +1,14 @@
 #include "ap.h"
 
-AP::AP(int iterations, double lambda)
+AP::AP(int iterations, double lambda, int elements)
 {
 	cout << "Initializing ap.." << endl;
 	mIter = iterations;
 	mLambda = lambda;
+	mElements = elements;
 	cout << "Iterations: " << mIter << endl;
 	cout << "Damping factor: " << mLambda << endl;
+	cout << "Elements size: " << mElements << endl;
 }
 
 AP::~AP()
@@ -17,7 +19,7 @@ AP::~AP()
 	cout << "Finishing ap.." << endl;
 }
 
-void AP::SetSimMatrix(Graph* hash)
+void AP::SetSimMatrix(mat* hash)
 {
 	mS = hash;
 }
@@ -36,17 +38,17 @@ void AP::Process()
 
 void AP::AffinityPropagation()
 {
-	mR = mS->Clone();
-	mR->Clear();
-
-	mA = mS->Clone();
-	mA->Clear();
-
-	mE = mS->Clone();
-	mE->Clear();
-
+	mR = mS->clone(0);
+	mA = mS->clone(0);
+	mE = mS->clone(0);
 
 	cout << "Start AP iteration: " << endl;
+
+ 	struct timeval begin, end;
+
+ 	/*Measuring time elapsed*/
+ 	gettimeofday(&begin, NULL);
+
 	for(int m=0; m < mIter; m++) {
 		cout << "(" << m + 1 << "/" << mIter << ")" << endl;
 
@@ -54,164 +56,74 @@ void AP::AffinityPropagation()
 		UpdateAvailability();
 	}
 	cout << endl;
+
+	gettimeofday(&end, NULL);
+	int tmili = (int) (1000 * (end.tv_sec - begin.tv_sec) + (end.tv_usec - begin.tv_usec) / 1000);
+
+	cout << "Time Elapsed: " << tmili << " (milis)" << endl;
+	cout << "Time Elapsed: " << (float)tmili/1000 << " (s)" << endl;
+
+
 	PrintCluster();
 }
 
-//update responsibility
 void AP::UpdateResponsability()
 {
-	int i, k, kk;
-	Edge::iterator itAux, cef;
-
-	int c1,c2;
-
-	G::iterator cgf;
-	cgf = mS->end();
-	c1 = cgf->first;
-	double value;
-	//loop in vertexes
-	for(G::iterator itNode = mS->begin(); itNode != mS->end(); ++itNode)
+	for(int i=0; i < mElements; i++) 
 	{
-		i = itNode->first;
-		// cout << "i (" << i << "/" << c1 << ")"<< endl;
-
-		cef = itNode->second->end();
-		c2 = cef->first;
-		//loop in edges
-		for(Edge::iterator it = itNode->second->begin(); it != itNode->second->end(); ++it) {
+		for(int k=0; k < mElements; k++)
+		{
 			double max = -1e100;
-			k = it->first;
-
-			// cout << "\tk (" << k << "/" << c2 << ")" << endl;
-
-			for(itAux = itNode->second->begin(); itAux != it; ++itAux) {
-				kk = itAux->first;
-				// cout << "kk1: " << kk << endl;
-				
-				if( mS->at(i)->at(kk) + mA->at(i)->at(kk) > max )
-					max = mS->at(i)->at(kk) + mA->at(i)->at(kk);
+			for(int kk=0; kk<k; kk++)
+			{
+				if(mS->get(i,kk)+ mA->get(i,kk) > max)
+					max = mS->get(i,kk) + mA->get(i,kk);
+			}
+			for(int kk=k+1; kk< mElements; kk++)
+			{
+				if(mS->get(i,kk)+ mA->get(i,kk)>max) 
+					max = mS->get(i,kk)+mA->get(i,kk);
 			}
 
-			itAux = it;
-			itAux++;
-			for(itAux; itAux != itNode->second->end(); ++itAux) {
-				kk = itAux->first;
-				// cout << "kk2: " << kk << endl;
-				if ( mS->at(i)->at(kk) + mA->at(i)->at(kk) > max )
-					max = mS->at(i)->at(kk) + mA->at(i)->at(kk);
-			}
-			value = (1 - mLambda)*(mS->at(i)->at(k) - max) + mLambda*mR->at(i)->at(k);
-			mR->SetEdge(i,k,value);
+			double resp = (1-mLambda)*(mS->get(i,k) - max) + mLambda*mR->get(i,k);
+			mR->set(i,k,resp);
 		}
 	}
 }
 
 void AP::UpdateAvailability()
 {
-	int i, k, ii;
-	Edge::iterator itAux, itI, itMin, itMax;
-	double value;
 
-	for(G::iterator itNode = mS->begin(); itNode != mS->end(); ++itNode)
+	for(int i=0; i< mElements; i++)
 	{
-		i = itNode->first;
-
-		// cout << "i: " << i << endl;
-		for(Edge::iterator it = itNode->second->begin(); it != itNode->second->end(); ++it) 
+		for(int k=0; k < mElements; k++)
 		{
-			double sum = 0.0;
-			k = it->first;
-			// cout << "k: " << k << endl;
-
 			if(i==k)
 			{
-				//TODO::check with pacience
-				itI = itNode->second->find(i);
-
-				if(itI == itNode->second->end())
-					cout << "no index found" << endl;
-				//continue if doesn't have i index incollection of edges
-				//
-				for(itAux = itNode->second->begin(); itAux != itI; ++itAux)
-				{
-					ii = itAux->first;
-
-					// cout << "(i==k) ii1: " << ii << endl;
-					
-					sum += max(0.0, mR->at(ii)->at(k));
-				}
-
-				itAux = itI;
-				itAux++;
-
-				for(; itAux != itNode->second->end(); ++itAux)
-				{
-					ii = itAux->first;
-					
-					// cout << "(i==k) ii2: " << ii << endl;
-					
-					sum += max(0.0, mR->at(ii)->at(k));
-				}
-
-				value = (1-mLambda)*sum + mLambda*mA->at(i)->at(k);
-				mA->SetEdge(i,k, value);
-			}
+				double sum = 0.0;
+				for(int ii=0; ii<i; ii++)
+					sum += max(0.0, mR->get(ii,k));
+				for(int ii=i+1; ii < mElements; ii++)
+					sum += max(0.0, mR->get(ii,k));
+				double avail = (1-mLambda)*sum + mLambda*mA->get(i,k);
+				mA->set(i,k,avail);
+			} 
 			else
 			{
-				int maxik = max(i,k);
-				int minik = min(i,k);
-
-				itMin = itNode->second->find(minik);
-
-				if(itMin == itNode->second->end())
-				{
-					cout << "no MIN index found" << endl;
-					continue;
-				}
+				double sum = 0.0;
+				int maxik = max(i, k);
+				int minik = min(i, k);
+				for(int ii=0; ii<minik; ii++)
+					sum += max(0.0, mR->get(ii,k));
+				for(int ii=minik+1; ii<maxik; ii++)
+					sum += max(0.0, mR->get(ii,k));
+				for(int ii=maxik+1; ii<mElements; ii++)
+					sum += max(0.0, mR->get(ii,k));
 				
-				itMax = itNode->second->find(maxik);
-				if(itMax == itNode->second->end())
-				{
-					cout << "no Max index found" << endl;
-					continue;
-				}
-
-				for (itAux = itNode->second->begin(); itAux != itMin; ++itAux)
-				{
-					ii = itAux->first;
-
-					// cout << "(i!=k) ii1: " << ii << endl;
-
-					sum += max(0.0, mR->at(ii)->at(k));
-				}
-
-				itAux = itMin;
-				itAux++;
-				for (; itAux != itMax; ++itAux)
-				{
-					ii = itAux->first;
-
-					// cout << "(i!=k) ii2: " << ii << endl;
-
-					sum += max(0.0, mR->at(ii)->at(k));
-				}
-
-				itAux = itMax;
-				itAux++;
-				for (; itAux != itNode->second->end(); ++itAux)
-				{
-					ii = itAux->first;
-					
-					// cout << "(i!=k) ii3: " << ii << endl;
-
-					sum += max(0.0, mR->at(ii)->at(k));
-				}
-				value = (1-mLambda)*min(0.0, mR->at(k)->at(k) + sum ) + mLambda*mA->at(i)->at(k);
-				mA->SetEdge(i,k, value);
+				double avail = (1-mLambda)*min(0.0, mR->get(k,k)+sum) + mLambda*mA->get(i,k);
+				mA->set(i,k, avail);
 			}
-
 		}
-
 	}
 }
 
@@ -219,48 +131,43 @@ void AP::PrintCluster()
 {
 	map<int,vector<int>> clusters;
 	vector<int> center;
-	int i,c,idxForI;
-	double value, maxSim;
-	for (G::iterator it = mS->begin(); it != mS->end(); ++it)
+	int N = mElements;
+
+	for(int i=0; i<N; i++) 
 	{
-		i = it->first;
-		value = mR->at(i)->at(i) + mA->at(i)->at(i);
-		mE->SetEdge(i,i,value);
-		if(mE->at(i)->at(i) > 0)
+		mE->set(i,i, mR->get(i,i) + mA->get(i,i));
+		if( mE->get(i,i) > 0)
 			center.push_back(i);
 	}
 
-	int N = mS->Size();
 	int idx[N] = {0};
 
-	for (G::iterator it = mS->begin(); it != mS->end(); ++it)
-	{
-		
-		idxForI = 0;
-		maxSim = -1e100;
-		i = it->first;
-
-		for(int j=0; j < center.size(); ++j)
-		{
-			c = center[j];
-			//TODO:: validate c index edge before
-			
-			if(mS->at(i)->at(c) > maxSim)
-			{
-				maxSim = mS->at(i)->at(c);
+	for(int i=0; i<N; i++) {
+		int idxForI = 0;
+		double maxSim = -1e100;
+		for(int j=0; j<center.size(); j++) {
+			int c = center[j];
+			// if (S[i][c]>maxSim) {
+			if (mS->get(i,c)>maxSim) {
+				// maxSim = S[i][c];
+				maxSim = mS->get(i,c);
 				idxForI = c;
 			}
 		}
-
 		idx[i] = idxForI;
 	}
 
-
 	//output the assignment
+	
+	// for(int i=0; i<N; i++) {
+	// 	//since the index of data points starts from zero, I add 1 to let it start from 1
+	// 	cout << idx[i]+1 << endl; 
+	// }
+
 	vector<int> vCluster;
 	for(int i=0; i<N; i++) {
 
-		map<int,vector<int>>::iterator itC = clusters.find(idx[i]);
+		map<int,vector<int>>::iterator itC = clusters.find(idx[i] + 1);
 
 		if(itC != clusters.end())
 		{
@@ -270,14 +177,9 @@ void AP::PrintCluster()
 		{
 			vector<int> vCluster;
 			vCluster.push_back(i);
-			clusters.insert(make_pair(idx[i], vCluster));
+			clusters.insert(make_pair(idx[i] + 1, vCluster));
 		}
-
-		//since the index of data points starts from zero, I add 1 to let it start from 1
-		// cout << i << ": " << idx[i] << endl; 
 	}
-
-	
 
 	cout << endl;
 	cout << "*****Print clusters****" << endl;	
@@ -300,11 +202,9 @@ void AP::PrintCluster()
 
 	cout << "Total of clusters: " << clusters.size() << endl;
 	OutputClusters(&clusters);
-	//Output train and test files
-	// CreateTrainFile(idx, mS->Size(), &clusters, 0.7);
-
+	
 	//Output representative clusters
-	CalculateRepresentative(&clusters);
+	// CalculateRepresentative(&clusters);
 }
 
 void AP::OutputClusters(map<int,vector<int>> *clusters)
@@ -324,76 +224,26 @@ void AP::OutputClusters(map<int,vector<int>> *clusters)
 		documentN documentIdN
 	 */
 
-
+	int N = mElements;
 	string output = "clusters.txt";
 	fstream fs(output, ios::out);
-	Vertex *v;
-	int aux;
 	vector<int> vec;
 
 	for (map<int, vector<int>>::iterator it = clusters->begin(); it!=clusters->end(); ++it)
 	{
+		
+	}
+
+	for (map<int, vector<int>>::iterator it = clusters->begin(); it!=clusters->end(); ++it)
+	{
 		vec = it->second;
-
 		fs << it->first << endl;
-
 		for (vector<int>::iterator itDocs = vec.begin(); itDocs!=vec.end(); ++itDocs)
-		{
-			aux = *(itDocs);
-			v = mS->at(aux);
-			fs << aux << " " << v->GetId() << endl;
-		}
+			fs << *(itDocs) << " " << mS->get(it->first,*(itDocs)) << endl;
 	}
 
 	fs.close();
-
 	cout << "Output file of clusters created: " << output << endl;
-}
-
-void AP::CreateTrainFile(int *users, int size, map<int,vector<int>> *clusters, double percTrain)
-{
-	int qtdU = size;
-	int uTrain = ceil(qtdU*percTrain);
-	int uTest = qtdU - uTrain;
-
-	// numerize cluster starting from 0
-	map<int,int> numCluster;
-	int cCluster = 0;
-	for(map<int,vector<int>>::iterator it = clusters->begin(); it != clusters->end(); ++it)
-	{
-		numCluster[it->first] = cCluster;
-		cCluster++;
-	}
-
-	/////////////////////
-	///		trainY	  ///
-	/////////////////////
-	string output = "trainY.txt";
-	fstream fsTrain(output, ios::out);
-
-	for (int i = 0; i < uTrain; ++i)
-	{
-		// fsTrain << users[i] << endl;
-		fsTrain << numCluster[users[i]] << endl;
-	}
-
-	fsTrain.close();
-	cout << "Output TrainY created: " << output << endl;
-
-	/////////////////////
-	///		testY	  ///
-	/////////////////////
-	output = "testY.txt";
-	fstream fsTest(output, ios::out);
-
-	for (int i = uTrain; i < qtdU; ++i)
-	{
-		// fsTest << users[i] << endl;
-		fsTest << numCluster[users[i]] << endl;
-	}
-
-	fsTest.close();
-	cout << "Output TestY created: " << output << endl;	
 }
 
 void AP::CalculateRepresentative(map<int,vector<int>> *clusters)

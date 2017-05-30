@@ -6,7 +6,12 @@
 #include <map>
 #include <cmath>
 #include <algorithm>
+
+#include <ctime>
+#include <sys/time.h>
+
 #include "graph.h"
+#include "mat.h"
 
 using namespace std;
 
@@ -19,22 +24,21 @@ struct PairValue
 class AP
 {
 public:
-	AP(int iterations, double lambda);
+	AP(int iterations, double lambda, int elements);
 	~AP();
-	void SetSimMatrix(Graph* graph);
+	void SetSimMatrix(mat* graph);
 	void SetRatings(Graph* graph);
 	void Process();
 private:
-	Graph *mS, *mR, *mA, *mE, *mRatings; 
-	int mIter;
+	mat *mS, *mR, *mA, *mE; 
+	Graph *mRatings;
+	int mIter, mElements;
 	double mLambda;
 	void AffinityPropagation();
 	void PrintCluster();
 	void OutputClusters(map<int,vector<int>> *clusters);
 	void UpdateResponsability();
 	void UpdateAvailability();
-	
-	void CreateTrainFile(int *users, int size, map<int,vector<int>> *clusters, double percTrain);
 	
 	map<int, map<int, vector<double>> > AccumulateRatings(map<int,vector<int>> *clusters);
 	void CalculateRepresentative(map<int,vector<int>> *clusters);
