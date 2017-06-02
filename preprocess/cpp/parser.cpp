@@ -8,6 +8,9 @@ Parser::Parser(string dataset_name, string dataset_path, string sim_function, in
 	mBased = based;
 	mDataSetPath = dataset_path;
 	mSimFunction = sim_function;
+
+	string type_based = (based)?"Item based":"User based";
+	cout << "Parsing dataset in " << type_based << " model" << endl; 
 }
 
 Parser::~Parser()
@@ -75,7 +78,6 @@ void Parser::Process()
 			{
 				cout << "Movie Lens 2K processing.." << endl;
 				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
-				mDatasetBase->Process();
 				break;
 			}
 		case ML100K:

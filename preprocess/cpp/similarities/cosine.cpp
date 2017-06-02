@@ -55,7 +55,7 @@ int cosine::AccumulateRatings()
 
 	int nro_users = mRatings->Size();
 	int actual_user = 0;
-	cout << "Total of users: " << nro_users << endl;
+	cout << "Total of data points: " << nro_users << endl;
 
 	//Store up average rating				
 	for(; itX != mRatings->end(); ++itX)
@@ -121,7 +121,7 @@ int cosine::AccumulateRatings()
 
 int cosine::GenerateSimUserMatrix()
 {
-	cout << "Generate Sim User Matrix..." << endl;
+	cout << "Generate Sim Data Point Matrix..." << endl;
 
 	G::iterator itX = mCounter->begin();
 	Edge::iterator itListX;
@@ -144,7 +144,7 @@ int cosine::GenerateSimUserMatrix()
 			n1 = mNorma[itX->first];
 			n2 = mNorma[itListX->first];
 			result = itListX->second / (n1 * n2);
-			// result = log2(result);
+			result = log2(result);
 			mSim->AddEdge(itX->first, itListX->first, result);
 			mSim->AddEdge(itListX->first, itX->first, result);
 		}

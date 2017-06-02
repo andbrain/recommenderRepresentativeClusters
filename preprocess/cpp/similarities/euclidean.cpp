@@ -32,7 +32,7 @@ int euclidean::AccumulateRatings()
 
 	int nro_users = mRatings->Size();
 	int actual_user = 0;
-	cout << "Total of users: " << nro_users << endl;
+	cout << "Total of data points: " << nro_users << endl;
 
 	//Store up average rating				
 	for(; itX != mRatings->end(); ++itX)
@@ -98,7 +98,7 @@ int euclidean::AccumulateRatings()
 
 int euclidean::GenerateSimUserMatrix()
 {
-	cout << "Generate Sim User Matrix..." << endl;
+	cout << "Generate Sim data point Matrix..." << endl;
 
 	G::iterator itX = mCounter->begin();
 	Edge::iterator itListX;
@@ -120,7 +120,7 @@ int euclidean::GenerateSimUserMatrix()
 				mSim->AddVertex(itListX->first, mCounter->at(itListX->first)->GetId());
 
 			result = 1 / (double)(1 + sqrt(itListX->second));
-			// result = log2(result);
+			result = log2(result);
 			mSim->AddEdge(itX->first, itListX->first, result);
 			mSim->AddEdge(itListX->first, itX->first, result);
 		}

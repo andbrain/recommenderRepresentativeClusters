@@ -33,7 +33,7 @@ int average::AccumulateRatings()
 
 	int nro_users = mRatings->Size();
 	int actual_user = 0;
-	cout << "Total of users: " << nro_users << endl;
+	cout << "Total of data points: " << nro_users << endl;
 
 	//Store up average rating				
 	for(; itX != mRatings->end(); ++itX)
@@ -99,7 +99,7 @@ int average::AccumulateRatings()
 
 int average::GenerateSimUserMatrix()
 {
-	cout << "Generate Sim User Matrix..." << endl;
+	cout << "Generate Sim Data Points Matrix..." << endl;
 
 	G::iterator itX = mCounter->begin();
 	Edge::iterator itListX;

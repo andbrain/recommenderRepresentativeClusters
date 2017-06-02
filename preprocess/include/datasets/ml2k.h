@@ -2,6 +2,7 @@
 #define ML2K_H
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "dataset_base.h"
 #include "util.h"
