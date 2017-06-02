@@ -12,7 +12,7 @@ using namespace std;
 class netflix: public Dataset_Base
 {
 public:
-	netflix(string path, string sim_function);
+	netflix(string path, string sim_function, int based);
 	~netflix();
 protected:
 	int LoadRatings();

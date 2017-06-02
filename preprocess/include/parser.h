@@ -17,13 +17,14 @@ using namespace std;
 class Parser
 {
 public:
-	Parser(string dataset_name, string dataset_path, string sim_function);
+	Parser(string dataset_name, string dataset_path, string sim_function, int based);
 	~Parser();
 	void Process();
 	Graph* GetSimMatrix();
 	Graph* GetRatings();
 private:
 	
+	int mBased;
 	unordered_map<string,Dataset_t> mDatasets;
 	Dataset_t mDatasetType;
 	string mDataSetPath, mSimFunction;
@@ -33,7 +34,6 @@ private:
 	// Methods
 	void LoadDataSetTypes();
 	void GetDataSetType(string dataset_name);
-
 };
 
 #endif

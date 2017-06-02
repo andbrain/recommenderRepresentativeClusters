@@ -1,6 +1,6 @@
 #include "datasets/ml2k.h"
 
-ml2k::ml2k(string path, string sim_function):Dataset_Base(path, sim_function)
+ml2k::ml2k(string path, string sim_function, int based):Dataset_Base(path, sim_function, based)
 {
 	cout << "Starting ml2k.." << endl;
 }

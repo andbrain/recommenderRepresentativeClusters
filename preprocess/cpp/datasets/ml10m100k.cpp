@@ -1,6 +1,6 @@
 #include "datasets/ml10m100k.h"
 
-ml10m100k::ml10m100k(string path):Dataset_Base(path)
+ml10m100k::ml10m100k(string path, string sim_function, int based):Dataset_Base(path, sim_function, based)
 {
 	cout << "Starting ml10m100k.." << endl;
 	Initialize();	

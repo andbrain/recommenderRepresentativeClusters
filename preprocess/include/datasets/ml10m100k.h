@@ -18,7 +18,7 @@ using namespace std;
 class ml10m100k: public Dataset_Base
 {
 public:
-	ml10m100k(string path);
+	ml10m100k(string path, string sim_function, int based);
 	~ml10m100k();
 	int Process();
 	Graph* GetMatrix();

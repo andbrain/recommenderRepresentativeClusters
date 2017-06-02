@@ -1,6 +1,6 @@
 #include "datasets/netflix.h"
 
-netflix::netflix(string path, string sim_function):Dataset_Base(path, sim_function)
+netflix::netflix(string path, string sim_function, int based):Dataset_Base(path, sim_function, based)
 {
 	cout << "Starting Netflix prize..(#tip: Netflix folder path)" << endl;
 }

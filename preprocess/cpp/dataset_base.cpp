@@ -1,8 +1,9 @@
 #include "dataset_base.h"
 
-Dataset_Base::Dataset_Base(string base_path, string simFunction)
+Dataset_Base::Dataset_Base(string base_path, string simFunction, int based)
 {
 	mPath = base_path;
+	mBased = based;
 	LoadSimTypes();
 	Similarity_t type = GetSimType(simFunction);
 	Initialize(type);	

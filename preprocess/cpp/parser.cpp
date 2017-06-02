@@ -1,10 +1,11 @@
 #include "parser.h"
 
-Parser::Parser(string dataset_name, string dataset_path, string sim_function)
+Parser::Parser(string dataset_name, string dataset_path, string sim_function, int based)
 {
 	cout << "Init parser.." << endl;
 	this->LoadDataSetTypes();
 	this->GetDataSetType(dataset_name);
+	mBased = based;
 	mDataSetPath = dataset_path;
 	mSimFunction = sim_function;
 }
@@ -19,11 +20,13 @@ Parser::~Parser()
 
 void Parser::LoadDataSetTypes()
 {
-	mDatasets["netflix"] = NETFLIXPRIZE;
-	mDatasets["ml10M100K"] = ML10M100K;
+	mDatasets["comoda"] = COMODA;
 	mDatasets["ml2k"] = ML2K;
 	mDatasets["ml100k"] = ML100K;
-	mDatasets["comoda"] = COMODA;
+	mDatasets["ml10M100K"] = ML10M100K;
+	mDatasets["ml1m"] = ML1M;
+	mDatasets["toy"] = TOY;
+	mDatasets["netflix"] = NETFLIXPRIZE;
 }
 
 void Parser::GetDataSetType(string dataset_name)
@@ -54,7 +57,7 @@ void Parser::Process()
 		case ML10M100K:
 			{
 				cout << "Movie Lens 10M100K processing.." << endl;
-				// mDatasetBase = new ml10m100k(mDataSetPath);
+				// mDatasetBase = new ml10m100k(mDataSetPath, mBased);
 				// mDatasetBase->Process();
 				// mSimMatrix = mDatasetBase->GetMatrix();
 				exit(1);
@@ -63,7 +66,7 @@ void Parser::Process()
 		case NETFLIXPRIZE:
 			cout << "Netflix prize processing.." << endl;
 			exit(1);
-			// mDatasetBase = new netflix(mDataSetPath, mSimFunction);
+			// mDatasetBase = new netflix(mDataSetPath, mSimFunction, mBased);
 			// mDatasetBase->Process();
 			// mSimMatrix = mDatasetBase->GetMatrix();
 			// mRatings = mDatasetBase->GetRatings();
@@ -71,34 +74,30 @@ void Parser::Process()
 		case ML2K:
 			{
 				cout << "Movie Lens 2K processing.." << endl;
-				mDatasetBase = new ml2k(mDataSetPath, mSimFunction);
+				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
 				mDatasetBase->Process();
-				mSimMatrix = mDatasetBase->GetMatrix();
-				mRatings = mDatasetBase->GetRatings();
 				break;
 			}
 		case ML100K:
 			{
 				cout << "Movie Lens 100K processing.." << endl;
-				mDatasetBase = new ml100k(mDataSetPath, mSimFunction);
-				mDatasetBase->Process();
-				mSimMatrix = mDatasetBase->GetMatrix();
-				mRatings = mDatasetBase->GetRatings();
+				mDatasetBase = new ml100k(mDataSetPath, mSimFunction, mBased);				
 				break;
 			}
 		case COMODA:
 			{
 				cout << "CoMoDa processing.." << endl;
-				mDatasetBase = new comoda(mDataSetPath, mSimFunction);
-				mDatasetBase->Process();
-				mSimMatrix = mDatasetBase->GetMatrix();
-				mRatings = mDatasetBase->GetRatings();
+				mDatasetBase = new comoda(mDataSetPath, mSimFunction, mBased);				
 				break;
 			}
 		default:
 			cout << "...No dataset selected" << endl;
 			break;
 	}
+
+	mDatasetBase->Process();
+	mSimMatrix = mDatasetBase->GetMatrix();
+	mRatings = mDatasetBase->GetRatings();
 
 	delete mDatasetBase;
 }

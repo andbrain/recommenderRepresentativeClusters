@@ -19,7 +19,7 @@ using namespace std;
 class Dataset_Base //interface for dataset's
 {
 public:
-	Dataset_Base(string base_path, string simFunction);
+	Dataset_Base(string base_path, string simFunction, int based);
 	virtual ~Dataset_Base(); //let destructor enable for children classes
 	int Process(); //pure virtual function for processing dataset
 	Graph* GetMatrix();
@@ -27,6 +27,7 @@ public:
 protected:
 	string mPath;
 	fstream mFs;
+	int mBased;
 	similarity_base *mSimFunction;
 	unordered_map<string,Similarity_t> mSimilarities;
 	int mQtdMovies; // must be updated in children classes
