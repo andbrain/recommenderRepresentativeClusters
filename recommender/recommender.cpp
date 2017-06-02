@@ -51,7 +51,7 @@ void GetDatasetName(int argc, char *argv[])
 	else
 	{
 		cout << "[Error] Missing parameters!" << endl;
-		cout << "[INFO] ./clustering RATINGS_PATH CLUSTER_PATH REPR_CLUSTERS_PATH" << endl;
+		cout << "[INFO] rec <RATINGS_PATH> <CLUSTER_PATH> <REPR_CLUSTERS_PATH>" << endl;
 		exit(1);
 	}
 }
