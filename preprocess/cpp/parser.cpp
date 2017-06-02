@@ -58,8 +58,9 @@ void Parser::Process()
 	switch(mDatasetType)
 	{
 		case ML10M100K:
+		case ML1M:
 			{
-				cout << "Movie Lens 10M100K processing.." << endl;
+				cout << "Movie Lens 10M100K | 1M processing.." << endl;
 				mDatasetBase = new ml10m100k(mDataSetPath,mSimFunction,mBased);
 				break;
 			}
