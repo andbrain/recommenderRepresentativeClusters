@@ -75,7 +75,6 @@ int comoda::LoadRatings()
 		qtdRatings++;
 	}
 
-
 	cout << "Finished reading of dataset..." << endl;
 	cout << "*** Statistics Information ***" << endl;
 
@@ -90,7 +89,7 @@ int comoda::LoadRatings()
 		cout << "Users: " << secDataPoint.size() << endl;
 	}
 
-	cout << "Nro of Ratings: " << qtdRatings << endl;
+	cout << "Number of Ratings: " << qtdRatings << endl;
 	// show % per type of rating
 	for(int i=0; i < acumRatings.size(); ++i)
 		cout << "\t[" << i + 1 << "] => " << acumRatings[i] << " (" << fixed << setprecision(2) << ((double)acumRatings[i]/qtdRatings)*100 << "\%)" << endl;

@@ -92,7 +92,7 @@ int ml2k::LoadRatings()
 		cout << "Users: " << secDataPoint->size() << endl;
 	}
 
-	cout << "Nro of Ratings: " << qtdRatings << endl;
+	cout << "Number of Ratings: " << qtdRatings << endl;
 	// show % per type of rating
 	for(int i=0; i < acumRatings->size(); ++i)
 		cout << "\t[" << i + 1 << "] => " << acumRatings->at(i) << " (" << fixed << setprecision(2) << ((double)acumRatings->at(i)/qtdRatings)*100 << "\%)" << endl;
