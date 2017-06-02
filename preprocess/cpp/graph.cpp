@@ -176,9 +176,12 @@ void Graph::PrintPair(string outputName)
 		v = it->second;
 		fs << it->first << " " << v->GetId() << endl;    		
 
-		for (Edge::iterator it_v = v->begin(); it_v!= v->end(); ++it_v)
+		Edge::iterator it_v = v->begin();
+		fs << it_v->first << " " << it_v->second;
+		++it_v;
+		for (; it_v!= v->end(); ++it_v)
 		{
-			fs << it_v->first << " " << it_v->second << " ";
+			fs << " " << it_v->first << " " << it_v->second;
 		}
 
 		fs << endl;
