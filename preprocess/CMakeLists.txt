@@ -15,7 +15,7 @@ list(APPEND SOURCES cpp/similarity_base.cpp)
 list(APPEND SOURCES cpp/folder.cpp)
 
 #datasets
-#list(APPEND SOURCES cpp/datasets/ml10m100k.cpp)
+list(APPEND SOURCES cpp/datasets/ml10m100k.cpp)
 list(APPEND SOURCES cpp/datasets/ml2k.cpp)
 list(APPEND SOURCES cpp/datasets/ml100k.cpp)
 list(APPEND SOURCES cpp/datasets/comoda.cpp)

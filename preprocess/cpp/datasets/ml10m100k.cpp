@@ -3,41 +3,11 @@
 ml10m100k::ml10m100k(string path, string sim_function, int based):Dataset_Base(path, sim_function, based)
 {
 	cout << "Starting ml10m100k.." << endl;
-	Initialize();	
 }
 
 ml10m100k::~ml10m100k()
 {
-	delete mRatings;
-	delete mSim;
-	delete mCounter;
 	cout << "Finishing ml10m100k.." << endl;
-}
-
-void ml10m100k::Initialize()
-{
-	string basePath = mPath + "/" + RATING_FILE;
-
-	mFs.open(basePath.c_str(), ios::in);
-
-	if(!mFs.is_open())
-	{
-		cout << "[ERROR] Cannot open file: " << basePath << endl;
-		exit(1);
-	}
-
-	mRatings = new Hash();
-	mSim = new Hash();
-	mCounter = new Hash();
-}
-
-int ml10m100k::Process()
-{
-	LoadRatings();
-	AccumulateRatings();
-	GenerateSimUserMatrix();
-
-	return 0;
 }
 
 int ml10m100k::LoadRatings()
@@ -46,9 +16,16 @@ int ml10m100k::LoadRatings()
 
 	string line;
 	vector<string> relation;
+	map<string,int> dataPoint, secDataPoint;
 	string userId, movieId, rating;
+	string basedId, secondaryId;
+	int auxRating;
 
-	int count = 0;
+	//statistics
+	vector<int> acumRatings(5,0);
+	int qtdRatings = 0;
+
+	cout << "Reading ratings..." << endl;
 	while(getline(mFs, line))
 	{
 		relation = Split(line, ':');
@@ -57,121 +34,67 @@ int ml10m100k::LoadRatings()
 		movieId = relation[2];
 		rating = relation[4];
 
-		mMovies.AddVertice(movieId);
-
-		mRatings->AddVertice(userId);
-		mRatings->AddAresta(userId, movieId, stod(rating));
-	}
-
-	cout << "Movies: " << mMovies.NumeroVertices() << endl;
-	// mRatings->Imprime();
-
-	return 0;
-}
-
-int ml10m100k::AccumulateRatings()
-{
-	cout << "Accumulate Average Ratings.." << endl;
-
-	unordered_map<string,unordered_map<string,double>* >::iterator itX = mRatings->begin();
-	unordered_map<string,unordered_map<string,double>* >::iterator itY;
-	unordered_map<string,double> *listaAdjX, *listaAdjY;
-	unordered_map<string,double>::iterator itListX, found;
-	double rx, ry, rating;
-
-	int nro_users = mRatings->NumeroVertices();
-	int actual_user = 0;
-	cout << "Total of users: " << nro_users << endl;
-
-	//Store up average rating				
-	for(itX; itX != mRatings->end(); ++itX)
-	{
-		actual_user++;
-		cout << "( " << actual_user << "/" << nro_users << " )" << endl;
-		
-		//Loop over users
-		itY = itX;
-		
-		//get next user
-		itY++;
-
-		for(itY; itY != mRatings->end(); ++itY)
+		if(!mBased)
 		{
-			
-			listaAdjX = itX->second;
-			itListX = listaAdjX->begin();
-
-			mCounter->AddVertice(itX->first);
-			mCounter->AddVertice(itY->first);
-
-			listaAdjY = itY->second;
-
-			//TODO:: check if listAdjX is smaller than listAdjY
-			for(itListX; itListX != listaAdjX->end(); ++itListX)
-			{
-				rx = 0;
-				ry = 0;
-				
-				//check if userX rate same movies of userY
-				found = listaAdjY->find(itListX->first);
-
-				if(found != listaAdjY->end())
-				{
-					rx = itListX->second;
-					ry = found->second;
-
-					// cout << "\t\t Rx: " << rx << " Ry: " << ry << endl;
-					rating = mCounter->GetAresta(itX->first, itY->first);
-					mCounter->AddAresta(itX->first, itY->first, rating);
-					mCounter->AddAresta(itY->first, itX->first, rating);
-
-					rating += (rx+ry)/2;
-
-					mCounter->SetAresta(itX->first, itY->first, rating);
-					mCounter->SetAresta(itY->first, itX->first, rating);
-				}
-			}
+			basedId = userId;
+			secondaryId = movieId;
+		}
+		else
+		{
+			basedId = movieId;
+			secondaryId = userId;
 		}
 		
-	}
-
-	// mCounter->Imprime();
-	return 0;
-}
-
-int ml10m100k::GenerateSimUserMatrix()
-{
-	cout << "Generate Sim User Matrix..." << endl;
-	int nroMovies =	mMovies.NumeroVertices();
-
-	unordered_map<string,unordered_map<string,double>* >::iterator itX = mCounter->begin();
-	unordered_map<string,double>::iterator itListX;
-	unordered_map<string,double> *listaAdjX;
-	double result;
-
-	for(itX; itX != mCounter->end(); ++itX)
-	{
-		//Similarity 1 for same user
-		mSim->AddVertice(itX->first);
-		mSim->AddAresta(itX->first, itX->first, 1);
-		
-		listaAdjX = itX->second;
-		itListX = listaAdjX->begin();
-
-		for(itListX; itListX != listaAdjX->end(); ++itListX)
+		// Add based data Point
+		int indexDataPoint;
+		map<string,int>::iterator itDataPoint = dataPoint.find(basedId);
+		if(itDataPoint == dataPoint.end())
 		{
-			result = 0;
-			mSim->AddVertice(itListX->first);
-			result = itListX->second / (nroMovies * MAX_RATING);
-			mSim->AddAresta(itX->first, itListX->first, result);
-			mSim->AddAresta(itListX->first, itX->first, result);
+			indexDataPoint = dataPoint.size();
+			dataPoint.insert(make_pair(basedId, indexDataPoint));
 		}
+		else indexDataPoint = itDataPoint->second;
+		mRatings->AddVertex(indexDataPoint, basedId);
+		mRatings->AddEdge(indexDataPoint, atoi(secondaryId.c_str()), stod(rating));
+		
+		// Add secondary data point
+		int indexsecDataPoint;
+		itDataPoint = secDataPoint.find(secondaryId);
+		if(itDataPoint == secDataPoint.end())
+		{
+			indexsecDataPoint = secDataPoint.size();
+			secDataPoint.insert(make_pair(secondaryId, indexsecDataPoint));
+		}
+		else indexsecDataPoint = itDataPoint->second;
+		auxRating = round(stod(rating.c_str()));
+		//acumulate for statistics
+		acumRatings.at(auxRating - 1) += 1;
+		qtdRatings++;		
 	}
 
-	mSim->PrintForAP();
-}
+	cout << "Finished reading of dataset..." << endl;
+	cout << "*** Statistics Information ***" << endl;
 
-Hash* ml10m100k::GetMatrix()
-{
-	return mSim->Copiar();
+	if(!mBased)
+	{
+		cout << "Users: " << dataPoint.size() << endl;
+		cout << "Movies: " << secDataPoint.size() << endl;
+	}
+	else
+	{
+		cout << "Movies: " << dataPoint.size() << endl;
+		cout << "Users: " << secDataPoint.size() << endl;
+	}
+
+	cout << "Number of Ratings: " << qtdRatings << endl;
+	// show % per type of rating
+	for(int i=0; i < acumRatings.size(); ++i)
+		cout << "\t[" << i + 1 << "] => " << acumRatings[i] << " (" << fixed << setprecision(2) << ((double)acumRatings[i]/qtdRatings)*100 << "\%)" << endl;
+
+	// show dataset sparsity
+	int totalMatrix = dataPoint.size() * secDataPoint.size();
+	int totalGaps = totalMatrix - qtdRatings;
+	cout << "Dataset sparsity: " << fixed << setprecision(2) << ((double)totalGaps/totalMatrix)*100 << "\%" << endl;
+
+	return 0;
 }

@@ -6,7 +6,7 @@
 #include "types.h"
 #include "graph.h"
 #include "dataset_base.h"
-// #include "datasets/ml10m100k.h"
+#include "datasets/ml10m100k.h"
 #include "datasets/ml2k.h"
 #include "datasets/ml100k.h"
 #include "datasets/comoda.h"

@@ -18,6 +18,4 @@ public:
 protected:
 	int LoadRatings();
 };
-
-
 #endif
