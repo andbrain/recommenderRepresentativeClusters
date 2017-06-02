@@ -147,22 +147,13 @@ void AP::PrintCluster()
 		double maxSim = -1e100;
 		for(int j=0; j<center.size(); j++) {
 			int c = center[j];
-			// if (S[i][c]>maxSim) {
 			if (mS->get(i,c)>maxSim) {
-				// maxSim = S[i][c];
 				maxSim = mS->get(i,c);
 				idxForI = c;
 			}
 		}
 		idx[i] = idxForI;
 	}
-
-	//output the assignment
-	
-	// for(int i=0; i<N; i++) {
-	// 	//since the index of data points starts from zero, I add 1 to let it start from 1
-	// 	cout << idx[i]+1 << endl; 
-	// }
 
 	vector<int> vCluster;
 	for(int i=0; i<N; i++) {
@@ -204,7 +195,7 @@ void AP::PrintCluster()
 	OutputClusters(&clusters);
 	
 	//Output representative clusters
-	// CalculateRepresentative(&clusters);
+	CalculateRepresentative(&clusters);
 }
 
 void AP::OutputClusters(map<int,vector<int>> *clusters)
