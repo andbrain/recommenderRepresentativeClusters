@@ -2,12 +2,10 @@
 
 ml100k::ml100k(string path, string sim_function, int based):Dataset_Base(path, sim_function, based)
 {
-	cout << "Starting ml100k.." << endl;
 }
 
 ml100k::~ml100k()
 {
-	cout << "Finishing ml100k.." << endl;
 }
 
 int ml100k::LoadRatings()

@@ -2,12 +2,10 @@
 
 ml2k::ml2k(string path, string sim_function, int based):Dataset_Base(path, sim_function, based)
 {
-	cout << "Starting ml2k.." << endl;
 }
 
 ml2k::~ml2k()
 {
-	cout << "Finishing ml2k.." << endl;
 }
 
 int ml2k::LoadRatings()

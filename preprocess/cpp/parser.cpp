@@ -78,6 +78,12 @@ void Parser::Process()
 				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
 				break;
 			}
+		case TOY:
+			{
+				cout << "Toy processing.." << endl;
+				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
+				break;
+			}
 		case ML100K:
 			{
 				cout << "Movie Lens 100K processing.." << endl;
