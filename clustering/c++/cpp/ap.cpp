@@ -216,7 +216,7 @@ void AP::OutputClusters(map<int,vector<int>> *clusters)
 	 */
 
 	int N = mElements;
-	string output = "clusters.txt";
+	string output = "clusters.dat";
 	fstream fs(output, ios::out);
 	vector<int> vec;
 
@@ -298,7 +298,7 @@ bool funcDec (PairValue i,PairValue j) { return (i.freq > j.freq); }
 
 void AP::MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accumList)
 {
-	string output = "representativeClustersByFreq.txt";
+	string output = "representativeClustersByFreq.dat";
 	fstream fs(output, ios::out);
 	
 	for (map<int, map<int, vector<double>> >::iterator it = accumList->begin(); it != accumList->end(); ++it)
@@ -351,7 +351,7 @@ void AP::MakeRepresentativeByFrequency(map<int, map<int, vector<double>>> *accum
 
 void AP::MakeRepresentativeByMean(map<int, map<int, vector<double>>> *accumList, map<int,vector<int>> *clusters)
 {
-	string output = "representativeClustersByMean.txt";
+	string output = "representativeClustersByMean.dat";
 	fstream fs(output, ios::out);
 	int upperBound; //value to validate mean of ratings
 	int p = 3; //parameter for delimite what is highest ratings or lowest ratings
