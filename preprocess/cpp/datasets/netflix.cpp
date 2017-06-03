@@ -24,7 +24,6 @@ int netflix::LoadRatings()
 	int qtdRatings = 0;
 
 	for(int i=0; i < mFiles.size(); ++i)
-	// for(int i=0; i < 2; ++i)
 	{
 		cout << "Reading: " << mFiles[i] << " --> (" << i + 1 <<  "/"<< mFiles.size() << ")" << endl;
 		mFs.open(mFiles[i].c_str(), ios::in);
