@@ -52,13 +52,22 @@ void Dataset_Base::Initialize(Similarity_t simType)
 	string basePath = mPath;
 
 	cout << "Initializing dataset from [" << basePath << "]" << endl;
-	mFs.open(basePath.c_str(), ios::in);
 
-	if(!mFs.is_open())
+	Folder f(mPath);
+
+	// if dataset is one file open the file, otherwise load a vector of files
+	if(!f.isFolder(mPath))
 	{
-		cout << "[ERROR] Cannot open file: " << basePath << endl;
-		exit(1);
+		mFs.open(basePath.c_str(), ios::in);
+
+		if(!mFs.is_open())
+		{
+			cout << "[ERROR] Cannot open file: " << basePath << endl;
+			exit(1);
+		}
 	}
+	else
+		mFiles = f.GetFiles();
 
 	mQtdMovies = 0;
 	mRatings = new Graph();

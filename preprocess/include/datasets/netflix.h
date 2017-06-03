@@ -2,6 +2,7 @@
 #define NETFLIX_H
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "dataset_base.h"
 #include "util.h"
@@ -16,6 +17,7 @@ public:
 	~netflix();
 protected:
 	int LoadRatings();
+	int LoadFile(int movieId, map<string,int> *dataPoint,map<string,int> *secDataPoint,vector<int> *acumRatings,int *qtdRatings);
 };
 
 

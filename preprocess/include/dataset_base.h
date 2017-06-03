@@ -7,6 +7,7 @@
 #include <cmath>
 #include <map>
 #include "graph.h"
+#include "folder.h"
 #include "similarity_base.h"
 #include "similarities/average.h"
 #include "similarities/cosine.h"
@@ -27,6 +28,7 @@ public:
 protected:
 	string mPath;
 	fstream mFs;
+	vector<string> mFiles;
 	int mBased;
 	similarity_base *mSimFunction;
 	unordered_map<string,Similarity_t> mSimilarities;

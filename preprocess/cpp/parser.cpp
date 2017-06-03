@@ -65,13 +65,11 @@ void Parser::Process()
 				break;
 			}
 		case NETFLIXPRIZE:
-			cout << "Netflix prize processing.." << endl;
-			exit(1);
-			// mDatasetBase = new netflix(mDataSetPath, mSimFunction, mBased);
-			// mDatasetBase->Process();
-			// mSimMatrix = mDatasetBase->GetMatrix();
-			// mRatings = mDatasetBase->GetRatings();
-			break;
+			{
+				cout << "Netflix prize processing.." << endl;
+				mDatasetBase = new netflix(mDataSetPath, mSimFunction, mBased);
+				break;
+			}
 		case ML2K:
 			{
 				cout << "Movie Lens 2K processing.." << endl;

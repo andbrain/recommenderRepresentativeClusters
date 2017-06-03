@@ -15,13 +15,13 @@ public:
 	~Folder();
 	void SetExtension(const string extension);
 	vector<string> GetFiles();
+	bool isFolder(string path);
 private:
 	string path, extension;
 	vector<string> files;
 	vector<string> listFilesFilter(string path, string extension);
 	bool isSignificantFile(const char *entry);
 	bool hasSuffix(const string &str, const string &suffix);
-	bool isFolder(string path);
 
 };
 
