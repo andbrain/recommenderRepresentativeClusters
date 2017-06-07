@@ -21,8 +21,7 @@ int netflix::LoadRatings()
 	vector<int> *acumRatings = new vector<int>(5,0);
 	int qtdRatings = 0;
 
-	// for(int i=0; i < mFiles.size(); ++i)
-	for(int i=0; i < 2; ++i)
+	for(int i=0; i < mFiles.size(); ++i)
 	{
 		cout << "Reading: " << mFiles[i] << " --> (" << i + 1 <<  "/"<< mFiles.size() << ")" << endl;
 		mFs.open(mFiles[i].c_str(), ios::in);
@@ -40,7 +39,6 @@ int netflix::LoadRatings()
 	}
 
 	cout << "Finished reading of dataset..." << endl;
-	mRatings->debug();
 	cout << "*** Statistics Information ***" << endl;
 
 	if(!mBased)
