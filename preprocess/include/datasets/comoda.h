@@ -6,7 +6,6 @@
 #include <string>
 #include "dataset_base.h"
 #include "util.h"
-#include "graph.h"
 
 using namespace std;
 

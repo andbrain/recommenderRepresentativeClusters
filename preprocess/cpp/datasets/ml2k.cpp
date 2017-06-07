@@ -14,11 +14,13 @@ int ml2k::LoadRatings()
 
 	string line;
 	vector<string> relation;
-	map<string,int> *dataPoint = new map<string,int>();
-	map<string,int> *secDataPoint = new map<string,int>();
-	string userId, movieId, rating;
-	string basedId, secondaryId;
+	int userId, movieId;
+	double rating;
+	int basedId, secondaryId;
+	int indexDataPoint, indexsecDataPoint;
 	int auxRating;
+	unordered_map<int,int>::iterator itDataPoint;
+
 	//statistics
 	vector<int> *acumRatings = new vector<int>(5,0);
 	int qtdRatings = 0;
@@ -32,9 +34,9 @@ int ml2k::LoadRatings()
 	{
 		relation = Split(line, '\t');
 
-		userId = relation[0];
-		movieId = relation[1];
-		rating = relation[2];
+		userId = atoi(relation[0].c_str());
+		movieId = atoi(relation[1].c_str());
+		rating = stod(relation[2].c_str());
 
 		if(!mBased)
 		{
@@ -48,30 +50,29 @@ int ml2k::LoadRatings()
 		}
 		
 		// Add based data Point
-		int indexDataPoint;
-		map<string,int>::iterator itDataPoint = dataPoint->find(basedId);
-		if(itDataPoint == dataPoint->end())
+		itDataPoint = mRefBased->find(basedId);
+		if(itDataPoint == mRefBased->end())
 		{
-			indexDataPoint = dataPoint->size();
-			dataPoint->insert(make_pair(basedId, indexDataPoint));
+			indexDataPoint = mRefBased->size();
+			mRefBased->insert(make_pair(basedId, indexDataPoint));
+			mRatings->addLine();
 		}
 		else indexDataPoint = itDataPoint->second;
-		mRatings->AddVertex(indexDataPoint, basedId);
-		mRatings->AddEdge(indexDataPoint, atoi(secondaryId.c_str()), stod(rating));
-		
+
 		// Add secondary data point
-		int indexsecDataPoint;
-		itDataPoint = secDataPoint->find(secondaryId);
-		if(itDataPoint == secDataPoint->end())
+		itDataPoint = mRefSecondary->find(secondaryId);
+		if(itDataPoint == mRefSecondary->end())
 		{
-			indexsecDataPoint = secDataPoint->size();
-			secDataPoint->insert(make_pair(secondaryId, indexsecDataPoint));
+			indexsecDataPoint = mRefSecondary->size();
+			mRefSecondary->insert(make_pair(secondaryId, indexsecDataPoint));
 		}
 		else indexsecDataPoint = itDataPoint->second;
 
+		mRatings->set(indexDataPoint, indexsecDataPoint, round(rating));
+
 		//TODO:: resolve case for float ratings - ex: 3.5 => it's gonna be rounded, for now
 		//acumulate for statistics
-		auxRating = round(stod(rating.c_str()));
+		auxRating = round(rating);
 		acumRatings->at(auxRating-1) += 1;
 		qtdRatings++;
 	}
@@ -81,13 +82,13 @@ int ml2k::LoadRatings()
 
 	if(!mBased)
 	{
-		cout << "Users: " << dataPoint->size() << endl;
-		cout << "Movies: " << secDataPoint->size() << endl;
+		cout << "Users: " << mRefBased->size() << endl;
+		cout << "Movies: " << mRefSecondary->size() << endl;
 	}
 	else
 	{
-		cout << "Movies: " << dataPoint->size() << endl;
-		cout << "Users: " << secDataPoint->size() << endl;
+		cout << "Movies: " << mRefBased->size() << endl;
+		cout << "Users: " << mRefSecondary->size() << endl;
 	}
 
 	cout << "Number of Ratings: " << qtdRatings << endl;
@@ -96,12 +97,10 @@ int ml2k::LoadRatings()
 		cout << "\t[" << i + 1 << "] => " << acumRatings->at(i) << " (" << fixed << setprecision(2) << ((double)acumRatings->at(i)/qtdRatings)*100 << "\%)" << endl;
 
 	// show dataset sparsity
-	int totalMatrix = dataPoint->size() * secDataPoint->size();
+	int totalMatrix = mRefBased->size() * mRefSecondary->size();
 	int totalGaps = totalMatrix - qtdRatings;
 	cout << "Dataset sparsity: " << fixed << setprecision(2) << ((double)totalGaps/totalMatrix)*100 << "\%" << endl;
 
-	delete dataPoint;
-	delete secDataPoint;
 	delete acumRatings;
 
 	return 0;

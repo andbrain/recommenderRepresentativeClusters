@@ -6,10 +6,10 @@
 #include "types.h"
 #include "mat.h"
 #include "dataset_base.h"
-// #include "datasets/ml10m100k.h"
-// #include "datasets/ml2k.h"
-// #include "datasets/ml100k.h"
-// #include "datasets/comoda.h"
+#include "datasets/ml10m100k.h"
+#include "datasets/ml2k.h"
+#include "datasets/ml100k.h"
+#include "datasets/comoda.h"
 #include "datasets/netflix.h"
 
 using namespace std;

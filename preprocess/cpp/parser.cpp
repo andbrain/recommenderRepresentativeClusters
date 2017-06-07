@@ -61,7 +61,7 @@ void Parser::Process()
 		case ML1M:
 			{
 				cout << "Movie Lens 10M100K | 1M processing.." << endl;
-				// mDatasetBase = new ml10m100k(mDataSetPath,mSimFunction,mBased);
+				mDatasetBase = new ml10m100k(mDataSetPath,mSimFunction,mBased);
 				break;
 			}
 		case NETFLIXPRIZE:
@@ -73,25 +73,25 @@ void Parser::Process()
 		case ML2K:
 			{
 				cout << "Movie Lens 2K processing.." << endl;
-				// mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
+				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
 				break;
 			}
 		case TOY:
 			{
 				cout << "Toy processing.." << endl;
-				// mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
+				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
 				break;
 			}
 		case ML100K:
 			{
 				cout << "Movie Lens 100K processing.." << endl;
-				// mDatasetBase = new ml100k(mDataSetPath, mSimFunction, mBased);				
+				mDatasetBase = new ml100k(mDataSetPath, mSimFunction, mBased);				
 				break;
 			}
 		case COMODA:
 			{
 				cout << "CoMoDa processing.." << endl;
-				// mDatasetBase = new comoda(mDataSetPath, mSimFunction, mBased);				
+				mDatasetBase = new comoda(mDataSetPath, mSimFunction, mBased);				
 				break;
 			}
 		default:
