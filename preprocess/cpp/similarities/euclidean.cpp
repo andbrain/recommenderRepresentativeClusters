@@ -18,12 +18,11 @@ int euclidean::Process()
 
 int euclidean::GenerateSimUserMatrix()
 {
-	cout << "Accumulate Average Ratings.." << endl;
+	cout << "Generating Similarity Sparse Matrix.." << endl;
 	
 	int qtd_datapoints = mRatings->size();
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
-	vector<double> cik; //set 'c' of ratings in both movie 'i' and 'k'
 	int i,j;
 	double sum, result;
 
@@ -43,7 +42,7 @@ int euclidean::GenerateSimUserMatrix()
 			if(sum != INT_MIN)
 			{
 				result = 1 / (double)(1 + sqrt(sum));
-				// result = log2(result);
+				result = log2(result);
 				mSim->set(i, j, result);
 				mSim->set(j, i, result);
 			}

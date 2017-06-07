@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <map>
+#include <vector>
 #include "similarity_base.h"
 using namespace std;
 
@@ -15,12 +15,12 @@ public:
 	~cosine();
 	int Process();
 protected:
-	map<int,double> mNorma;
+	vector<double> *mNorma;
 
 private:
-	int AccumulateRatings();
 	int GenerateSimUserMatrix();
 	int CalculateNorma();
+	double setCik(int fIndex, int sIndex);
 };
 
 
