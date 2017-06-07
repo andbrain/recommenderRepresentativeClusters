@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <map>
+#include <vector>
 #include "similarity_base.h"
 using namespace std;
 
@@ -15,16 +15,14 @@ public:
 	~correlation();
 	int Process();
 protected:
-	// Graph *mCounter;
-	map<int,double> mNorma;
-	map<int,double> mMean;
+	vector<double> *mNorma;
+	vector<double> *mMean;
 
 private:
-	int AccumulateRatings();
 	int GenerateSimUserMatrix();
 	int CalculateNorma();
 	int CalculateMean();
-	// unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
+	double setCik(int fIndex, int sIndex);
 };
 
 

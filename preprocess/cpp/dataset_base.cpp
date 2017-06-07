@@ -25,7 +25,7 @@ void Dataset_Base::LoadSimTypes()
 	mSimilarities["cosine"] = COSINE;
 	mSimilarities["correlation"] = CORRELATION;
 	mSimilarities["loglikelihood"] = LOGLIKELIHOOD;
-	mSimilarities["average"] = AVERAGE;
+	mSimilarities["nmsd"] = NMSD;
 }
 
 Similarity_t Dataset_Base::GetSimType(string sim_name)
@@ -97,9 +97,9 @@ void Dataset_Base::Initialize(Similarity_t simType)
 			mSimFunction = new loglikelihood();
 			break;
 		}
-		case AVERAGE:{
+		case NMSD:{
 			cout << "Using Average similarity function..." << endl;
-			mSimFunction = new average();
+			mSimFunction = new nmsd();
 			break;
 		}
 	}

@@ -10,7 +10,7 @@
 #include "mat.h"
 #include "folder.h"
 #include "similarity_base.h"
-#include "similarities/average.h"
+#include "similarities/nmsd.h"
 #include "similarities/cosine.h"
 #include "similarities/correlation.h"
 #include "similarities/euclidean.h"

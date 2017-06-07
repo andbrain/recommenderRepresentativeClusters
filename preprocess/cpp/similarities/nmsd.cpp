@@ -1,46 +1,26 @@
-#include "similarities/cosine.h"
+#include "similarities/nmsd.h"
 
-cosine::cosine():similarity_base()
+nmsd::nmsd():similarity_base()
 {
-	cout << "Starting cosine.." << endl;
+	cout << "Starting negative mean-square difference sim. function.." << endl;
 }
 
-cosine::~cosine()
+nmsd::~nmsd()
 {
-	delete mNorma;
-	cout << "Finishing cosine.." << endl;
+	cout << "Finishing nmsd sim. function.." << endl;
 }
 
-int cosine::Process()
+int nmsd::Process()
 {
-	CalculateNorma();
 	GenerateSimUserMatrix();
 	
 	return 0;
 }
 
-int cosine::CalculateNorma()
-{
-	int qtd_datapoints = mRatings->size();
-	map<int, double>::iterator itLine;
-	mNorma = new std::vector<double>(qtd_datapoints,0);
-
-	for (int i = 0; i < qtd_datapoints; ++i)
-	{
-		itLine = mRatings->getLine(i)->begin();
-
-		for (; itLine != mRatings->getLine(i)->end(); ++itLine)
-			mNorma->at(i) = mNorma->at(i) + pow(itLine->second, 2);
-		mNorma->at(i) = sqrt(mNorma->at(i));
-	}
-
-	return 0;
-}
-
-int cosine::GenerateSimUserMatrix()
+int nmsd::GenerateSimUserMatrix()
 {
 	cout << "Generating Similarity Sparse Matrix.." << endl;
-
+	
 	int qtd_datapoints = mRatings->size();
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
@@ -62,8 +42,7 @@ int cosine::GenerateSimUserMatrix()
 
 			if(sum != INT_MIN)
 			{
-				result = sum / (mNorma->at(i) * mNorma->at(j)) ;
-				result = log2(result);
+				result = sum;
 				mSim->set(i, j, result);
 				mSim->set(j, i, result);
 			}
@@ -75,7 +54,7 @@ int cosine::GenerateSimUserMatrix()
 	return 0;
 }
 
-double cosine::setCik(int fIndex, int sIndex)
+double nmsd::setCik(int fIndex, int sIndex)
 {
 	double acum = 0;
 	int qtd_common = 0;
@@ -86,15 +65,15 @@ double cosine::setCik(int fIndex, int sIndex)
 		if(mRatings->get(sIndex, itLine->first) != 0)
 		{
 			qtd_common++;
-			acum += mRatings->get(fIndex, itLine->first) * mRatings->get(sIndex, itLine->first);
+			acum += pow(mRatings->get(fIndex, itLine->first) - mRatings->get(sIndex, itLine->first), 2);
 		}
 	}
 
 	//TODO:: return correct value for each limit
 	if(qtd_common > 0 && qtd_common < 5)
-		return acum; //it needs some adjust to be regularized
+		return -( (double)(acum + 2*2*(5 - qtd_common))/5 );
 	else if(qtd_common >= 5)
-		return acum;
+		return -(acum / qtd_common);
 
 	return INT_MIN;
 }

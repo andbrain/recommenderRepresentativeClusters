@@ -23,7 +23,7 @@ list(APPEND SOURCES cpp/datasets/comoda.cpp)
 list(APPEND SOURCES cpp/datasets/netflix.cpp)
 
 #similarities
-list(APPEND SOURCES cpp/similarities/average.cpp)
+list(APPEND SOURCES cpp/similarities/nmsd.cpp)
 list(APPEND SOURCES cpp/similarities/cosine.cpp)
 list(APPEND SOURCES cpp/similarities/correlation.cpp)
 list(APPEND SOURCES cpp/similarities/euclidean.cpp)

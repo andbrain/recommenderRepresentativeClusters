@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
 	//print into the files
 	sim->debug();
-	ratings->debug();
+	// ratings->debug();
 	// ratings->PrintPair("ratings.dat");
 	// int start_at = 1;
 	// sim->PrintList("similarities.dat", start_at);
