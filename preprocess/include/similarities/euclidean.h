@@ -13,13 +13,10 @@ public:
 	euclidean();
 	~euclidean();
 	int Process();
-protected:
-	// Graph *mCounter; //accumulate diffs between ratings
 
 private:
-	int AccumulateRatings();
 	int GenerateSimUserMatrix();
-	// unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
+	double setCik(int fIndex, int sIndex);
 };
 
 

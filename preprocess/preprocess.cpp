@@ -19,8 +19,12 @@ int main(int argc, char *argv[])
 	Parser *p = new Parser(dataset_name, dataset_path, sim_function, based);
 	p->Process();
 
-	// mat *sim = p->GetSimMatrix();
-	// mat *ratings = p->GetRatings();
+	mat *sim = p->GetSimMatrix();
+	mat *ratings = p->GetRatings();
+
+	//print into the files
+	sim->debug();
+	ratings->debug();
 	// ratings->PrintPair("ratings.dat");
 	// int start_at = 1;
 	// sim->PrintList("similarities.dat", start_at);

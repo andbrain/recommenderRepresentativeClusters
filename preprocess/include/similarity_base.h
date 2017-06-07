@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <algorithm>
+#include <climits>
 #include "types.h"
 #include "mat.h"
 
@@ -15,9 +16,9 @@ class similarity_base
 {
 public:
 	similarity_base();
-	~similarity_base();
+	virtual ~similarity_base();
 	
-	void SetMatrix(mat *ratings, mat *sim);
+	void SetMatrix(mat *ratings);
 	virtual int Process() = 0;
 	mat* GetMatrix();
 protected:
@@ -26,7 +27,6 @@ protected:
 
 	void LoadSimTypes();
 	void GetSimType(string sim_name);
-	int SetPreferencesMedian(vector<double> *tmpS);
 };
 
 #endif

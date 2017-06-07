@@ -11,11 +11,11 @@ Dataset_Base::Dataset_Base(string base_path, string simFunction, int based)
 
 Dataset_Base::~Dataset_Base()
 {
+	delete mRefBased;
+	delete mRefSecondary;
 	delete mRatings;
 	delete mSim;
 	delete mSimFunction;
-	delete mRefBased;
-	delete mRefSecondary;
 	mFs.close();
 }
 
@@ -52,9 +52,7 @@ Similarity_t Dataset_Base::GetSimType(string sim_name)
 void Dataset_Base::Initialize(Similarity_t simType)
 {
 
-	mRatings = new mat();
-	mSim = new mat();
-	
+	mRatings = new mat();	
 	mRefBased = new unordered_map<int,int>();
 	mRefSecondary = new unordered_map<int,int>();
 	string basePath = mPath;
@@ -123,11 +121,10 @@ int Dataset_Base::Process()
 	cout << "**********Information of dataset**********" << endl;
 	LoadRatings();
 	PrintReferences();
-	exit(1);
 	cout << "**********End of dataset**********" << endl;
 
 	//similarity function
-	mSimFunction->SetMatrix(mRatings, mSim);
+	mSimFunction->SetMatrix(mRatings);
 	mSimFunction->Process();
 	mSim = mSimFunction->GetMatrix();
 
