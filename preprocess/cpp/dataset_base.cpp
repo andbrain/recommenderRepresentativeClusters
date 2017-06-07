@@ -14,6 +14,8 @@ Dataset_Base::~Dataset_Base()
 	delete mRatings;
 	delete mSim;
 	delete mSimFunction;
+	delete mRefBased;
+	delete mRefSecondary;
 	mFs.close();
 }
 
@@ -49,6 +51,12 @@ Similarity_t Dataset_Base::GetSimType(string sim_name)
 
 void Dataset_Base::Initialize(Similarity_t simType)
 {
+
+	mRatings = new mat();
+	mSim = new mat();
+	
+	mRefBased = new unordered_map<int,int>();
+	mRefSecondary = new unordered_map<int,int>();
 	string basePath = mPath;
 
 	cout << "Initializing dataset from [" << basePath << "]" << endl;
@@ -69,9 +77,6 @@ void Dataset_Base::Initialize(Similarity_t simType)
 	else
 		mFiles = f.GetFiles();
 
-	mQtdMovies = 0;
-	mRatings = new Graph();
-	mSim = new Graph();
 
 	switch(simType){
 		case EUCLIDEAN:{
@@ -103,27 +108,51 @@ void Dataset_Base::Initialize(Similarity_t simType)
 
 }
 
-Graph* Dataset_Base::GetMatrix()
+mat* Dataset_Base::GetMatrix()
 {
-	return mSim->Clone();
+	return mSim->clone();
 }
 
-Graph* Dataset_Base::GetRatings()
+mat* Dataset_Base::GetRatings()
 {
-	return mRatings->Clone();
+	return mRatings->clone();
 }
 
 int Dataset_Base::Process()
 {
 	cout << "**********Information of dataset**********" << endl;
 	LoadRatings();
+	PrintReferences();
+	exit(1);
 	cout << "**********End of dataset**********" << endl;
 
 	//similarity function
 	mSimFunction->SetMatrix(mRatings, mSim);
-	mSimFunction->SetElementsSize(mQtdMovies);
 	mSimFunction->Process();
 	mSim = mSimFunction->GetMatrix();
 
 	return 0;
+}
+
+void Dataset_Base::PrintReferences()
+{
+	fstream fs;
+	/* Print based Ids */
+	/* original_id preprocess_id */
+	fs.open("referencesId_based.dat", ios::out);
+	unordered_map<int,int>::iterator it = mRefBased->begin();
+
+	for (;it != mRefBased->end(); ++it)
+		fs << it->first << " " << it->second << endl;
+
+	fs.close();
+
+	/* Print secondary Ids */
+	/* original_id preprocess_id */
+	fs.open("referencesId_secondary.dat", ios::out);
+	it = mRefSecondary->begin();
+
+	for (;it != mRefSecondary->end(); ++it)
+		fs << it->first << " " << it->second << endl;
+	fs.close();
 }

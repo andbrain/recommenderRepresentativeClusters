@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <unordered_map>
-#include "types.h"
-#include "graph.h"
 #include <algorithm>
+#include "types.h"
+#include "mat.h"
 
 #define MAX_RATING 5
 
@@ -17,12 +17,11 @@ public:
 	similarity_base();
 	~similarity_base();
 	
-	void SetMatrix(Graph *ratings, Graph *sim);
-	void SetElementsSize(int elementsSize);
+	void SetMatrix(mat *ratings, mat *sim);
 	virtual int Process() = 0;
-	Graph* GetMatrix();
+	mat* GetMatrix();
 protected:
-	Graph *mRatings, *mSim;
+	mat *mRatings, *mSim;
 	int mElementsSize;
 
 	void LoadSimTypes();

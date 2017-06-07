@@ -13,7 +13,7 @@ public:
 	~average();
 	int Process();
 protected:
-	Graph *mCounter;
+	// Graph *mCounter;
 
 private:
 	int AccumulateRatings();

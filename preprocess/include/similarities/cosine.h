@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <unordered_map>
 #include <map>
 #include "similarity_base.h"
 using namespace std;
@@ -16,14 +15,14 @@ public:
 	~cosine();
 	int Process();
 protected:
-	Graph *mCounter;
+	// Graph *mCounter;
 	map<int,double> mNorma;
 
 private:
 	int AccumulateRatings();
 	int GenerateSimUserMatrix();
 	int CalculateNorma();
-	unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
+	// unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
 };
 
 

@@ -5,9 +5,9 @@ Parser::Parser(string dataset_name, string dataset_path, string sim_function, in
 	cout << "Init parser.." << endl;
 	this->LoadDataSetTypes();
 	this->GetDataSetType(dataset_name);
-	mBased = based;
 	mDataSetPath = dataset_path;
 	mSimFunction = sim_function;
+	mBased = based;
 
 	string type_based = (based)?"Item based":"User based";
 	cout << "Parsing dataset in " << type_based << " model" << endl; 
@@ -61,7 +61,7 @@ void Parser::Process()
 		case ML1M:
 			{
 				cout << "Movie Lens 10M100K | 1M processing.." << endl;
-				mDatasetBase = new ml10m100k(mDataSetPath,mSimFunction,mBased);
+				// mDatasetBase = new ml10m100k(mDataSetPath,mSimFunction,mBased);
 				break;
 			}
 		case NETFLIXPRIZE:
@@ -73,25 +73,25 @@ void Parser::Process()
 		case ML2K:
 			{
 				cout << "Movie Lens 2K processing.." << endl;
-				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
+				// mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
 				break;
 			}
 		case TOY:
 			{
 				cout << "Toy processing.." << endl;
-				mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
+				// mDatasetBase = new ml2k(mDataSetPath, mSimFunction, mBased);
 				break;
 			}
 		case ML100K:
 			{
 				cout << "Movie Lens 100K processing.." << endl;
-				mDatasetBase = new ml100k(mDataSetPath, mSimFunction, mBased);				
+				// mDatasetBase = new ml100k(mDataSetPath, mSimFunction, mBased);				
 				break;
 			}
 		case COMODA:
 			{
 				cout << "CoMoDa processing.." << endl;
-				mDatasetBase = new comoda(mDataSetPath, mSimFunction, mBased);				
+				// mDatasetBase = new comoda(mDataSetPath, mSimFunction, mBased);				
 				break;
 			}
 		default:
@@ -106,12 +106,12 @@ void Parser::Process()
 	delete mDatasetBase;
 }
 
-Graph* Parser::GetSimMatrix()
+mat* Parser::GetSimMatrix()
 {
 	return mSimMatrix;
 }
 
-Graph* Parser::GetRatings()
+mat* Parser::GetRatings()
 {
 	return mRatings;
 }

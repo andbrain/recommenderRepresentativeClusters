@@ -10,15 +10,16 @@ set(SOURCES preprocess.cpp )
 list(APPEND SOURCES cpp/parser.cpp)
 list(APPEND SOURCES cpp/util.cpp)
 list(APPEND SOURCES cpp/graph.cpp)
+list(APPEND SOURCES cpp/mat.cpp)
 list(APPEND SOURCES cpp/dataset_base.cpp)
 list(APPEND SOURCES cpp/similarity_base.cpp)
 list(APPEND SOURCES cpp/folder.cpp)
 
 #datasets
-list(APPEND SOURCES cpp/datasets/ml10m100k.cpp)
-list(APPEND SOURCES cpp/datasets/ml2k.cpp)
-list(APPEND SOURCES cpp/datasets/ml100k.cpp)
-list(APPEND SOURCES cpp/datasets/comoda.cpp)
+# list(APPEND SOURCES cpp/datasets/ml10m100k.cpp)
+# list(APPEND SOURCES cpp/datasets/ml2k.cpp)
+# list(APPEND SOURCES cpp/datasets/ml100k.cpp)
+# list(APPEND SOURCES cpp/datasets/comoda.cpp)
 list(APPEND SOURCES cpp/datasets/netflix.cpp)
 
 #similarities

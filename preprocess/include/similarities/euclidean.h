@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <unordered_map>
 #include "similarity_base.h"
 using namespace std;
 
@@ -15,12 +14,12 @@ public:
 	~euclidean();
 	int Process();
 protected:
-	Graph *mCounter; //accumulate diffs between ratings
+	// Graph *mCounter; //accumulate diffs between ratings
 
 private:
 	int AccumulateRatings();
 	int GenerateSimUserMatrix();
-	unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
+	// unordered_map<int,int> GetDistinctElements(Vertex *listX, Vertex *listY);
 };
 
 

@@ -6,7 +6,7 @@
 #include <string>
 #include "dataset_base.h"
 #include "util.h"
-#include "graph.h"
+#include "mat.h"
 
 using namespace std;
 
@@ -17,7 +17,7 @@ public:
 	~netflix();
 protected:
 	int LoadRatings();
-	int LoadFile(int movieId, map<string,int> *dataPoint,map<string,int> *secDataPoint,vector<int> *acumRatings,int *qtdRatings);
+	int LoadFile(int movieId, vector<int> *acumRatings,int *qtdRatings);
 };
 
 

@@ -5,8 +5,9 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
-#include <map>
-#include "graph.h"
+#include <unordered_map>
+
+#include "mat.h"
 #include "folder.h"
 #include "similarity_base.h"
 #include "similarities/average.h"
@@ -23,8 +24,9 @@ public:
 	Dataset_Base(string base_path, string simFunction, int based);
 	virtual ~Dataset_Base(); //let destructor enable for children classes
 	int Process(); //pure virtual function for processing dataset
-	Graph* GetMatrix();
-	Graph* GetRatings();
+	mat* GetMatrix();
+	mat* GetRatings();
+	unordered_map<int,int>* GetReference();
 protected:
 	string mPath;
 	fstream mFs;
@@ -32,13 +34,16 @@ protected:
 	int mBased;
 	similarity_base *mSimFunction;
 	unordered_map<string,Similarity_t> mSimilarities;
-	int mQtdMovies; // must be updated in children classes
-	Graph *mRatings, *mSim; // must be updated in children classes
-
+	
+	/**** must be updated in children classes ****/
+	mat *mRatings, *mSim;
+	unordered_map<int,int> *mRefBased, *mRefSecondary; // Relation between original ids with preprocess ids - based
+	
 	void Initialize(Similarity_t simType);
 	void LoadSimTypes();
 	Similarity_t GetSimType(string sim_name);
 	virtual int LoadRatings() = 0;
+	void PrintReferences();
 };
 
 #endif

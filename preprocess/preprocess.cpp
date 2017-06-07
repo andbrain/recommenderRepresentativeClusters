@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "include/parser.h"
-#include "include/graph.h"
+#include "include/mat.h"
 
 using namespace std;
 
@@ -19,11 +19,11 @@ int main(int argc, char *argv[])
 	Parser *p = new Parser(dataset_name, dataset_path, sim_function, based);
 	p->Process();
 
-	Graph *sim = p->GetSimMatrix();
-	Graph *ratings = p->GetRatings();
-	ratings->PrintPair("ratings.dat");
-	int start_at = 1;
-	sim->PrintList("similarities.dat", start_at);
+	// mat *sim = p->GetSimMatrix();
+	// mat *ratings = p->GetRatings();
+	// ratings->PrintPair("ratings.dat");
+	// int start_at = 1;
+	// sim->PrintList("similarities.dat", start_at);
 		
 	delete p;	
 	return 0;

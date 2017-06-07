@@ -13,7 +13,7 @@ public:
 	~loglikelihood();
 	int Process();
 protected:
-	Graph *mCounter;
+	// Graph *mCounter;
 
 private:
 	int AccumulateRatings();
