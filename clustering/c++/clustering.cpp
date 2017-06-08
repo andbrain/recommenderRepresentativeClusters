@@ -103,13 +103,13 @@ void readSimilarities(const char* dfn, mat *S) {
 
 void readRatings(const char* dfn, Graph *R)
 {
-	int i, ii, j;
+	int i, j;
 	double rat, aux;
 	string line;
 	
 	ifstream myfile(dfn);
 	//compute all ratings 
-	while(myfile >> i >> ii) {
+	while(myfile >> i) {
 		if(!R->HasVertex(i))
 			R->AddVertex(i);
 		do

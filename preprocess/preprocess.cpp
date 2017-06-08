@@ -11,6 +11,8 @@ string sim_function;
 int based=0;
 
 void GetDatasetName(int argc, char *argv[]);
+void PrintPair(string filename,mat *rating);
+void PrintSimilarities(string filename, mat *sim, int start_at);
 
 int main(int argc, char *argv[])
 {
@@ -22,13 +24,9 @@ int main(int argc, char *argv[])
 	mat *sim = p->GetSimMatrix();
 	mat *ratings = p->GetRatings();
 
-	//print into the files
-	sim->debug();
-	// ratings->debug();
-	// ratings->PrintPair("ratings.dat");
-	// int start_at = 1;
-	// sim->PrintList("similarities.dat", start_at);
-		
+	PrintSimilarities("similarities.dat",sim, 1);
+	PrintPair("ratings.dat",ratings);
+
 	delete p;	
 	return 0;
 }
@@ -56,4 +54,42 @@ void GetDatasetName(int argc, char *argv[])
 		cout << "*BASED=1 -> Item Based" << endl;
 		exit(1);
 	}
+}
+
+void PrintPair(string filename,mat *rating)
+{
+	fstream fs;
+	fs.open(filename, ios::out);
+	int qtd_datapoints = rating->size();
+	map<int, double>::iterator itLine;
+
+	for (int i = 0; i < qtd_datapoints; ++i)
+	{
+		itLine = rating->getLine(i)->begin();
+		fs << i << endl;
+		fs << itLine->first << " " << itLine->second;
+		itLine++;
+		for (; itLine != rating->getLine(i)->end(); ++itLine)
+			fs << " " << itLine->first << " " << itLine->second;
+		fs << endl;
+	}
+
+	fs.close();
+}
+
+void PrintSimilarities(string filename, mat *sim, int start_at)
+{
+	fstream fs;
+	fs.open(filename, ios::out);
+	int qtd_datapoints = sim->size();
+	map<int, double>::iterator itLine;
+	
+	for (int i = 0; i < qtd_datapoints; ++i)
+	{
+		itLine = sim->getLine(i)->begin();
+		for (; itLine != sim->getLine(i)->end(); ++itLine)
+			fs << i + start_at << "  " << itLine->first + start_at << "  " << itLine->second << endl;
+	}
+
+	fs.close();
 }
