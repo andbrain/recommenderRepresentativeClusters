@@ -37,8 +37,7 @@ void Parser::ReadRatingsList()
 		if(isUser)
 		{
 			indexUser = atoi(relation[0].c_str());
-			userId = relation[1];
-			mRatings->AddVertex(indexUser, userId);
+			mRatings->AddVertex(indexUser);
 		}
 		else
 		{
@@ -54,7 +53,6 @@ void Parser::ReadRatingsList()
 		isUser = !isUser;
 	}	
 	mFs.close();
-	// mRatings->Show();
 }
 
 void Parser::ReadClusters()
@@ -68,12 +66,11 @@ void Parser::ReadClusters()
 	{
 		relation = Split(line, ' ');
 
-		if(relation.size() == 1)
-			clusterId = relation[0];
-		else
+		clusterId = relation[0];
+
+		for (int i = 1; i < relation.size(); ++i)
 		{
-			userIndex = relation[0];
-			userId = relation[1]; //TODO:: nothing to do, remove someday
+			userIndex = relation[i];
 			mUsers[atoi(userIndex.c_str())] = atoi(clusterId.c_str());
 		}
 	}
@@ -92,10 +89,8 @@ void Parser::ReadRepresentatives()
 	{
 		relation = Split(line, ' ');
 
-		if(relation.size() == 1){
-			map<int,double> movieRating;
+		if(relation.size() == 1)
 			clusterId = relation[0];
-		}
 		else
 		{
 			movieId = relation[0];
