@@ -42,7 +42,7 @@ int euclidean::GenerateSimUserMatrix()
 			if(sum != INT_MIN)
 			{
 				result = 1 / (double)(1 + sqrt(sum));
-				result = log2(result);
+				// result = log2(result);
 				mSim->set(i, j, result);
 				mSim->set(j, i, result);
 			}
