@@ -90,6 +90,11 @@ void getDatasetName(int argc, char *argv[])
 
 		exit(1);
 	}
+
+	cout << "[INFO] Number of data points: " << data_points << endl;
+	cout << "[INFO] Damping Factor: " << damping << endl;
+	cout << "[INFO] Max of iterations: " << maxit << endl;
+	cout << "[INFO] Convit: " << convit << endl;
 }
 
 void readSimilarities(const char* dfn, mat *S) {
