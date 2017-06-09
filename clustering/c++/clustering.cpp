@@ -19,7 +19,7 @@ void readRatings(const char* dfn, Graph *R);
 int main(int argc, char *argv[])
 {
 	getDatasetName(argc, argv);
-	mat *S = new mat(data_points, data_points);
+	mat *S = new mat(data_points);
 	readSimilarities(sim_matrix_path.c_str(), S);
 	// S->debug();
 	Graph *R = new Graph();

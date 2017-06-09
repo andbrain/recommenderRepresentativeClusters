@@ -11,10 +11,12 @@ using namespace std;
 class mat
 {
 public:
-	mat(int line, int column);
+	mat(int line);
+	mat();
 	~mat();
 	
 	void debug();
+	mat* clone();
 	mat* clone(double def_value);
 
 	inline double get(int line, int column)
@@ -37,6 +39,11 @@ public:
 		else
 			mData->at(line)->insert(make_pair(column, value));
 	}
+
+	void addLine();
+	int size();
+	int size(int line);
+	map<int, double>* getLine(int i);
 
 private:
 	vector<map<int, double>*> *mData;
