@@ -16,6 +16,7 @@ list(APPEND SOURCES cpp/graph.cpp)
 list(APPEND SOURCES cpp/mat.cpp)
 list(APPEND SOURCES cpp/util.cpp)
 list(APPEND SOURCES cpp/ap.cpp)
+list(APPEND SOURCES cpp/sparse_ap.cpp)
 
 add_executable(clustering ${SOURCES})
 

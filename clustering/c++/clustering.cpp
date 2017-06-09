@@ -1,16 +1,19 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <vector>
 #include "include/mat.h"
 #include "include/ap.h"
+#include "include/sparse_ap.h"
 #include "include/graph.h"
 
 using namespace std;
 
 string sim_matrix_path;
 string ratings_path;
-int iteration, data_points;
-double dampingFactor;
+int pref_type;
+int data_points, maxit, convit;
+double damping;
 
 void getDatasetName(int argc, char *argv[]);
 void readSimilarities(const char* dfn, mat *S);
@@ -22,44 +25,63 @@ int main(int argc, char *argv[])
 	mat *S = new mat(data_points);
 	readSimilarities(sim_matrix_path.c_str(), S);
 	// S->debug();
-	Graph *R = new Graph();
-	readRatings(ratings_path.c_str(), R);
+	// Graph *R = new Graph();
+	// readRatings(ratings_path.c_str(), R);
 	// R->Show();
 
-	AP *ap = new AP(iteration, dampingFactor, data_points);
-	ap->SetSimMatrix(S);
-	ap->SetRatings(R);
-	ap->Process();
+	// AP *ap = new AP(maxit, dampingFactor, data_points);
+	// ap->SetSimMatrix(S);
+	// ap->SetRatings(R);
+	// ap->Process();
+  	
+  	// Delete S inside the method
+  	vector<int> examplar = affinityPropagation(S, pref_type, damping, maxit, convit);
 	
-	delete ap;
-	delete S;
-	delete R;
+	for (size_t i = 0; i < examplar.size(); ++i)
+		printf("%d ", examplar[i]);
 
+	// delete R;
 	return 0;
 }
 
 void getDatasetName(int argc, char *argv[])
 {
-	if(argc == 6)
+	if(argc == 8)
 	{
 		sim_matrix_path = argv[1];
 		ratings_path = argv[2];
 		data_points = atoi(argv[3]);
-		iteration = atoi(argv[4]);
-		dampingFactor = stod(argv[5]);
+		pref_type = atoi(argv[4]);
+		damping = stod(argv[5]);
+		maxit = atoi(argv[6]);
+		convit = atoi(argv[7]);
 	}
 	else if(argc == 4)
 	{
 		sim_matrix_path = argv[1];
 		ratings_path = argv[2];
 		data_points = atoi(argv[3]);
-		iteration = 100;
-		dampingFactor = 0.9;	
+		pref_type = 1;
+		damping = 0.9;	
+		maxit = 1000;
+		convit = 50;
 	}
 	else
 	{
 		cout << "[Error] Missing parameters!" << endl;
-		cout << "[INFO] ap.out <SIM_MATRIX_PATH> <RATINGS_MATRIX_PATH> <QTD_DATA_POINTS> [ <ITERATIONS=100> <DAMPING_FACTOR=0.9> ]" << endl;
+		cout << "[INFO] ap.out <SIM_MATRIX_PATH> <RATINGS_MATRIX_PATH> <QTD_DATA_POINTS> [ <PREF_TYPE=1> <DAMPING=0.9> <MAXIT=1000> <CONVIT=50> ]" << endl;
+		cout << "[PARAMS]:" << endl;
+		cout << "SIM_MATRIX_PATH -> Similarities file path" << endl;
+		cout << "RATINGS_MATRIX_PATH -> Ratings file path" << endl;
+		cout << "QTD_DATA_POINTS -> Number of data points in similarity matrix" << endl;
+		cout << "PREF_TYPE -> AP Preferences:" << endl;
+		cout << "\t1: use median of similarities as preference" << endl;
+		cout << "\t2: use minimum of similarities as preference" << endl;
+		cout << "\t3: use min - (max - min) of similarities as preference" << endl;
+		cout << "MAXIT -> The maximum number of iterations." << endl;
+		cout << "DAMPING -> The damping factor. (0.5 <= damping < 1.0)" << endl;
+		cout << "CONVIT -> Specify how many iterations this algorithm stops when examplars did not change for." << endl;
+
 		exit(1);
 	}
 }
