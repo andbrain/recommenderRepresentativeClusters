@@ -14,33 +14,39 @@ string ratings_path;
 int pref_type;
 int data_points, maxit, convit;
 double damping;
+Graph *R;
+map<int,vector<int>> clusters;
+
 
 void getDatasetName(int argc, char *argv[]);
 void readSimilarities(const char* dfn, mat *S);
 void readRatings(const char* dfn, Graph *R);
+void PrintCluster(vector<int> examplar);
+void OutputClusters(string filename);
+
+void CalculateRepresentative(string reprFreq, string reprMean);
+map<int, map<int, vector<double>> > AccumulateRatings();
+void MakeRepresentativeByFrequency(string repr,map<int, map<int, vector<double>>> *accumList);
+void MakeRepresentativeByMean(string repr,map<int, map<int, vector<double>>> *accumList);
 
 int main(int argc, char *argv[])
 {
 	getDatasetName(argc, argv);
 	mat *S = new mat(data_points);
 	readSimilarities(sim_matrix_path.c_str(), S);
-	// S->debug();
-	// Graph *R = new Graph();
-	// readRatings(ratings_path.c_str(), R);
-	// R->Show();
-
-	// AP *ap = new AP(maxit, dampingFactor, data_points);
-	// ap->SetSimMatrix(S);
-	// ap->SetRatings(R);
-	// ap->Process();
-  	
   	// Delete S inside the method
+	cout << "** Sparse Affinity Propagation **" << endl;	
+  	
   	vector<int> examplar = affinityPropagation(S, pref_type, damping, maxit, convit);
+	// delete S;
 	
-	for (size_t i = 0; i < examplar.size(); ++i)
-		printf("%d ", examplar[i]);
-
-	// delete R;
+	R = new Graph();
+	readRatings(ratings_path.c_str(), R);
+	
+	PrintCluster(examplar);
+	OutputClusters("clusters.dat");
+	CalculateRepresentative("reprFreq.dat","reprMean.dat");
+	delete R;
 	return 0;
 }
 
@@ -102,25 +108,6 @@ void readSimilarities(const char* dfn, mat *S) {
 		tmpS.push_back(S->get(j,k)); 
 	}
 	myfile.close();
-	
-	//sort data points
-	sort(tmpS.begin(), tmpS.end());
-	int size = tmpS.size();
-
-	//get median data point value
-	double median;		
-	if(size%2==0) 
-		median = (tmpS[size/2]+tmpS[size/2-1])/2;
-	else 
-		median = tmpS[size/2];
-
-	cout << "Median: " << median << endl; 
-
-	//set the main diagonal to median value
-	for(int i=0; i<data_points; i++)
-	{
-		S->set(i,i,median);
-	}
 }
 
 void readRatings(const char* dfn, Graph *R)
@@ -141,4 +128,266 @@ void readRatings(const char* dfn, Graph *R)
 		}while(myfile.peek() != '\n' && myfile.peek() != EOF);
 	}
 	myfile.close();
+}
+
+void PrintCluster(vector<int> examplar)
+{
+
+	for(int i=0; i< data_points; i++) {
+
+		map<int,vector<int>>::iterator itC = clusters.find(examplar[i]);
+
+		if(itC != clusters.end())
+		{
+			itC->second.push_back(i);
+		}
+		else
+		{
+			vector<int> vCluster;
+			vCluster.push_back(i);
+			clusters.insert(make_pair(examplar[i], vCluster));
+		}
+	}
+
+	cout << endl;
+	cout << "***** Clusters Information ****" << endl;	
+	map<int, vector<int>>::iterator it = clusters.begin();
+
+	vector<int> vec;
+	for (; it != clusters.end(); ++it)
+	{
+		cout << "Cluster " << it->first << ":";
+		cout << "[";
+		vec = it->second;
+
+		for (std::vector<int>::iterator i = vec.begin(); i != vec.end(); ++i)
+		{
+			cout  << " " << (*i);
+		}
+
+		cout << " ]" << endl;
+	}
+
+	cout << "Total of clusters: " << clusters.size() << endl;
+	cout << "*****************************" << endl;	
+		
+	//Output representative clusters
+	// CalculateRepresentative(&clusters);
+}
+
+void OutputClusters(string filename)
+{
+	/*
+		Standard of output
+
+		cluster1 document1 document2
+		cluster4 document3 document4
+		.
+		.
+		.
+		clusterN documentX documentY ...
+	 */
+
+	fstream fs(filename, ios::out);
+	vector<int> vec;
+
+	for (map<int, vector<int>>::iterator it = clusters.begin(); it!=clusters.end(); ++it)
+	{
+		vec = it->second;
+		fs << it->first;
+		for (vector<int>::iterator itDocs = vec.begin(); itDocs!=vec.end(); ++itDocs)
+			fs << " " << *(itDocs);
+		fs << endl;
+	}
+
+	fs.close();
+	cout << "[NEW] >> " << filename << endl;
+}
+
+
+void CalculateRepresentative(string reprFreq, string reprMean)
+{
+	map<int, map<int, vector<double>>> accumList = AccumulateRatings();
+
+	MakeRepresentativeByFrequency(reprFreq,&accumList);
+	MakeRepresentativeByMean(reprMean,&accumList);
+}
+
+map<int, map<int, vector<double>> > AccumulateRatings()
+{
+	map<int, map<int, vector<double>> > accClusterRatings; //<cluster, <movie, vector of ratings> >
+	map<int,vector<int>>::iterator it = clusters.begin();
+	map<int,vector<double>>::iterator foundMov;
+	//run over all clusers
+	for(; it != clusters.end(); ++it)
+	{
+		map<int, vector<double> > accRatings; // <movie, vector of ratings>
+		vector<int> users;
+		users = it->second;
+
+		Vertex *v;
+		//get user ratings
+		for (vector<int>::iterator i = users.begin(); i != users.end(); ++i)
+		{
+			v = R->at((*i));
+
+			//for each movie rated by user
+			Edge::iterator itAux;
+			for(itAux = v->begin(); itAux!= v->end(); ++itAux)
+			{
+				vector<double> accVec;
+				foundMov = accRatings.find(itAux->first);
+
+				//if found movie, add rating
+				if(foundMov != accRatings.end())
+				{
+					accVec = foundMov->second;
+					accVec.push_back(itAux->second);
+					foundMov->second = accVec;
+				}
+				else
+				{
+
+					accVec.push_back(itAux->second);
+					accRatings[itAux->first] = accVec;
+				}
+			}
+		}
+
+		//add in cluster acc
+		accClusterRatings[it->first] = accRatings;
+	}
+
+
+	return accClusterRatings;
+}
+
+bool funcDec (PairValue i,PairValue j) { return (i.freq > j.freq); }
+
+void MakeRepresentativeByFrequency(string representative_freq,map<int, map<int, vector<double>>> *accumList)
+{
+	fstream fs(representative_freq, ios::out);
+	
+	for (map<int, map<int, vector<double>> >::iterator it = accumList->begin(); it != accumList->end(); ++it)
+	{
+		fs << it->first << endl;
+		map<int, vector<double>> movieAux = it->second;
+
+		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
+		{
+			// calculate highest frequency of rating
+			vector<double> userRatings = it2->second;
+			map<double,int> counter;
+			map<double,int>::iterator itCounter;
+
+			for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
+			{
+				itCounter = counter.find((*i));
+
+				if(itCounter == counter.end())
+				{
+					counter[(*i)] = 1;
+				}
+				else
+				{
+					itCounter->second++;
+				}
+			}
+
+			vector<PairValue> vecMax;
+
+			for (itCounter = counter.begin(); itCounter != counter.end(); ++itCounter)
+			{
+				PairValue pv;
+				pv.index = itCounter->first;
+				pv.freq = itCounter->second;
+				vecMax.push_back(pv);
+			}
+
+			sort(vecMax.begin(), vecMax.end(), funcDec);
+
+			if(vecMax[0].freq != vecMax[1].freq)
+				fs << it2->first << " " << vecMax[0].index << endl;
+		}
+	}
+
+	fs.close();
+	cout << "[NEW] >> " << representative_freq << endl;
+}
+
+void MakeRepresentativeByMean( string repr, map<int, map<int, vector<double>>> *accumList)
+{
+	fstream fs(repr, ios::out);
+	int upperBound; //value to validate mean of ratings
+	int p = 3; //parameter for delimite what is highest ratings or lowest ratings
+	double alpha = 0.6;
+
+	for (map<int, map<int, vector<double>> >::iterator it = accumList->begin(); it != accumList->end(); ++it)
+	{
+		fs << it->first << endl;
+		map<int, vector<double>> movieAux = it->second;
+
+		// get number of users for actual cluster
+		vector<int> users = clusters.at(it->first);
+		
+		upperBound = users.size() * alpha;
+
+		for(map<int, vector<double>>::iterator it2 = movieAux.begin(); it2 != movieAux.end(); ++it2)
+		{
+			vector<double> userRatings = it2->second;
+			// calculate frequency of rating highest than p
+			map<double,int> counterHighest;
+			// calculate frequency of rating lowest than p
+			map<double,int> counterLowest;
+			// the most frequency ratings for cluster
+			map<double,int> counter;
+			map<double,int>::iterator itCounter;
+
+			for (std::vector<double>::iterator i = userRatings.begin(); i != userRatings.end(); ++i)
+			{
+				if(*i > p)
+				{
+					itCounter = counterHighest.find((*i));
+
+					if(itCounter == counterHighest.end())
+						counterHighest[(*i)] = 1;
+					else
+						itCounter->second++;
+				}
+				else if(*i < p)
+				{
+					itCounter = counterLowest.find((*i));
+
+					if(itCounter == counterLowest.end())
+						counterLowest[(*i)] = 1;
+					else
+						itCounter->second++;
+				}
+			}
+
+			if(counterHighest.size() == counterLowest.size())
+				continue;
+			else if( counterHighest.size() > counterLowest.size() )
+				counter = counterHighest;
+			else
+				counter = counterLowest;
+
+			double reprValue = 0;
+			int elements = 0;
+
+			for (itCounter = counter.begin(); itCounter != counter.end(); ++itCounter)
+			{
+				reprValue += itCounter->first * itCounter->second;
+				elements += itCounter->second;
+			}
+
+			reprValue = reprValue / elements;
+
+			if(elements >= upperBound)
+				fs << it2->first << " " << reprValue << endl;
+		}
+	}
+
+	fs.close();
+	cout << "[NEW] >> " << repr << endl;
 }

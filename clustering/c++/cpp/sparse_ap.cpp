@@ -67,20 +67,27 @@ namespace {
     delete S;
 
     // calculate preferences
+    cout << "Preferences ";
     double pref;
     if (prefType == 1) {
       sort(edges.begin(), edges.end());
       int m = edges.size();
       pref = (m % 2) ? edges[m/2].s : (edges[m/2 - 1].s + edges[m/2].s) / 2.0;
+      cout << "(Median): ";
     } else if (prefType == 2) {
       pref = min_element(edges.begin(), edges.end())->s;
+      cout << "(Min element): ";
+      
     } else if (prefType == 3) {
       double minValue = min_element(edges.begin(), edges.end())->s;
       double maxValue = max_element(edges.begin(), edges.end())->s;
       pref = 2*minValue - maxValue;
+      cout << "(min - (max - min)): ";
     } else {
       assert(false);      // invalid prefType
     }
+
+    cout << pref << endl;
     
     for (int i = 0; i < graph->n; ++i) {
       edges.push_back(Edge(i, i, pref));
@@ -206,18 +213,17 @@ vector<int> affinityPropagation(mat* S, int prefType, double damping, int maxit,
     updateAvailabilities(graph, damping);
     if (updateExamplars(graph, examplar)) { nochange = 0; }
 
-    cout << i + 1 << " ";
-    if((i+1) % 100 == 0) { cout << endl; }
+    cout << "(" << i + 1 << "/" << maxit << ")"<< endl;
+    if(nochange + 1 == convit) cout << "[Info] Finished after " << i + 1 <<" iterations.." << endl;
   }
-
-  cout << endl;
 
   gettimeofday(&end, NULL);
   int tmili = (int) (1000 * (end.tv_sec - begin.tv_sec) + (end.tv_usec - begin.tv_usec) / 1000);
 
+  cout << endl;
+  cout << "**** Execution Time for Affinity Propagation ****" << endl;
   cout << "Time Elapsed: " << tmili << " (milis)" << endl;
   cout << "Time Elapsed: " << (float)tmili/1000 << " (s)" << endl;
-
   
   destroyGraph(graph);
   return examplar;
