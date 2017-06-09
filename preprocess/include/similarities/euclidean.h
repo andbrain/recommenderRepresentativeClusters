@@ -17,6 +17,7 @@ public:
 private:
 	int GenerateSimUserMatrix();
 	double setCik(int fIndex, int sIndex);
+	double setCik2(int fIndex, int sIndex);
 };
 
 

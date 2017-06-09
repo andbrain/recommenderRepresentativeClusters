@@ -35,9 +35,9 @@ int euclidean::GenerateSimUserMatrix()
 		for (j = i + 1; j < qtd_datapoints; ++j)
 		{
 			if(mRatings->size(i) <= mRatings->size(j))
-				sum = setCik(i, j);
+				sum = setCik2(i, j);
 			else
-				sum = setCik(j, i);
+				sum = setCik2(j, i);
 
 			if(sum != INT_MIN)
 			{
@@ -70,6 +70,37 @@ double euclidean::setCik(int fIndex, int sIndex)
 	}
 
 	//TODO:: return correct value for each limit
+	if(qtd_common > 0 && qtd_common < 5)
+		return acum; //it needs some adjust to be regularized
+	else if(qtd_common >= 5)
+		return acum;
+
+	return INT_MIN;
+}
+
+//counting considering all ratings
+double euclidean::setCik2(int fIndex, int sIndex)
+{
+	map<int, double> indexes;
+	map<int, double>::iterator itLine;
+
+	itLine = mRatings->getLine(fIndex)->begin();
+	for (; itLine != mRatings->getLine(fIndex)->end(); ++itLine)
+		indexes[itLine->first] = 0;
+
+	itLine = mRatings->getLine(sIndex)->begin();
+	for (; itLine != mRatings->getLine(sIndex)->end(); ++itLine)
+		indexes[itLine->first] = 0;
+
+	double acum = 0;
+	int qtd_common = 0;	
+	itLine = indexes.begin();
+	for (; itLine != indexes.end(); ++itLine)
+	{
+		qtd_common++;
+		acum += pow(mRatings->get(fIndex, itLine->first) - mRatings->get(sIndex, itLine->first), 2);
+	}
+
 	if(qtd_common > 0 && qtd_common < 5)
 		return acum; //it needs some adjust to be regularized
 	else if(qtd_common >= 5)
