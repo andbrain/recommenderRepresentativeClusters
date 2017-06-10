@@ -13,8 +13,24 @@ nmsd::~nmsd()
 int nmsd::Process()
 {
 	GenerateSimUserMatrix();
-	
 	return 0;
+}
+
+void nmsd::calculateSim(mat* ratings, mat* sim, int i, int j)
+{
+	double sum, result;
+	if(ratings->size(i) <= ratings->size(j))
+		sum = setCik(i, j);
+	else
+		sum = setCik(j, i);
+
+	if(sum != INT_MIN)
+	{
+		result = sum;
+		// result = log2(result);
+		sim->set(i, j, result);
+		sim->set(j, i, result);
+	}
 }
 
 int nmsd::GenerateSimUserMatrix()
@@ -25,7 +41,8 @@ int nmsd::GenerateSimUserMatrix()
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
 	int i,j;
-	double sum, result;
+	int k=0, num_threads=50;
+	thread t[num_threads];
 
 	for(i = 0; i < qtd_datapoints; ++i)
 	{
@@ -35,16 +52,10 @@ int nmsd::GenerateSimUserMatrix()
 
 		for (j = i + 1; j < qtd_datapoints; ++j)
 		{
-			if(mRatings->size(i) <= mRatings->size(j))
-				sum = setCik(i, j);
-			else
-				sum = setCik(j, i);
-
-			if(sum != INT_MIN)
-			{
-				result = sum;
-				mSim->set(i, j, result);
-				mSim->set(j, i, result);
+			for (; k < num_threads && j < qtd_datapoints; ++k, ++j){
+				// calculateSim(mRatings,mSim, i, j);
+				t[k] = thread(&nmsd::calculateSim, this, mRatings, mSim, i, j);
+				t[k].join();				
 			}
 		}
 	}
@@ -69,11 +80,10 @@ double nmsd::setCik(int fIndex, int sIndex)
 		}
 	}
 
-	//TODO:: return correct value for each limit
 	if(qtd_common > 0 && qtd_common < 5)
-		return -( (double)(acum + 2*2*(5 - qtd_common))/5 );
+		return (-1)*( (double)(acum + 2*2*(5 - qtd_common))/5 );
 	else if(qtd_common >= 5)
-		return -(acum / qtd_common);
+		return (-1)*(acum / qtd_common);
 
 	return INT_MIN;
 }

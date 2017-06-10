@@ -57,6 +57,23 @@ int correlation::CalculateMean()
 	return 0;
 }
 
+void correlation::calculateSim(mat* ratings, mat* sim, int i, int j)
+{
+	double sum, result;
+	if(ratings->size(i) <= ratings->size(j))
+		sum = setCik(i, j);
+	else
+		sum = setCik(j, i);
+
+	if(sum != INT_MIN)
+	{
+		result = sum / (mNorma->at(i) * mNorma->at(j));
+		// result = log2(result);
+		sim->set(i, j, result);
+		sim->set(j, i, result);
+	}
+}
+
 int correlation::GenerateSimUserMatrix()
 {
 	cout << "Generating Similarity Sparse Matrix.." << endl;
@@ -65,7 +82,8 @@ int correlation::GenerateSimUserMatrix()
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
 	int i,j;
-	double sum, result;
+	int k=0, num_threads=50;
+	thread t[num_threads];
 
 	for(i = 0; i < qtd_datapoints; ++i)
 	{
@@ -75,21 +93,13 @@ int correlation::GenerateSimUserMatrix()
 
 		for (j = i + 1; j < qtd_datapoints; ++j)
 		{
-			if(mRatings->size(i) <= mRatings->size(j))
-				sum = setCik(i, j);
-			else
-				sum = setCik(j, i);
-
-			if(sum != INT_MIN)
-			{
-				result = sum / (mNorma->at(i) * mNorma->at(j)) ;
-				// result = log2(result);
-				mSim->set(i, j, result);
-				mSim->set(j, i, result);
+			for (; k < num_threads && j < qtd_datapoints; ++k, ++j){
+				t[k] = thread(&correlation::calculateSim, this, mRatings, mSim, i, j);
+				t[k].join();				
 			}
 		}
 	}
-
+	
 	cout << endl;
 
 	return 0;

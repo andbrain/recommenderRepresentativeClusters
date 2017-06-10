@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <thread>
 #include <vector>
 #include "similarity_base.h"
 using namespace std;
@@ -21,6 +22,7 @@ private:
 	int GenerateSimUserMatrix();
 	int CalculateNorma();
 	double setCik(int fIndex, int sIndex);
+	void calculateSim(mat* ratings, mat* sim, int i, int j);
 };
 
 
