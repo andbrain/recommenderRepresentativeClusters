@@ -58,15 +58,10 @@ int netflix::LoadRatings()
 		cout << "\t[" << i + 1 << "] => " << acumRatings->at(i) << " (" << fixed << setprecision(2) << ((double)acumRatings->at(i)/qtdRatings)*100 << "\%)" << endl;
 
 	// show dataset sparsity
-	int totalMatrix = mRefBased->size() * mRefSecondary->size();
-	int totalGaps = totalMatrix - qtdRatings;
+	long int totalMatrix = (long int)mRefBased->size() * mRefSecondary->size();
+	long int totalGaps = totalMatrix - qtdRatings;
 
 	cout << "Total matrix: " << totalMatrix << endl;
-	cout << "Number of Ratings: " << qtdRatings << endl;
-	cout << "Total gaps: " << totalGaps << endl;
-	cout << "Sparsity: " << (double)totalGaps/totalMatrix << endl;
-	cout << "Sparsity(\%): " << ((double)totalGaps/totalMatrix)*100 << endl;
-
 	cout << "Dataset sparsity: " << fixed << setprecision(2) << ((double)totalGaps/totalMatrix)*100 << "\%" << endl;
 
 	delete acumRatings;
