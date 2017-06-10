@@ -4,6 +4,7 @@ include_directories(include)
 
 #Set debug flag
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES recommender.cpp ) 
