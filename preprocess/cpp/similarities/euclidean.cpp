@@ -16,6 +16,23 @@ int euclidean::Process()
 	return 0;
 }
 
+void euclidean::calculateSim(mat* ratings, mat* sim, int i, int j)
+{
+	double sum, result;
+	if(ratings->size(i) <= ratings->size(j))
+		sum = setCik2(i, j);
+	else
+		sum = setCik2(j, i);
+
+	if(sum != INT_MIN)
+	{
+		result = 1 / (double)(1 + sqrt(sum));
+		// result = log2(result);
+		sim->set(i, j, result);
+		sim->set(j, i, result);
+	}
+}
+
 int euclidean::GenerateSimUserMatrix()
 {
 	cout << "Generating Similarity Sparse Matrix.." << endl;
@@ -24,7 +41,9 @@ int euclidean::GenerateSimUserMatrix()
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
 	int i,j;
-	double sum, result;
+	double result;
+	int k=0, num_threads=50;
+	thread t[num_threads];
 
 	for(i = 0; i < qtd_datapoints; ++i)
 	{
@@ -34,17 +53,9 @@ int euclidean::GenerateSimUserMatrix()
 
 		for (j = i + 1; j < qtd_datapoints; ++j)
 		{
-			if(mRatings->size(i) <= mRatings->size(j))
-				sum = setCik2(i, j);
-			else
-				sum = setCik2(j, i);
-
-			if(sum != INT_MIN)
-			{
-				result = 1 / (double)(1 + sqrt(sum));
-				// result = log2(result);
-				mSim->set(i, j, result);
-				mSim->set(j, i, result);
+			for (; k < num_threads && j < qtd_datapoints; ++k, ++j){
+				t[k] = thread(&euclidean::calculateSim, this, mRatings, mSim, i, j);
+				t[k].join();				
 			}
 		}
 	}
