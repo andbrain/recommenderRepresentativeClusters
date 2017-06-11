@@ -28,8 +28,10 @@ void nmsd::calculateSim(mat* ratings, mat* sim, int i, int j)
 	{
 		result = sum;
 		// result = log2(result);
+		sim_mutex.lock();
 		sim->set(i, j, result);
 		sim->set(j, i, result);
+		sim_mutex.unlock();
 	}
 }
 
@@ -41,7 +43,7 @@ int nmsd::GenerateSimUserMatrix()
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
 	int i,j;
-	int k=0, num_threads=50;
+	int qtd_th=0, num_threads=50; //using 50 threads to compute similarity
 	thread t[num_threads];
 
 	for(i = 0; i < qtd_datapoints; ++i)
@@ -52,11 +54,16 @@ int nmsd::GenerateSimUserMatrix()
 
 		for (j = i + 1; j < qtd_datapoints; ++j)
 		{
-			for (; k < num_threads && j < qtd_datapoints; ++k, ++j){
-				// calculateSim(mRatings,mSim, i, j);
+			for (int k=0; k < num_threads && j < qtd_datapoints; ++k, ++j){
+				// calculateSim(mRatings, mSim, i, j);
 				t[k] = thread(&nmsd::calculateSim, this, mRatings, mSim, i, j);
-				t[k].join();				
+				qtd_th++;
 			}
+
+			for (int k=0; k < qtd_th; ++k)
+				t[k].join();
+			qtd_th = 0;
+			j--;
 		}
 	}
 

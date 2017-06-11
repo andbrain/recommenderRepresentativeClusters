@@ -2,6 +2,7 @@
 #define SIMILARITY_BASE_H
 
 #include <iostream>
+#include <mutex>
 #include <unordered_map>
 #include <algorithm>
 #include <climits>
@@ -25,7 +26,7 @@ public:
 protected:
 	mat *mRatings, *mSim;
 	int mSecElementSize;
-
+	mutex sim_mutex;
 	void LoadSimTypes();
 	void GetSimType(string sim_name);
 };
