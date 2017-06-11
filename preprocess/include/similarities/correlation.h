@@ -24,6 +24,8 @@ private:
 	int CalculateNorma();
 	int CalculateMean();
 	double setCik(int fIndex, int sIndex);
+	double setCik2(int fIndex, int sIndex);
+
 	void calculateSim(mat* ratings, mat* sim, int i, int j);
 };
 

@@ -15,6 +15,11 @@ void similarity_base::SetMatrix(mat *ratings)
 	mSim = new mat(mRatings->size());
 }
 
+void similarity_base::SetSecElementsSize(int secElementSize)
+{
+	mSecElementSize = secElementSize;
+}
+
 mat* similarity_base::GetMatrix()
 {
 	return mSim;

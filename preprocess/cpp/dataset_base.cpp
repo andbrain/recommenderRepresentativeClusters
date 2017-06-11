@@ -125,6 +125,7 @@ int Dataset_Base::Process()
 
 	//similarity function
 	mSimFunction->SetMatrix(mRatings);
+	mSimFunction->SetSecElementsSize(mRefSecondary->size());
 	mSimFunction->Process();
 	mSim = mSimFunction->GetMatrix();
 

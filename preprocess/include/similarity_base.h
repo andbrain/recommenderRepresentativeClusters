@@ -19,11 +19,12 @@ public:
 	virtual ~similarity_base();
 	
 	void SetMatrix(mat *ratings);
+	void SetSecElementsSize(int secElementSize);
 	virtual int Process() = 0;
 	mat* GetMatrix();
 protected:
 	mat *mRatings, *mSim;
-	int mElementsSize;
+	int mSecElementSize;
 
 	void LoadSimTypes();
 	void GetSimType(string sim_name);
