@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <climits>
+#include <cmath>
 #include "types.h"
 #include "mat.h"
 
