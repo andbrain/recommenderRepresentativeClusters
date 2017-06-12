@@ -44,7 +44,7 @@ int euclidean::GenerateSimUserMatrix()
 	cout << "Total of data points: " << qtd_datapoints << endl;
 	int i,j;
 	double result;
-	int qtd_th=0, num_threads=50;
+	int qtd_th=0, num_threads=7000;
 	thread t[num_threads];
 
 	for(i = 0; i < qtd_datapoints; ++i)

@@ -43,7 +43,7 @@ int nmsd::GenerateSimUserMatrix()
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
 	int i,j;
-	int qtd_th=0, num_threads=50; //using 50 threads to compute similarity
+	int qtd_th=0, num_threads=7000; //using 50 threads to compute similarity
 	thread t[num_threads];
 
 	for(i = 0; i < qtd_datapoints; ++i)

@@ -64,7 +64,7 @@ int cosine::GenerateSimUserMatrix()
 	int actual_dp = 0;
 	cout << "Total of data points: " << qtd_datapoints << endl;
 	int i,j;
-	int qtd_th=0, num_threads=50;
+	int qtd_th=0, num_threads=7000;
 	thread t[num_threads];
 
 	for(i = 0; i < qtd_datapoints; ++i)
