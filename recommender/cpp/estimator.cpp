@@ -26,10 +26,11 @@ void Estimator::SetItemClusters(map<int,map<int,double>> *movieClusters)
 	mMovieReprCluster = movieClusters;
 }
 
-void Estimator::Process(int exp)
+vector<double> Estimator::Process(int exp)
 {
 	vector<int> randomUsers = RandomTestData(1.0);
 	// int nTest = randomUsers.size();
+	vector<double> result(4);
 	int nTest = 0;
 	double estimRating, realRating, diff, RMSE, MAE, error = 0, squareError = 0;
 	int uCluster;
@@ -84,6 +85,13 @@ void Estimator::Process(int exp)
 	cout << " Error: " << error;
 	cout << " Square Error: " << squareError;
 	cout << endl;
+
+	result[0] = RMSE;
+	result[1] = MAE;
+	result[2] = error;
+	result[3] = squareError;
+
+	return result;
 }
 
 vector<int> Estimator::RandomTestData(double perc)

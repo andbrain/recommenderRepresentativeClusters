@@ -22,11 +22,23 @@ int main(int argc, char *argv[])
 	est.SetUsers(p.GetUsers());
 	est.SetItemClusters(p.GetMovieClusters());
 
+	vector<double> results(4), parcResult;
 	for(int i=0; i<repetitions; ++i)
 	{
-		est.Process(i+1);
+		parcResult = est.Process(i+1);
+		for (int j = 0; j < parcResult.size(); ++j)
+			results[j] += parcResult[j];
 	}
-
+	cout << endl;
+	cout << "**********************" << endl;
+	cout << "**********************" << endl;
+	cout << "   Mean of Results" << endl;
+	cout << "**********************" << endl;
+	cout << "**********************" << endl;
+	cout << "RMSE: " << results[0]/repetitions << endl;
+	cout << "MAE: " << results[1]/repetitions << endl;
+	cout << "Error: " << results[2]/repetitions << endl;
+	cout << "Square Error: " << results[3]/repetitions << endl;
 
 	return 0;
 }

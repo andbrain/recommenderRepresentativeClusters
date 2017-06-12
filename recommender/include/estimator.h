@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <cmath>
+#include <vector>
 #include "graph.h"
 
 using namespace std;
@@ -14,7 +15,7 @@ class Estimator
 public:
 	Estimator();
 	~Estimator();
-	void Process(int exp = 1);
+	vector<double> Process(int exp = 1);
 	void SetRatings(Graph *g);
 	void SetUsers(map<int,int> *users);
 	void SetItemClusters(map<int,map<int,double>> *movieClusters);
