@@ -158,26 +158,23 @@ void PrintCluster(vector<int> examplar)
 	cout << "***** Clusters Information ****" << endl;	
 	map<int, vector<int>>::iterator it = clusters.begin();
 
-	vector<int> vec;
-	for (; it != clusters.end(); ++it)
-	{
-		cout << "Cluster " << it->first << ":";
-		cout << "[";
-		vec = it->second;
+	// vector<int> vec;
+	// for (; it != clusters.end(); ++it)
+	// {
+	// 	cout << "Cluster " << it->first << ":";
+	// 	cout << "[";
+	// 	vec = it->second;
 
-		for (std::vector<int>::iterator i = vec.begin(); i != vec.end(); ++i)
-		{
-			cout  << " " << (*i);
-		}
+	// 	for (std::vector<int>::iterator i = vec.begin(); i != vec.end(); ++i)
+	// 	{
+	// 		cout  << " " << (*i);
+	// 	}
 
-		cout << " ]" << endl;
-	}
+	// 	cout << " ]" << endl;
+	// }
 
 	cout << "Total of clusters: " << clusters.size() << endl;
 	cout << "*****************************" << endl;	
-		
-	//Output representative clusters
-	// CalculateRepresentative(&clusters);
 }
 
 void OutputClusters(string filename)
