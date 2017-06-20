@@ -1,20 +1,9 @@
-from sklearn.cluster import AffinityPropagation
+# from sklearn.cluster import AffinityPropagation
+from sklearn.cluster import KMeans
 from scipy.sparse import coo_matrix
 from numpy import *
 import sys
 import operator
-
-def getMedianValue(simValues):
-	# getting median value
-	dataSorted = sort(simValues)
-	size = len(dataSorted)
-
-	if(size % 2 == 0):
-		median = ( (dataSorted[size/2]) + (dataSorted[size/2 - 1]) )/2
-	else:
-		median = dataSorted[size/2]
-
-	return median
 
 def readSimMatrix(simMatPath):
 	i = array([])
@@ -40,10 +29,7 @@ def readSimMatrix(simMatPath):
 		accum += value;
 		counter += 1
 	
-	median = getMedianValue(data)
-	print "[INFO] Preferences: ", median, " (median of similarities)"
-
-	return i,j,data, median
+	return i,j,data
 
 def readRatings(ratingsPath):
 	# dict of users
@@ -76,29 +62,31 @@ def readRatings(ratingsPath):
 	
 	return ratings
 
-def generateClustersFile(af):
-	indices = af.cluster_centers_indices_
-	labels = af.labels_
+def generateClustersFile(kmeans):
+	# indices = kmeans.cluster_centers_indices_
+	labels = kmeans.labels_
 	labels_len = len(labels)
 
 	clusters = {}
+	count_cluster = 0;
 
-	for i in range(0, labels_len):
-		if(indices[labels[i]] in clusters):
-			c = clusters[indices[labels[i]]]
+	for i in range(labels_len):
+		if(labels[i] in clusters):
+			c = clusters[labels[i]]
 			c.append(i)
 		else:
 			c = [i]
 
-		clusters[indices[labels[i]]] = c
+		clusters[labels[i]] = c
 
 	with open("clusters.dat", "w") as file:
-		for key in clusters:
-			file.write(str(key) + "\n")
-			users = clusters[key]
+		for i in range(len(clusters)):
+			file.write(str(i))
+			users = clusters[i]
 			for u in users:
-				file.write(str(u) + " " + str(u) + "\n")
+				file.write(" " + str(u))
 				# print " " + str(u)
+			file.write("\n")
 	return clusters
 
 def accumulateRatings(clusters, totalRatings):
@@ -143,7 +131,7 @@ def representativeByFreq(ratings):
 		return 0
 
 def generateReprByFrequence(ratingsAccumulated):
-	with open("reprClustersByFreq.dat", "w") as file:
+	with open("recFreq.dat", "w") as file:
 		for cluster, movies in ratingsAccumulated.items():
 			file.write(str(cluster) + "\n")
 
@@ -178,32 +166,33 @@ def representativeByMean(ratings):
 	return acc/len(mean)
 
 def generateReprByMean(ratingsAccumulated):
-	with open("reprClustersByMean.dat", "w") as file:
+	with open("recMean.dat", "w") as file:
 		for cluster, movies in ratingsAccumulated.items():
 			file.write(str(cluster) + "\n")
 
 			for movie,ratings in movies.items():				
 				result = representativeByMean(ratings)
 				if(result != 0):
-					file.write(str(movie) + " " + str(result) + "\n")
+					file.write(str(movie) + " " + str(round(result,2)) + "\n")
 
-def main(simMatPath, ratingsPath, dpFactor, maxIter):
-	print "[INFO] Damping factor: ", dpFactor
-	print "[INFO] Max_iter: ", maxIter
+def main(simMatPath, ratingsPath, ncluster):
+	print "[INFO] Number of clusters: ", ncluster
 
-	i,j,data, median = readSimMatrix(simMatPath)
+	i,j,data = readSimMatrix(simMatPath)
 	# convert to sparse matrix
 	simMatrix = coo_matrix((data,(i, j)))
 	# clustering method
-	print "[INFO] Processing affinity propagation.."
-	af = AffinityPropagation(damping=float(dpFactor),max_iter=int(maxIter), preference=median,affinity='precomputed').fit(simMatrix.toarray())
+	print "[INFO] Processing K means.."
+	kmeans = KMeans(n_clusters=int(ncluster)).fit(simMatrix)
+	
 	# generate clusters.dat
 	print "[INFO] Clusters created.."	
-	clusters = generateClustersFile(af)
+	clusters = generateClustersFile(kmeans)
+
 	# read ratings
 	ratings = readRatings(ratingsPath)
 
-	# generate representative clusters
+	### generate representative clusters ###
 	# accumulate clusters
 	ratingsAccumulated = accumulateRatings(clusters, ratings)
 	# generate repr. clusters by frequence
@@ -214,13 +203,13 @@ def main(simMatPath, ratingsPath, dpFactor, maxIter):
 	generateReprByMean(ratingsAccumulated)
 
 	print '[INFO] *************** Clusters Information ***************'
-	print '[INFO] Clusters indices: ', af.cluster_centers_indices_
-	print '[INFO] Clusters labels: ', af.labels_
-	print '[INFO] Number of clusters: %d' % len(af.cluster_centers_indices_)
+	# print '[INFO] Clusters indices: ', af.cluster_centers_indices_
+	print '[INFO] Clusters labels: ', kmeans.labels_
+	# print '[INFO] Number of clusters: %d' % len(af.cluster_centers_indices_)
 
 if __name__ == '__main__':
-	if(len(sys.argv) != 5):
+	if(len(sys.argv) != 4):
 		print "[ERROR] Missing arguments"
-		print "$ python ap.py SIMILARITY_MATRIX_PATH RATINGS_PATH DAMPING_FACTOR MAX_ITER"
+		print "$ python ap.py SIMILARITY_MATRIX_PATH RATINGS_PATH N_CLUSTERS"
 		exit(1)
-	main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+	main(sys.argv[1], sys.argv[2], sys.argv[3])
