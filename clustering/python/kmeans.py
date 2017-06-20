@@ -138,7 +138,7 @@ def generateReprByFrequence(ratingsAccumulated):
 			for movie,ratings in movies.items():				
 				result = representativeByFreq(ratings)
 				if(result != 0):
-					file.write(str(movie) + " " + str(result) + "\n")
+					file.write(str(movie) + " " + str(int(result)) + "\n")
 
 def representativeByMean(ratings):
 	# p as median element
