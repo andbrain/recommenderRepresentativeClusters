@@ -175,6 +175,26 @@ def generateReprByMean(ratingsAccumulated):
 				if(result != 0):
 					file.write(str(movie) + " " + str(round(result,2)) + "\n")
 
+
+def representativeByAverage(ratings):
+	# p as median element
+	average = 0.0
+
+	for rating in ratings:
+		average+=rating
+	
+	return average/size(ratings)
+
+def generateReprByAverage(ratingsAccumulated):
+	with open("recAverage.dat", "w") as file:
+		for cluster, movies in ratingsAccumulated.items():
+			file.write(str(cluster) + "\n")
+
+			for movie,ratings in movies.items():				
+				result = representativeByAverage(ratings)
+				if(result != 0):
+					file.write(str(movie) + " " + str(round(result,2)) + "\n")
+
 def main(simMatPath, ratingsPath, ncluster):
 	print "[INFO] Number of clusters: ", ncluster
 
@@ -185,7 +205,7 @@ def main(simMatPath, ratingsPath, ncluster):
 	print "[INFO] Processing K means.."
 	kmeans = KMeans(n_clusters=int(ncluster)).fit(simMatrix)
 	
-	# generate clusters.dat
+		# generate clusters.dat
 	print "[INFO] Clusters created.."	
 	clusters = generateClustersFile(kmeans)
 
@@ -198,9 +218,14 @@ def main(simMatPath, ratingsPath, ncluster):
 	# generate repr. clusters by frequence
 	print "[INFO] Created representative cluster by frequence.."	
 	generateReprByFrequence(ratingsAccumulated)
+	
 	# generate repr. clusters by mean
-	print "[INFO] Created representative cluster by mean.."	
+	print "[INFO] Created representative cluster by mean of more frequents.."	
 	generateReprByMean(ratingsAccumulated)
+	
+	# generate repr. clusters by average
+	print "[INFO] Created representative cluster by mean.."	
+	generateReprByAverage(ratingsAccumulated)
 
 	print '[INFO] *************** Clusters Information ***************'
 	# print '[INFO] Clusters indices: ', af.cluster_centers_indices_
