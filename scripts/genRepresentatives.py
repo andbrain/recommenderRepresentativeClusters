@@ -89,7 +89,7 @@ def representativeByFreq(ratings):
 	# TODO:: Check if it returns 0 when 1st != 2nd element, and if the 2nd > 1(freq)
 	if(len(sortedRatings) <= 1):
 		return sortedRatings[0][0]
-	if(sortedRatings[0][1] != sortedRatings[1][1] and sortedRatings[1][1] <= 1):
+	if(sortedRatings[0][1] != sortedRatings[1][1]):
 		return sortedRatings[0][0]
 	else:
 		return 0
