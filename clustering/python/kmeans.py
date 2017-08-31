@@ -17,7 +17,7 @@ def readSimMatrix(simMatPath):
 	# with open("Similarities.txt") as f:
 	with open(simMatPath) as f:
 		content = f.readlines()
-
+	f.close()
 	# content = [line.strip().split() for line in content]
 	for line in content:
 		line = line.strip()
@@ -45,6 +45,7 @@ def readRatings(ratingsPath):
 
 	with open(ratingsPath) as f:
 		content = f.readlines()
+	f.close()
 
 	user = ""
 
@@ -87,6 +88,7 @@ def generateClustersFile(kmeans):
 				file.write(" " + str(u))
 				# print " " + str(u)
 			file.write("\n")
+		file.close()
 	return clusters
 
 def accumulateRatings(clusters, totalRatings):
@@ -139,6 +141,7 @@ def generateReprByFrequence(ratingsAccumulated):
 				result = representativeByFreq(ratings)
 				if(result != 0):
 					file.write(str(movie) + " " + str(int(result)) + "\n")
+		file.close()
 
 def representativeByMean(ratings):
 	# p as median element
@@ -174,7 +177,7 @@ def generateReprByMean(ratingsAccumulated):
 				result = representativeByMean(ratings)
 				if(result != 0):
 					file.write(str(movie) + " " + str(round(result,2)) + "\n")
-
+		file.close()
 
 def representativeByAverage(ratings):
 	# p as median element
@@ -194,6 +197,7 @@ def generateReprByAverage(ratingsAccumulated):
 				result = representativeByAverage(ratings)
 				if(result != 0):
 					file.write(str(movie) + " " + str(round(result,2)) + "\n")
+		file.close()
 
 def main(simMatPath, ratingsPath, ncluster):
 	print "[INFO] Number of clusters: ", ncluster
