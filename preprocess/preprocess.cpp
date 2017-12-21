@@ -23,9 +23,11 @@ int main(int argc, char *argv[])
 
 	mat *sim = p->GetSimMatrix();
 	mat *ratings = p->GetRatings();
+	mat *ratingsTest = p->GetRatingsTest();
 
 	PrintSimilarities("similarities.dat",sim, 1);
-	PrintPair("ratings.dat",ratings);
+	PrintPair("ratingsTrain.dat",ratings);
+	PrintPair("ratingsTest.dat",ratingsTest);
 
 	delete p;	
 	return 0;

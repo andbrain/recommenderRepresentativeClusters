@@ -6,6 +6,9 @@
 #include <vector>
 #include <cmath>
 #include <unordered_map>
+#include <ctime>
+#include <cstdio>
+#include <cstdlib>
 
 #include "mat.h"
 #include "folder.h"
@@ -26,6 +29,7 @@ public:
 	int Process(); //pure virtual function for processing dataset
 	mat* GetMatrix();
 	mat* GetRatings();
+	mat* GetRatingsTest();
 	unordered_map<int,int>* GetReference();
 protected:
 	string mPath;
@@ -35,8 +39,10 @@ protected:
 	similarity_base *mSimFunction;
 	unordered_map<string,Similarity_t> mSimilarities;
 	
+	double PERC_REMOVAL_RATINGS = 0.2; // percentual of removals from target (user/item) ratings
+
 	/**** must be updated in children classes ****/
-	mat *mRatings, *mSim;
+	mat *mRatings, *mRatingsTest, *mSim;
 	unordered_map<int,int> *mRefBased, *mRefSecondary; // Relation between original ids with preprocess ids - based
 	
 	void Initialize(Similarity_t simType);
@@ -44,6 +50,7 @@ protected:
 	Similarity_t GetSimType(string sim_name);
 	virtual int LoadRatings() = 0;
 	void PrintReferences();
+	void RemovingRatingsForTest(double perc);
 };
 
 #endif

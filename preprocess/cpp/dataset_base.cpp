@@ -4,6 +4,7 @@ Dataset_Base::Dataset_Base(string base_path, string simFunction, int based)
 {
 	mPath = base_path;
 	mBased = based;
+	srand(time(NULL));
 	LoadSimTypes();
 	Similarity_t type = GetSimType(simFunction);
 	Initialize(type);	
@@ -14,6 +15,7 @@ Dataset_Base::~Dataset_Base()
 	delete mRefBased;
 	delete mRefSecondary;
 	delete mRatings;
+	delete mRatingsTest;
 	delete mSim;
 	delete mSimFunction;
 	mFs.close();
@@ -52,7 +54,8 @@ Similarity_t Dataset_Base::GetSimType(string sim_name)
 void Dataset_Base::Initialize(Similarity_t simType)
 {
 
-	mRatings = new mat();	
+	mRatings = new mat();
+	mRatingsTest = new mat();
 	mRefBased = new unordered_map<int,int>();
 	mRefSecondary = new unordered_map<int,int>();
 	string basePath = mPath;
@@ -116,10 +119,16 @@ mat* Dataset_Base::GetRatings()
 	return mRatings->clone();
 }
 
+mat* Dataset_Base::GetRatingsTest()
+{
+	return mRatingsTest->clone();
+}
+
 int Dataset_Base::Process()
 {
 	cout << "**********Information of dataset**********" << endl;
 	LoadRatings();
+	RemovingRatingsForTest(PERC_REMOVAL_RATINGS); 
 	PrintReferences();
 	cout << "**********End of dataset**********" << endl;
 
@@ -130,6 +139,41 @@ int Dataset_Base::Process()
 	mSim = mSimFunction->GetMatrix();
 
 	return 0;
+}
+
+void Dataset_Base::RemovingRatingsForTest(double perc)
+{
+	int qtd_datapoints = mRatings->size();
+	int qtd_ratings, tRandom, iSecret;
+	double value;
+	map<int, double>::iterator itLine;
+	int qtd_removal_points;
+	for (int i = 0; i < qtd_datapoints; ++i)
+	{
+		qtd_ratings = mRatings->getLine(i)->size();
+		// cout << "user " << i << ": " << mRatings->getLine(i)->size() << " ratings";
+		qtd_removal_points = round(qtd_ratings * perc);
+		// cout << " --> " << "Removed: " << qtd_removal_points << endl;
+
+		mRatingsTest->addLine();		
+
+		// removing randomly
+		for (int j = 0; j < qtd_removal_points; j++)
+		{
+			iSecret = rand() % qtd_ratings; // random id choice
+			itLine = mRatings->getLine(i)->begin();
+			advance(itLine, iSecret); // advance in iterator
+			tRandom = itLine->first;
+
+			value = mRatings->getLine(i)->at(tRandom);
+			mRatings->getLine(i)->erase(tRandom);
+			mRatingsTest->set(i,j,value);
+			qtd_ratings = mRatings->getLine(i)->size();
+		}
+		
+		// cout << "user " << i << ": " << mRatings->getLine(i)->size() << " ratings" << endl;
+		// cout << "user test" << i << ": " << mRatingsTest->getLine(i)->size() << " ratings" << endl;
+	}
 }
 
 void Dataset_Base::PrintReferences()

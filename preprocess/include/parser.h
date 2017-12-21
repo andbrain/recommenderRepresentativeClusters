@@ -22,12 +22,13 @@ public:
 	void Process();
 	mat* GetSimMatrix();
 	mat* GetRatings();
+	mat* GetRatingsTest();
 private:
 	
 	int mBased;
 	string mDataSetPath, mSimFunction;
 	Dataset_Base *mDatasetBase;
-	mat *mSimMatrix, *mRatings;
+	mat *mSimMatrix, *mRatings, *mRatingsTest;
 	unordered_map<string,Dataset_t> mDatasets;
 	Dataset_t mDatasetType;
 

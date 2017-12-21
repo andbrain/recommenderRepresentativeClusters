@@ -17,6 +17,7 @@ Parser::~Parser()
 {
 	delete mSimMatrix;
 	delete mRatings;
+	delete mRatingsTest;
 	// delete mDatasetBase; -- deleted after Process method
 	cout << "Finishing parser.." << endl;
 }
@@ -102,6 +103,7 @@ void Parser::Process()
 	mDatasetBase->Process();
 	mSimMatrix = mDatasetBase->GetMatrix();
 	mRatings = mDatasetBase->GetRatings();
+	mRatingsTest = mDatasetBase->GetRatingsTest();
 
 	delete mDatasetBase;
 }
@@ -114,4 +116,9 @@ mat* Parser::GetSimMatrix()
 mat* Parser::GetRatings()
 {
 	return mRatings;
+}
+
+mat* Parser::GetRatingsTest()
+{
+	return mRatingsTest;
 }
