@@ -2,8 +2,8 @@
 #define ESTIMATOR_H
 
 #include <iostream>
-#include <cstdlib>
-#include <time.h>
+// #include <cstdlib>
+// #include <time.h>
 #include <cmath>
 #include <vector>
 #include "graph.h"

@@ -3,7 +3,6 @@
 Estimator::Estimator()
 {
 	cout << "[Starting estimator..]" << endl;
-	srand(time(NULL));
 }
 
 Estimator::~Estimator()
@@ -28,7 +27,7 @@ void Estimator::SetItemClusters(map<int,map<int,double>> *movieClusters)
 
 vector<double> Estimator::Process(int exp)
 {
-	vector<int> randomUsers = RandomTestData(1.0);
+	vector<int> randomUsers = RandomTestData(1.0); //TODO: instead of get random users, return all users
 	// int nTest = randomUsers.size();
 	vector<double> result(5);
 	int nTest = 0;
@@ -37,7 +36,7 @@ vector<double> Estimator::Process(int exp)
 
 	for (std::vector<int>::iterator i = randomUsers.begin(); i != randomUsers.end(); ++i)
 	{
-		vector<int> randomItems = RandomItems(*i,0.2);
+		vector<int> randomItems = RandomItems(*i,1.0); //TODO:: get all items, cause the test file was created randomly
 
 		cout << "User " << *i << endl;
 		for (std::vector<int>::iterator it = randomItems.begin(); it != randomItems.end(); ++it)
