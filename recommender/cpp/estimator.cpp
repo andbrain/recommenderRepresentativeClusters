@@ -42,7 +42,11 @@ vector<double> Estimator::Process(int exp)
 		cout << "User " << *i << endl;
 		for (std::vector<int>::iterator it = randomItems.begin(); it != randomItems.end(); ++it)
 		{
+
+			cout << "\t[Selected Item] " << *it << endl;
 			uCluster = mUsers->at(*i);
+			// cout << "\t\tItem: " << *it << endl;
+			cout << "\t\tUser cluster: " << uCluster << endl;
 
 			map<int,map<int,double>>::iterator itFound = mMovieReprCluster->find(*it);
 
