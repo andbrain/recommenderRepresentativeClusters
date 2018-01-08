@@ -57,6 +57,13 @@ vector<double> Estimator::Process(int exp)
 				else
 					estimRating = mMovieReprCluster->at(*it).at(uCluster);	
 			}
+			
+			if(estimRating == 0)
+				continue;
+			
+			cout << "\t[Selected Item] " << *it << endl;
+			// cout << "\t\tItem: " << *it << endl;
+			cout << "\t\tUser cluster: " << uCluster << endl;
 
 			if(estimRating == 0)
 				continue;
