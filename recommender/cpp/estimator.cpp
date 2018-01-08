@@ -39,13 +39,13 @@ vector<double> Estimator::Process(int exp)
 	{
 		vector<int> randomItems = RandomItems(*i,0.2);
 
-		// cout << "User " << *i << endl;
+		cout << "User " << *i << endl;
 		for (std::vector<int>::iterator it = randomItems.begin(); it != randomItems.end(); ++it)
 		{
-			// cout << "\t[Selected Item] " << *it << endl;
+			cout << "\t[Selected Item] " << *it << endl;
 			uCluster = mUsers->at(*i);
 			// cout << "\t\tItem: " << *it << endl;
-			// cout << "\t\tUser cluster: " << uCluster << endl;
+			cout << "\t\tUser cluster: " << uCluster << endl;
 
 			map<int,map<int,double>>::iterator itFound = mMovieReprCluster->find(*it);
 
@@ -61,13 +61,14 @@ vector<double> Estimator::Process(int exp)
 					estimRating = mMovieReprCluster->at(*it).at(uCluster);	
 			}
 
-			// cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
+			cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
 			realRating = mRatings->at(*i)->at(*it); 
-			// cout << "\t\tReal rating: " << realRating << endl;
+			cout << "\t\tReal rating: " << realRating << endl;
 			diff = realRating - estimRating;
 
 			error += (diff < 0)? diff*(-1): diff;
 			squareError += pow(diff, 2);
+			cout << "\t\tError: " << error << " Square error: " << squareError << endl;
 			nTest++;
 		}
 		// cout << endl;
