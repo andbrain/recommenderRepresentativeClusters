@@ -39,6 +39,10 @@ int main(int argc, char *argv[])
 	cout << "MAE: " << results[1]/repetitions << endl;
 	cout << "Error: " << results[2]/repetitions << endl;
 	cout << "Square Error: " << results[3]/repetitions << endl;
+	cout << "Square Error: " << results[4] << endl;
+	// get average of predictions
+	// get min of prediction
+	// get max of predictions
 
 	return 0;
 }

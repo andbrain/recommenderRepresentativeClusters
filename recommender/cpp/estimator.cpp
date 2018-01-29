@@ -30,7 +30,7 @@ vector<double> Estimator::Process(int exp)
 {
 	vector<int> randomUsers = RandomTestData(1.0);
 	// int nTest = randomUsers.size();
-	vector<double> result(4);
+	vector<double> result(5);
 	int nTest = 0;
 	double estimRating, realRating, diff, RMSE, MAE, error = 0, squareError = 0;
 	int uCluster;
@@ -42,10 +42,7 @@ vector<double> Estimator::Process(int exp)
 		cout << "User " << *i << endl;
 		for (std::vector<int>::iterator it = randomItems.begin(); it != randomItems.end(); ++it)
 		{
-			cout << "\t[Selected Item] " << *it << endl;
 			uCluster = mUsers->at(*i);
-			// cout << "\t\tItem: " << *it << endl;
-			cout << "\t\tUser cluster: " << uCluster << endl;
 
 			map<int,map<int,double>>::iterator itFound = mMovieReprCluster->find(*it);
 
@@ -61,6 +58,12 @@ vector<double> Estimator::Process(int exp)
 					estimRating = mMovieReprCluster->at(*it).at(uCluster);	
 			}
 
+			if(estimRating == 0)
+				continue;
+
+			cout << "\t[Selected Item] " << *it << endl;
+			// cout << "\t\tItem: " << *it << endl;
+			cout << "\t\tUser cluster: " << uCluster << endl;
 			cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
 			realRating = mRatings->at(*i)->at(*it); 
 			cout << "\t\tReal rating: " << realRating << endl;
@@ -71,7 +74,7 @@ vector<double> Estimator::Process(int exp)
 			cout << "\t\tError: " << error << " Square error: " << squareError << endl;
 			nTest++;
 		}
-		// cout << endl;
+		cout << endl;
 	}
 
 	//Root Mean Square Error for system
@@ -85,12 +88,14 @@ vector<double> Estimator::Process(int exp)
 	cout << " MAE: " << MAE;
 	cout << " Error: " << error;
 	cout << " Square Error: " << squareError;
+	cout << " Predictions: " << nTest;
 	cout << endl;
 
 	result[0] = RMSE;
 	result[1] = MAE;
 	result[2] = error;
 	result[3] = squareError;
+	result[4] = nTest;
 
 	return result;
 }
