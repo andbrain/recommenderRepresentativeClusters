@@ -55,7 +55,6 @@ void Dataset_Base::Initialize(Similarity_t simType)
 {
 
 	mRatings = new mat();
-	mRatingsTest = new mat();
 	mRefBased = new unordered_map<int,int>();
 	mRefSecondary = new unordered_map<int,int>();
 	string basePath = mPath;
@@ -148,14 +147,19 @@ void Dataset_Base::RemovingRatingsForTest(double perc)
 	double value;
 	map<int, double>::iterator itLine;
 	int qtd_removal_points;
+
+	mRatingsTest = new mat(mRatings->size());
+
+
 	for (int i = 0; i < qtd_datapoints; ++i)
 	{
 		qtd_ratings = mRatings->getLine(i)->size();
-		// cout << "user " << i << ": " << mRatings->getLine(i)->size() << " ratings";
-		qtd_removal_points = round(qtd_ratings * perc);
+		// cout << "user " << i << ": " << qtd_ratings << " ratings";
+		qtd_removal_points = ceil(qtd_ratings * perc);
 		// cout << " --> " << "Removed: " << qtd_removal_points << endl;
 
-		mRatingsTest->addLine();		
+
+		// mRatingsTest->addLine();		
 
 		// removing randomly
 		for (int j = 0; j < qtd_removal_points; j++)
@@ -164,15 +168,14 @@ void Dataset_Base::RemovingRatingsForTest(double perc)
 			itLine = mRatings->getLine(i)->begin();
 			advance(itLine, iSecret); // advance in iterator
 			tRandom = itLine->first;
-
 			value = mRatings->getLine(i)->at(tRandom);
 			mRatings->getLine(i)->erase(tRandom);
-			mRatingsTest->set(i,j,value);
+			mRatingsTest->set(i,tRandom,value);
 			qtd_ratings = mRatings->getLine(i)->size();
 		}
 		
-		// cout << "user " << i << ": " << mRatings->getLine(i)->size() << " ratings" << endl;
-		// cout << "user test" << i << ": " << mRatingsTest->getLine(i)->size() << " ratings" << endl;
+		// cout << "user " << i << " [train]: " << mRatings->getLine(i)->size() << " rating(s)" << endl;
+		// cout << "user " << i << " [test]: " << mRatingsTest->getLine(i)->size() << " rating(s)" << endl;
 	}
 }
 
