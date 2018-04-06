@@ -1,35 +1,27 @@
-# from sklearn.cluster import AffinityPropagation
-from sklearn.cluster import KMeans
-from scipy.sparse import coo_matrix
 from numpy import *
 import sys
 import operator
+import os.path as PATH
 
-def readSimMatrix(simMatPath):
-	i = array([])
-	j = array([])
-	data = array([])
-	counter = 0;
-	accum = 0;
+def retrieveClusters(clustersPath):
+	clusters = {}
+	print "[INFO] Reading clusters.."
 
-	print "[INFO] Reading sim matrix.."
-	# with open("Similarities_toy_Sim.txt") as f:
-	# with open("Similarities.txt") as f:
-	with open(simMatPath) as f:
+	with open(clustersPath) as f:
 		content = f.readlines()
 	f.close()
-	# content = [line.strip().split() for line in content]
-	for line in content:
-		line = line.strip()
-		line = line.split()
-		i = append(i, int(line[0]) - 1)
-		j = append(j, int(line[1]) - 1)
-		value = float(line[2])
-		data = append(data, value)
-		accum += value;
-		counter += 1
-	
-	return i,j,data
+
+	user = ""
+
+	for i in range(0, len(content)):
+		line = content[i]
+		line = line.strip().split()
+		clusterId = int(line[0])
+		c = []
+		for j in range(1,len(line)):
+			c.append(int(line[j]))
+		clusters[clusterId] = c
+	return clusters
 
 def readRatings(ratingsPath):
 	# dict of users
@@ -46,7 +38,6 @@ def readRatings(ratingsPath):
 	with open(ratingsPath) as f:
 		content = f.readlines()
 	f.close()
-
 	user = ""
 
 	for i in range(0, len(content)):
@@ -62,34 +53,6 @@ def readRatings(ratingsPath):
 			ratings[user] = rat
 	
 	return ratings
-
-def generateClustersFile(kmeans):
-	# indices = kmeans.cluster_centers_indices_
-	labels = kmeans.labels_
-	labels_len = len(labels)
-
-	clusters = {}
-	count_cluster = 0;
-
-	for i in range(labels_len):
-		if(labels[i] in clusters):
-			c = clusters[labels[i]]
-			c.append(i)
-		else:
-			c = [i]
-
-		clusters[labels[i]] = c
-
-	with open("clusters.dat", "w") as file:
-		for i in range(len(clusters)):
-			file.write(str(i))
-			users = clusters[i]
-			for u in users:
-				file.write(" " + str(u))
-				# print " " + str(u)
-			file.write("\n")
-		file.close()
-	return clusters
 
 def accumulateRatings(clusters, totalRatings):
 	# list of clusters -> list of movies -> list of ratings
@@ -127,13 +90,13 @@ def representativeByFreq(ratings):
 	# TODO:: Check if it returns 0 when 1st != 2nd element, and if the 2nd > 1(freq)
 	if(len(sortedRatings) <= 1):
 		return sortedRatings[0][0]
-	if(sortedRatings[0][1] != sortedRatings[1][1] and sortedRatings[1][1] <= 1):
+	if(sortedRatings[0][1] != sortedRatings[1][1]):
 		return sortedRatings[0][0]
 	else:
 		return 0
 
-def generateReprByFrequence(ratingsAccumulated):
-	with open("recFreq.dat", "w") as file:
+def generateReprByFrequence(ratingsAccumulated, time):
+	with open("recFreq" + str(time) + ".dat", "w") as file:
 		for cluster, movies in ratingsAccumulated.items():
 			file.write(str(cluster) + "\n")
 
@@ -142,6 +105,7 @@ def generateReprByFrequence(ratingsAccumulated):
 				if(result != 0):
 					file.write(str(movie) + " " + str(int(result)) + "\n")
 		file.close()
+
 
 def representativeByMean(ratings):
 	# p as median element
@@ -168,8 +132,8 @@ def representativeByMean(ratings):
 
 	return acc/len(mean)
 
-def generateReprByMean(ratingsAccumulated):
-	with open("recMean.dat", "w") as file:
+def generateReprByMean(ratingsAccumulated, time):
+	with open("recMean" + str(time) + ".dat", "w") as file:
 		for cluster, movies in ratingsAccumulated.items():
 			file.write(str(cluster) + "\n")
 
@@ -188,8 +152,8 @@ def representativeByAverage(ratings):
 	
 	return average/size(ratings)
 
-def generateReprByAverage(ratingsAccumulated):
-	with open("recAverage.dat", "w") as file:
+def generateReprByAverage(ratingsAccumulated, time):
+	with open("recAverage" + str(time) + ".dat", "w") as file:
 		for cluster, movies in ratingsAccumulated.items():
 			file.write(str(cluster) + "\n")
 
@@ -199,46 +163,40 @@ def generateReprByAverage(ratingsAccumulated):
 					file.write(str(movie) + " " + str(round(result,2)) + "\n")
 		file.close()
 
-def main(simMatPath, ratingsPath, ncluster):
-	print "[INFO] Number of clusters: ", ncluster
-
-	i,j,data = readSimMatrix(simMatPath)
-	# convert to sparse matrix
-	simMatrix = coo_matrix((data,(i, j)))
-	# clustering method
-	print "[INFO] Processing K means.."
-	kmeans = KMeans(n_clusters=int(ncluster)).fit(simMatrix)
+def main(clustersPrefix, ratingsPath, times):
 	
-		# generate clusters.dat
-	print "[INFO] Clusters created.."	
-	clusters = generateClustersFile(kmeans)
+	print "[INFO] Retrieving of clusters.."	
 
-	# read ratings
-	ratings = readRatings(ratingsPath)
+	for x in xrange(0,int(times)):
+		time = x + 1
+		# read clusters
+		clusters = retrieveClusters(clustersPrefix + str(time) + '.dat')
 
-	### generate representative clusters ###
-	# accumulate clusters
-	ratingsAccumulated = accumulateRatings(clusters, ratings)
-	# generate repr. clusters by frequence
-	print "[INFO] Created representative cluster by frequence.."	
-	generateReprByFrequence(ratingsAccumulated)
-	
-	# generate repr. clusters by mean
-	print "[INFO] Created representative cluster by mean of more frequents.."	
-	generateReprByMean(ratingsAccumulated)
-	
-	# generate repr. clusters by average
-	print "[INFO] Created representative cluster by mean.."	
-	generateReprByAverage(ratingsAccumulated)
+		# read ratings
+		ratings = readRatings(ratingsPath)
 
-	print '[INFO] *************** Clusters Information ***************'
-	# print '[INFO] Clusters indices: ', af.cluster_centers_indices_
-	print '[INFO] Clusters labels: ', kmeans.labels_
-	# print '[INFO] Number of clusters: %d' % len(af.cluster_centers_indices_)
+		### generate representative clusters ###
+
+		# accumulate clusters
+		ratingsAccumulated = accumulateRatings(clusters, ratings)
+
+		# generate repr. clusters by frequence
+		print "[INFO] Created representative cluster" + str(time) + " by frequence.."	
+		generateReprByFrequence(ratingsAccumulated, time)
+		
+		# generate repr. clusters by mean
+		print "[INFO] Created representative cluster" + str(time) + " by mean of more frequents.."	
+		generateReprByMean(ratingsAccumulated, time)
+		
+		# generate repr. clusters by average
+		print "[INFO] Created representative cluster" + str(time) + " by mean.."	
+		generateReprByAverage(ratingsAccumulated, time)
+
+	print "[INFO] Representatives .. ok!"
 
 if __name__ == '__main__':
 	if(len(sys.argv) != 4):
 		print "[ERROR] Missing arguments"
-		print "$ python ap.py SIMILARITY_MATRIX_PATH RATINGS_PATH N_CLUSTERS"
+		print "$ python ap.py <CLUSTERS_PREFIX> <RATINGS_PATH> <TIMES>"
 		exit(1)
 	main(sys.argv[1], sys.argv[2], sys.argv[3])
