@@ -11,6 +11,7 @@ set(SOURCES recommender.cpp )
 list(APPEND SOURCES cpp/graph.cpp)
 list(APPEND SOURCES cpp/parser.cpp)
 list(APPEND SOURCES cpp/util.cpp)
+list(APPEND SOURCES cpp/representative.cpp)
 list(APPEND SOURCES cpp/estimator.cpp)
 
 add_executable(recommender ${SOURCES})
