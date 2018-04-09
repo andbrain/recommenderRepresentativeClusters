@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	cout << "MAE: " << results[1]/repetitions << endl;
 	cout << "Error: " << results[2]/repetitions << endl;
 	cout << "Square Error: " << results[3]/repetitions << endl;
-	cout << "Predictions: " << results[4] << endl;
+	cout << "Predictions: " << results[4]/repetitions << endl;
 
 	delete est;
 	return 0;
