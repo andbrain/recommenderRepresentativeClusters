@@ -14,11 +14,12 @@ Representative::~Representative()
 
 void Representative::Process()
 {
-	
+	ReadClusters();
+	ReadRepresentatives();
 }
 
-// void Parser::ReadClusters()
-// {
+void Representative::ReadClusters()
+{
 
 	//TODO:: read all files with clusters generated after kmeans random seeds
 	
@@ -45,10 +46,10 @@ void Representative::Process()
 	// }
 
 	// mFs.close();
-// }
+}
 
-// void Parser::ReadRepresentatives()
-// {
+void Representative::ReadRepresentatives()
+{
 
 	//TODO:: read all files with clusters generated after kmeans random seeds
 
@@ -86,4 +87,4 @@ void Representative::Process()
 	// }
 
 	// mFs.close();
-// }
+}

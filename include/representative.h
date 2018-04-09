@@ -19,6 +19,9 @@ private:
 	map<int,int> mUsers; //<user, cluster>
 	map<int,map<int,double>> mMovieReprCluster; //<movie, <cluster,rating>>
 	fstream mFs;
+
+	void ReadClusters();
+	void ReadRepresentatives();
 };
 
 #endif
