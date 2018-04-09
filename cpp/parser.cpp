@@ -7,17 +7,18 @@ Parser::Parser(string ratingsPath, string clusterPath, string reprClusterPath, i
 	mReprClusterPath = reprClusterPath;
 	mRatings = new Graph();
 	mNmultiClusters = n_multi_clusters;
+	mRepr = new vector<Representative*>();
 }
 
 Parser::~Parser()
 {
 	delete mRatings;
+	//mRepr is deleted after estimator processing
 }
 
 void Parser::Process()
 {
 	ReadRatingsList();
-	ReadClusters();
 	ReadRepresentatives();
 }
 
@@ -72,6 +73,7 @@ void Parser::ReadRatingsList()
 
 	cout << endl;
 	cout << "******* Information about Test File *******" << endl;
+	cout << "[INFO] File: " << mRatingPath << endl;
 	cout << "[INFO] Users: " << to_string(statUsers) << endl;
 	cout << "[INFO] Ratings: " << to_string(statRatings) << endl;
 	cout << "[INFO] Average of Ratings per users: " << to_string((double)statRatings/statUsers) << endl;
@@ -83,14 +85,14 @@ void Parser::ReadRatingsList()
 	mFs.close();
 }
 
-void Parser::ReadClusters()
-{
+// void Parser::ReadClusters()
+// {
 
 	//TODO:: read all files with clusters generated after kmeans random seeds
 	
-	Representative *repr = new Representative();
+	// Representative *repr = new Representative();
 
-	delete repr;
+	// delete repr;
 
 	// mFs.open(mClusterPath.c_str(), ios::in);
 	// string line;
@@ -111,7 +113,7 @@ void Parser::ReadClusters()
 	// }
 
 	// mFs.close();
-}
+// }
 
 void Parser::ReadRepresentatives()
 {
@@ -159,12 +161,7 @@ Graph* Parser::GetRatings()
 	return mRatings;
 }
 
-// map<int,int>* Parser::GetUsers()
-// {
-// 	return &mUsers;
-// }
-
-// map<int,map<int,double>>* Parser::GetMovieClusters()
-// {
-// 	return &mMovieReprCluster;
-// }
+vector<Representative*>* Parser::GetRepresentatives()
+{
+	return mRepr;
+}
