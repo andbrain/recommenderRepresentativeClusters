@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <climits>
 #include "graph.h"
 #include "util.h"
 #include "representative.h"
@@ -19,7 +20,7 @@ public:
 	Graph* GetRatings();
 private:
 	string mRatingPath, mClusterPath, mReprClusterPath;
-	int mNmultiClusters=1;
+	int mNmultiClusters;
 	Graph *mRatings; // user ratings
 	fstream mFs;
 

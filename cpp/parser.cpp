@@ -32,9 +32,9 @@ void Parser::ReadRatingsList()
 	string userId, movieId, rating;
 
 	// Statistics of Test File
-	int statUsers=0, statRatings=0; 
-	int statMediaRatings=0, statMinRatings=0, statMaxRatings=0;
-
+	int statUsers=0, statRatings=0, ratingUserCounter; 
+	int statMinRatings=INT_MAX, statMaxRatings=INT_MIN;
+	double statMediaRatings;
 	while(getline(mFs, line))
 	{
 		relation = Split(line, ' ');
@@ -48,30 +48,36 @@ void Parser::ReadRatingsList()
 		}
 		else
 		{
+			ratingUserCounter = 0;
+
 			for (std::vector<string>::iterator i = relation.begin(); i != relation.end(); ++i)
 			{
 				movieId = (*i);
 				++i;
 				rating = (*i);
-				mRatings->AddEdge(indexUser, atoi(movieId.c_str()), stod(rating));
+				mRatings->AddEdge(indexUser, atoi(movieId.c_str()),  stod(rating));
 
+				ratingUserCounter++;
 				statRatings++;
 			}
+			
+			if(ratingUserCounter < statMinRatings)
+				statMinRatings = ratingUserCounter;
+			if(ratingUserCounter > statMaxRatings)
+				statMaxRatings = ratingUserCounter;
 		}
 
 		isUser = !isUser;
 	}
 
-	//TODO:: print test file information
 	cout << endl;
 	cout << "******* Information about Test File *******" << endl;
 	cout << "[INFO] Users: " << to_string(statUsers) << endl;
 	cout << "[INFO] Ratings: " << to_string(statRatings) << endl;
-	cout << "[INFO] Media of Ratings per users: " << to_string(statMediaRatings) << endl;
-	cout << "[INFO] Min. of Ratings between users: " << to_string(statMinRatings) << endl;
-	cout << "[INFO] Max. of Ratings between users: " << to_string(statMaxRatings) << endl;
+	cout << "[INFO] Average of Ratings per users: " << to_string((double)statRatings/statUsers) << endl;
+	cout << "[INFO] Min. of Ratings per users: " << to_string(statMinRatings) << endl;
+	cout << "[INFO] Max. of Ratings perusers: " << to_string(statMaxRatings) << endl;
 	cout << "*******************************************" << endl;
-	cout << endl;
 	cout << endl;
 
 	mFs.close();
