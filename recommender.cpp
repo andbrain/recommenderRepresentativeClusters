@@ -5,8 +5,8 @@
 
 using namespace std;
 
-string ratingsPath, clusterPath, reprClusterPath;
-int repetitions;
+string ratingsPath, clusterPrefix, reprClusterPrefix;
+int repetitions=1, n_multi_clusters;
 
 void GetDatasetName(int argc, char *argv[]);
 
@@ -14,13 +14,16 @@ int main(int argc, char *argv[])
 {
 	GetDatasetName(argc, argv);
 
-	Parser p(ratingsPath, clusterPath, reprClusterPath);
+	Parser p(ratingsPath, clusterPrefix, reprClusterPrefix, n_multi_clusters);
 	p.Process();
+
+	cout << "Parser completed!" << endl;
+	exit(1);
 
 	Estimator est;
 	est.SetRatings(p.GetRatings());
-	est.SetUsers(p.GetUsers());
-	est.SetItemClusters(p.GetMovieClusters());
+	// est.SetUsers(p.GetUsers());
+	// est.SetItemClusters(p.GetMovieClusters());
 
 	vector<double> results(4), parcResult;
 	for(int i=0; i<repetitions; ++i)
@@ -46,25 +49,26 @@ int main(int argc, char *argv[])
 
 void GetDatasetName(int argc, char *argv[])
 {
-	if(argc == 4)
+	if(argc == 5)
 	{
 		ratingsPath = argv[1];
-		clusterPath = argv[2];
-		reprClusterPath = argv[3];
-		repetitions = 1;
+		clusterPrefix = argv[2];
+		reprClusterPrefix = argv[3];
+		n_multi_clusters = atoi(argv[4]);
 	}
-	else if(argc == 5)
+	else if(argc == 6)
 	{
 
 		ratingsPath = argv[1];
-		clusterPath = argv[2];
-		reprClusterPath = argv[3];
-		repetitions = atoi(argv[4]);
+		clusterPrefix = argv[2];
+		reprClusterPrefix = argv[3];
+		n_multi_clusters = atoi(argv[4]);
+		repetitions = atoi(argv[5]);
 	}
 	else
 	{
 		cout << "[Error] Missing parameters!" << endl;
-		cout << "[INFO] rec <RATINGS_PATH> <CLUSTER_PATH> <REPR_CLUSTERS_PATH>" << endl;
+		cout << "[INFO] ./rec.out <RATINGS_PATH> <CLUSTER_PREFIX> <REPR_CLUSTERS_PREFIX> <N_MULTI_CLUSTERS> <REPETITIONS>" << endl;
 		exit(1);
 	}
 }

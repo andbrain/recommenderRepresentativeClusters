@@ -5,26 +5,22 @@
 #include <fstream>
 #include "graph.h"
 #include "util.h"
+#include "representative.h"
 
 using namespace std;
 
 class Parser
 {
 public:
-	Parser(string ratingsPath, string clusterPath, string reprClusterPath);
+	Parser(string ratingsPath, string clusterPath, string reprClusterPath, int n_multi_clusters);
 	~Parser();
 	void Process();
 
 	Graph* GetRatings();
-	map<int,int>* GetUsers();
-	map<int,map<int,double>>* GetMovieClusters();
-
-	/* data */
 private:
 	string mRatingPath, mClusterPath, mReprClusterPath;
+	int mNmultiClusters=1;
 	Graph *mRatings; // user ratings
-	map<int,int> mUsers; //<user, cluster>
-	map<int,map<int,double>> mMovieReprCluster; //<movie, <cluster,rating>>
 	fstream mFs;
 
 	void ReadRatingsList();
