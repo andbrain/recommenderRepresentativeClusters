@@ -2,13 +2,12 @@
 
 Estimator::Estimator()
 {
-	cout << "[Starting estimator..]" << endl;
+	// cout << "[Starting estimator..]" << endl;
 }
 
 Estimator::~Estimator()
 {
-	delete mSync;
-	cout << "[Finishing estimator..]" << endl;
+	// cout << "[Finishing estimator..]" << endl;
 }
 
 void Estimator::SetRatings(Graph *g)
@@ -69,7 +68,8 @@ vector<double> Estimator::Process(int exp)
 	RMSE = sqrt(RMSE);
 
 	MAE = error/predictions;
-
+	cout << endl;
+	cout << "*** Experiments ****" << endl;
 	cout << "[" << exp << "o. experiment] ";
 	cout << "RMSE: " << RMSE;
 	cout << " MAE: " << MAE;

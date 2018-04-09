@@ -32,12 +32,11 @@ int main(int argc, char *argv[])
 			results[j] += parcResult[j];
 	}
 	
-	// delete est;
 
 	cout << endl;
 	cout << "**********************" << endl;
 	cout << "**********************" << endl;
-	cout << "   Mean of Results" << endl;
+	cout << "	Results" << endl;
 	cout << "**********************" << endl;
 	cout << "**********************" << endl;
 	cout << "RMSE: " << results[0]/repetitions << endl;
@@ -46,6 +45,7 @@ int main(int argc, char *argv[])
 	cout << "Square Error: " << results[3]/repetitions << endl;
 	cout << "Predictions: " << results[4] << endl;
 
+	delete est;
 	return 0;
 }
 
