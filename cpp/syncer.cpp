@@ -61,37 +61,37 @@ double syncer::GetEstimRating(int userId, int itemId)
 	vector<double> ratings = GetListOfRatings(userId, itemId);
 	map<double,int> oddRatings;
 
-	cout << "User: " << to_string(userId) << " Item: " << to_string(itemId) << endl;
+	// cout << "User: " << to_string(userId) << " Item: " << to_string(itemId) << endl;
 	if(mMode == 0)
 	{
 		// cout << "[MODE] Average of ratings for each cluster generated with random seeds" << endl;
 		double acc = 0;
 		int counterOdd = 0;
-		cout << "\t\t";
+		// cout << "\t\t";
 		for (int i = 0; i < ratings.size(); ++i)
 		{
 			oddRatings[ratings.at(i)] = 0;
 			// acc += ratings.at(i);
-			cout << to_string(ratings.at(i)) << " ";
+			// cout << to_string(ratings.at(i)) << " ";
 		}
-		cout << endl;
+		// cout << endl;
 		
-		cout << "\t\t Distinct values: [";
+		// cout << "\t\t Distinct values: [";
 		for (map<double,int>::iterator value = oddRatings.begin(); value != oddRatings.end(); ++value)
 		{
 			if(value->first != 0)
 			{
-				cout << to_string(value->first) << " ";
+				// cout << to_string(value->first) << " ";
 				acc += value->first;
 				counterOdd++;
 			}
 		}
-		cout << "]" << endl;
+		// cout << "]" << endl;
 
 		// estimRating = acc/ratings.size();
 		if(acc != 0)
 			estimRating = acc/counterOdd;
-		cout << "Estim. Rating: " << to_string(estimRating) << endl;
+		// cout << "Estim. Rating: " << to_string(estimRating) << endl;
 	}
 	else
 	{
