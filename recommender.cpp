@@ -21,18 +21,20 @@ int main(int argc, char *argv[])
 	vector<Representative*> *repr = p.GetRepresentatives();
 	cout << "Size of representatives: " << to_string(repr->size()) << endl;
 	cout << "Parser completed!" << endl;
-
+	
+	Estimator *est = new Estimator();
+	est->SetRatings(p.GetRatings());
+	est->SetRepresentatives(repr);
+	delete est;
 	exit(1);
 
-	Estimator est;
-	est.SetRatings(p.GetRatings());
 	// est.SetUsers(p.GetUsers());
 	// est.SetItemClusters(p.GetMovieClusters());
 
 	vector<double> results(4), parcResult;
 	for(int i=0; i<repetitions; ++i)
 	{
-		parcResult = est.Process(i+1);
+		parcResult = est->Process(i+1);
 		for (int j = 0; j < parcResult.size(); ++j)
 			results[j] += parcResult[j];
 	}

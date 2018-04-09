@@ -12,6 +12,7 @@ class Representative
 public:
 	Representative(string clusterPath, string representativePath);
 	~Representative();
+	void Process();
 	
 private:
 	string mClusterPath, mReprPath;

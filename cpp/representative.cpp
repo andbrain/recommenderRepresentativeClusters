@@ -12,6 +12,11 @@ Representative::~Representative()
 	cout << "Representative released.." << endl;
 }
 
+void Representative::Process()
+{
+	
+}
+
 // void Parser::ReadClusters()
 // {
 

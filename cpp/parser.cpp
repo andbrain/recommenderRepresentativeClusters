@@ -87,7 +87,17 @@ void Parser::ReadRatingsList()
 
 void Parser::ReadRepresentatives()
 {
+	cout << "Cluster prefix: " << mClusterPrefix << endl;
+	cout << "Representative prefix: " << mReprPrefix << endl;
+	string tempPath;
 
+	for (int i = 0; i < mNmultiClusters; ++i)
+	{
+		tempPath = to_string(i+1) + ".dat";
+		Representative *repr = new Representative(mClusterPrefix + tempPath, mReprPrefix + tempPath);
+		repr->Process();
+		mRepr->push_back(repr);
+	}
 }
 
 Graph* Parser::GetRatings()
