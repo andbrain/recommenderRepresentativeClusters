@@ -1,6 +1,7 @@
 #include <iostream>
 #include "graph.h"
 #include "parser.h"
+#include "representative.h"
 #include "estimator.h"
 
 using namespace std;
@@ -17,7 +18,10 @@ int main(int argc, char *argv[])
 	Parser p(ratingsPath, clusterPrefix, reprClusterPrefix, n_multi_clusters);
 	p.Process();
 
+	vector<Representative*> *repr = p.GetRepresentatives();
+	cout << "Size of representatives: " << to_string(repr->size()) << endl;
 	cout << "Parser completed!" << endl;
+
 	exit(1);
 
 	Estimator est;

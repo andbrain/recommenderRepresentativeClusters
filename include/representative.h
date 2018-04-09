@@ -1,5 +1,5 @@
 #ifndef REPRESENTATIVE_H
-#define REPRESENTATIV_H
+#define REPRESENTATIVE_H
 
 #include <iostream>
 #include <map>
@@ -10,10 +10,11 @@ using namespace std;
 class Representative
 {
 public:
-	Representative();
+	Representative(string clusterPath, string representativePath);
 	~Representative();
 	
 private:
+	string mClusterPath, mReprPath;
 	map<int,int> mUsers; //<user, cluster>
 	map<int,map<int,double>> mMovieReprCluster; //<movie, <cluster,rating>>
 	fstream mFs;

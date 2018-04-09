@@ -14,7 +14,7 @@ using namespace std;
 class Parser
 {
 public:
-	Parser(string ratingsPath, string clusterPath, string reprClusterPath, int n_multi_clusters);
+	Parser(string ratingsPath, string clusterPrefix, string reprPrefix, int n_multi_clusters);
 	~Parser();
 	void Process();
 
@@ -22,7 +22,7 @@ public:
 	vector<Representative*>* GetRepresentatives();
 
 private:
-	string mRatingPath, mClusterPath, mReprClusterPath;
+	string mRatingPath, mClusterPrefix, mReprPrefix;
 	int mNmultiClusters;
 	Graph *mRatings; // user ratings
 	fstream mFs;

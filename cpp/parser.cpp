@@ -1,13 +1,13 @@
 #include "parser.h"
 
-Parser::Parser(string ratingsPath, string clusterPath, string reprClusterPath, int n_multi_clusters)
+Parser::Parser(string ratingsPath, string clusterPrefix, string reprPrefix, int n_multi_clusters)
 {
 	mRatingPath = ratingsPath;
-	mClusterPath = clusterPath;
-	mReprClusterPath = reprClusterPath;
+	mClusterPrefix = clusterPrefix;
+	mReprPrefix = reprPrefix;
 	mRatings = new Graph();
-	mNmultiClusters = n_multi_clusters;
 	mRepr = new vector<Representative*>();
+	mNmultiClusters = n_multi_clusters;
 }
 
 Parser::~Parser()
@@ -85,75 +85,9 @@ void Parser::ReadRatingsList()
 	mFs.close();
 }
 
-// void Parser::ReadClusters()
-// {
-
-	//TODO:: read all files with clusters generated after kmeans random seeds
-	
-	// Representative *repr = new Representative();
-
-	// delete repr;
-
-	// mFs.open(mClusterPath.c_str(), ios::in);
-	// string line;
-	// vector<string> relation;
-	// string clusterId, userIndex, userId;
-
-	// while(getline(mFs, line))
-	// {
-	// 	relation = Split(line, ' ');
-
-	// 	clusterId = relation[0];
-
-	// 	for (int i = 1; i < relation.size(); ++i)
-	// 	{
-	// 		userIndex = relation[i];
-	// 		mUsers[atoi(userIndex.c_str())] = atoi(clusterId.c_str());
-	// 	}
-	// }
-
-	// mFs.close();
-// }
-
 void Parser::ReadRepresentatives()
 {
 
-	//TODO:: read all files with clusters generated after kmeans random seeds
-
-	// mFs.open(mReprClusterPath.c_str(), ios::in);
-	// string line;
-	// vector<string> relation;
-	// string clusterId, movieId, reprRating;
-	// int movieIndex;
-	// while(getline(mFs, line))
-	// {
-	// 	relation = Split(line, ' ');
-
-	// 	if(relation.size() == 1)
-	// 		clusterId = relation[0];
-	// 	else
-	// 	{
-	// 		movieId = relation[0];
-	// 		movieIndex = atoi(movieId.c_str());
-	// 		reprRating = relation[1];
-	// 		map<int,map<int,double>>::iterator it = mMovieReprCluster.find(movieIndex);
-
-	// 		if(it == mMovieReprCluster.end())
-	// 		{
-	// 			map<int,double> clusterRating;
-	// 			clusterRating[atoi(clusterId.c_str())] = stod(reprRating);
-	// 			mMovieReprCluster[movieIndex] = clusterRating;
-	// 		}
-	// 		else
-	// 		{
-	// 			map<int,double> clusterRating = it->second;
-	// 			clusterRating[atoi(clusterId.c_str())] = stod(reprRating);
-	// 			it->second = clusterRating;
-	// 		}
-	// 	}
-	// }
-
-	// mFs.close();
 }
 
 Graph* Parser::GetRatings()
