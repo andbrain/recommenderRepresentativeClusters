@@ -10,10 +10,11 @@ using namespace std;
 class syncer
 {
 public:
-	syncer();
+	syncer(string clusterPrefix, string reprPrefix);
 	~syncer();
-	
+	void Process(int nMulti);	
 private:
+	string mClusterPrefix, mReprPrefix;
 	vector<Representative*> *mRepr;
 };
 

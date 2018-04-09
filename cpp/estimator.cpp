@@ -7,9 +7,7 @@ Estimator::Estimator()
 
 Estimator::~Estimator()
 {
-	for (int i = 0; i < mRepr->size(); ++i)
-		delete mRepr->at(i);
-	delete mRepr;
+	
 	cout << "[Finishing estimator..]" << endl;
 }
 
@@ -23,9 +21,9 @@ void Estimator::SetUsers(map<int,int> *users)
 	mUsers = users;
 }
 
-void Estimator::SetRepresentatives(vector<Representative*>* repr)
+void Estimator::SetSyncer(syncer* sync)
 {
-	mRepr = repr;
+	mSync = sync;
 }
 
 void Estimator::SetItemClusters(map<int,map<int,double>> *movieClusters)

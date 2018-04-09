@@ -7,7 +7,7 @@
 #include <vector>
 #include "graph.h"
 #include "util.h"
-#include "representative.h"
+#include "syncer.h"
 
 using namespace std;
 
@@ -19,15 +19,14 @@ public:
 	void Process();
 
 	Graph* GetRatings();
-	vector<Representative*>* GetRepresentatives();
+	syncer* GetSyncer();
 
 private:
-	string mRatingPath, mClusterPrefix, mReprPrefix;
+	string mRatingPath;
 	int mNmultiClusters;
 	Graph *mRatings; // user ratings
 	fstream mFs;
-	vector<Representative*> *mRepr;
-
+	syncer *mSync;
 	void ReadRatingsList();
 	void ReadRepresentatives();
 };

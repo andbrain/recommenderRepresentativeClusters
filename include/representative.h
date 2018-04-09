@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
 #include <fstream>
+#include "util.h"
 
 using namespace std;
 

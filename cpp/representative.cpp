@@ -20,71 +20,65 @@ void Representative::Process()
 
 void Representative::ReadClusters()
 {
+	cout << "Reading: " << mClusterPath << endl;
 
-	//TODO:: read all files with clusters generated after kmeans random seeds
-	
-	// Representative *repr = new Representative();
+	mFs.open(mClusterPath.c_str(), ios::in);
+	string line;
+	vector<string> relation;
+	string clusterId, userIndex, userId;
 
-	// delete repr;
+	while(getline(mFs, line))
+	{
+		relation = Split(line, ' ');
 
-	// mFs.open(mClusterPath.c_str(), ios::in);
-	// string line;
-	// vector<string> relation;
-	// string clusterId, userIndex, userId;
+		clusterId = relation[0];
 
-	// while(getline(mFs, line))
-	// {
-	// 	relation = Split(line, ' ');
+		for (int i = 1; i < relation.size(); ++i)
+		{
+			userIndex = relation[i];
+			mUsers[atoi(userIndex.c_str())] = atoi(clusterId.c_str());
+		}
+	}
 
-	// 	clusterId = relation[0];
-
-	// 	for (int i = 1; i < relation.size(); ++i)
-	// 	{
-	// 		userIndex = relation[i];
-	// 		mUsers[atoi(userIndex.c_str())] = atoi(clusterId.c_str());
-	// 	}
-	// }
-
-	// mFs.close();
+	mFs.close();
 }
 
 void Representative::ReadRepresentatives()
 {
+	cout << "Reading: " << mReprPath << endl;
+	
+	mFs.open(mReprPath.c_str(), ios::in);
+	string line;
+	vector<string> relation;
+	string clusterId, movieId, reprRating;
+	int movieIndex;
+	while(getline(mFs, line))
+	{
+		relation = Split(line, ' ');
 
-	//TODO:: read all files with clusters generated after kmeans random seeds
+		if(relation.size() == 1)
+			clusterId = relation[0];
+		else
+		{
+			movieId = relation[0];
+			movieIndex = atoi(movieId.c_str());
+			reprRating = relation[1];
+			map<int,map<int,double>>::iterator it = mMovieReprCluster.find(movieIndex);
 
-	// mFs.open(mReprClusterPath.c_str(), ios::in);
-	// string line;
-	// vector<string> relation;
-	// string clusterId, movieId, reprRating;
-	// int movieIndex;
-	// while(getline(mFs, line))
-	// {
-	// 	relation = Split(line, ' ');
+			if(it == mMovieReprCluster.end())
+			{
+				map<int,double> clusterRating;
+				clusterRating[atoi(clusterId.c_str())] = stod(reprRating);
+				mMovieReprCluster[movieIndex] = clusterRating;
+			}
+			else
+			{
+				map<int,double> clusterRating = it->second;
+				clusterRating[atoi(clusterId.c_str())] = stod(reprRating);
+				it->second = clusterRating;
+			}
+		}
+	}
 
-	// 	if(relation.size() == 1)
-	// 		clusterId = relation[0];
-	// 	else
-	// 	{
-	// 		movieId = relation[0];
-	// 		movieIndex = atoi(movieId.c_str());
-	// 		reprRating = relation[1];
-	// 		map<int,map<int,double>>::iterator it = mMovieReprCluster.find(movieIndex);
-
-	// 		if(it == mMovieReprCluster.end())
-	// 		{
-	// 			map<int,double> clusterRating;
-	// 			clusterRating[atoi(clusterId.c_str())] = stod(reprRating);
-	// 			mMovieReprCluster[movieIndex] = clusterRating;
-	// 		}
-	// 		else
-	// 		{
-	// 			map<int,double> clusterRating = it->second;
-	// 			clusterRating[atoi(clusterId.c_str())] = stod(reprRating);
-	// 			it->second = clusterRating;
-	// 		}
-	// 	}
-	// }
-
-	// mFs.close();
+	mFs.close();
 }

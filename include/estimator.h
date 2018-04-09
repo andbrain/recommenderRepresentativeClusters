@@ -7,7 +7,7 @@
 #include <cmath>
 #include <vector>
 #include "graph.h"
-#include "representative.h"
+#include "syncer.h"
 
 using namespace std;
 
@@ -20,12 +20,12 @@ public:
 	void SetRatings(Graph *g);
 	void SetUsers(map<int,int> *users);
 	void SetItemClusters(map<int,map<int,double>> *movieClusters);
-	void SetRepresentatives(vector<Representative*>* repr);
+	void SetSyncer(syncer* sync);
 private:
 	Graph *mRatings; // user ratings
 	map<int,int> *mUsers; //<user, cluster>
 	map<int,map<int,double>> *mMovieReprCluster; //<movie, <cluster,rating>>
-	vector<Representative*> *mRepr;
+	syncer *mSync;
 	vector<int> RandomTestData(double perc);
 	vector<int> RandomItems(int userIndex, double perc);
 };

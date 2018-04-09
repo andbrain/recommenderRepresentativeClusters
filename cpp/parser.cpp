@@ -3,17 +3,15 @@
 Parser::Parser(string ratingsPath, string clusterPrefix, string reprPrefix, int n_multi_clusters)
 {
 	mRatingPath = ratingsPath;
-	mClusterPrefix = clusterPrefix;
-	mReprPrefix = reprPrefix;
 	mRatings = new Graph();
-	mRepr = new vector<Representative*>();
+	mSync = new syncer(clusterPrefix, reprPrefix);
 	mNmultiClusters = n_multi_clusters;
 }
 
 Parser::~Parser()
 {
 	delete mRatings;
-	//mRepr is deleted after estimator processing
+	delete mSync;
 }
 
 void Parser::Process()
@@ -87,17 +85,7 @@ void Parser::ReadRatingsList()
 
 void Parser::ReadRepresentatives()
 {
-	cout << "Cluster prefix: " << mClusterPrefix << endl;
-	cout << "Representative prefix: " << mReprPrefix << endl;
-	string tempPath;
-
-	for (int i = 0; i < mNmultiClusters; ++i)
-	{
-		tempPath = to_string(i+1) + ".dat";
-		Representative *repr = new Representative(mClusterPrefix + tempPath, mReprPrefix + tempPath);
-		repr->Process();
-		mRepr->push_back(repr);
-	}
+	mSync->Process(mNmultiClusters);
 }
 
 Graph* Parser::GetRatings()
@@ -105,7 +93,7 @@ Graph* Parser::GetRatings()
 	return mRatings;
 }
 
-vector<Representative*>* Parser::GetRepresentatives()
+syncer* Parser::GetSyncer()
 {
-	return mRepr;
+	return mSync;
 }
