@@ -15,7 +15,7 @@ syncer::~syncer()
 	for (int i = 0; i < mRepr->size(); ++i)
 		delete mRepr->at(i);
 	delete mRepr;
-	cout << "[Finishing syncer..]" << endl;
+	// cout << "[Finishing syncer..]" << endl;
 }
 
 void syncer::Process(int nMulti)

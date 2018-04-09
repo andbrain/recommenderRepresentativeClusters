@@ -2,14 +2,14 @@
 
 Representative::Representative(string clusterPath, string representativePath)
 {
-	cout << "Representative created.." << endl;
+	// cout << "Representative created.." << endl;
 	mClusterPath = clusterPath;
 	mReprPath = representativePath;
 }
 
 Representative::~Representative()
 {
-	cout << "Representative released.." << endl;
+	// cout << "Representative released.." << endl;
 }
 
 void Representative::Process()
@@ -20,7 +20,7 @@ void Representative::Process()
 
 void Representative::ReadClusters()
 {
-	cout << "Reading: " << mClusterPath << endl;
+	// cout << "Reading: " << mClusterPath << endl;
 
 	mFs.open(mClusterPath.c_str(), ios::in);
 	string line;
@@ -45,7 +45,7 @@ void Representative::ReadClusters()
 
 void Representative::ReadRepresentatives()
 {
-	cout << "Reading: " << mReprPath << endl;
+	// cout << "Reading: " << mReprPath << endl;
 	
 	mFs.open(mReprPath.c_str(), ios::in);
 	string line;

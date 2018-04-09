@@ -41,7 +41,7 @@ vector<double> Estimator::Process(int exp)
 	for (std::vector<int>::iterator user = users.begin(); user != users.end(); ++user)
 	{
 		vector<int> items = mSync->GetUserItems(*user);
-		cout << "User " << *user << endl;
+		// cout << "User " << *user << endl;
 
 		for (std::vector<int>::iterator item = items.begin(); item != items.end(); ++item)
 		{
@@ -57,11 +57,11 @@ vector<double> Estimator::Process(int exp)
 			squareError += pow(diff, 2);
 			predictions++;
 
-			cout << "\t\tEstimated rating: " << estimRating << endl;
-			cout << "\t\tReal rating: " << realRating << endl;
-			cout << "\t\tError: " << error << " Square error: " << squareError << endl;
+			// cout << "\t\tEstimated rating: " << estimRating << endl;
+			// cout << "\t\tReal rating: " << realRating << endl;
+			// cout << "\t\tError: " << error << " Square error: " << squareError << endl;
 		}
-		cout << endl;
+		// cout << endl;
 	}
 
 	//Root Mean Square Error for system
