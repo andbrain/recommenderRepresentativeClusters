@@ -16,7 +16,7 @@ class Parser
 public:
 	Parser(string ratingsPath, string clusterPrefix, string reprPrefix, int n_multi_clusters);
 	~Parser();
-	void Process();
+	void Process(string clusterPrefix, string reprPrefix);
 
 	Graph* GetRatings();
 	syncer* GetSyncer();
@@ -28,7 +28,7 @@ private:
 	fstream mFs;
 	syncer *mSync;
 	void ReadRatingsList();
-	void ReadRepresentatives();
+	void ReadRepresentatives(string clusterPrefix, string reprPrefix);
 };
 
 #endif

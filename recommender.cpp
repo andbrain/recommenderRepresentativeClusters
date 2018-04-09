@@ -16,27 +16,24 @@ int main(int argc, char *argv[])
 	GetDatasetName(argc, argv);
 
 	Parser p(ratingsPath, clusterPrefix, reprClusterPrefix, n_multi_clusters);
-	p.Process();
 
 	syncer *sync = p.GetSyncer();
-	cout << "Parser completed!" << endl;
-	
+	sync->SetMode(0); //TODO:: set mode via args, [0=>average, 1=>median]
 	Estimator *est = new Estimator();
 	est->SetRatings(p.GetRatings());
 	est->SetSyncer(sync);
-	delete est;
-	exit(1);
-
-	// est.SetUsers(p.GetUsers());
-	// est.SetItemClusters(p.GetMovieClusters());
 
 	vector<double> results(4), parcResult;
+	
 	for(int i=0; i<repetitions; ++i)
 	{
 		parcResult = est->Process(i+1);
 		for (int j = 0; j < parcResult.size(); ++j)
 			results[j] += parcResult[j];
 	}
+	
+	// delete est;
+
 	cout << endl;
 	cout << "**********************" << endl;
 	cout << "**********************" << endl;

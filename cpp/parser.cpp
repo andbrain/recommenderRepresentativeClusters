@@ -4,8 +4,8 @@ Parser::Parser(string ratingsPath, string clusterPrefix, string reprPrefix, int 
 {
 	mRatingPath = ratingsPath;
 	mRatings = new Graph();
-	mSync = new syncer(clusterPrefix, reprPrefix);
 	mNmultiClusters = n_multi_clusters;
+	Process(clusterPrefix, reprPrefix);
 }
 
 Parser::~Parser()
@@ -14,10 +14,10 @@ Parser::~Parser()
 	delete mSync;
 }
 
-void Parser::Process()
+void Parser::Process(string clusterPrefix, string reprPrefix)
 {
 	ReadRatingsList();
-	ReadRepresentatives();
+	ReadRepresentatives(clusterPrefix, reprPrefix);
 }
 
 void Parser::ReadRatingsList()
@@ -83,8 +83,9 @@ void Parser::ReadRatingsList()
 	mFs.close();
 }
 
-void Parser::ReadRepresentatives()
+void Parser::ReadRepresentatives(string clusterPrefix, string reprPrefix)
 {
+	mSync = new syncer(mRatings, clusterPrefix, reprPrefix);
 	mSync->Process(mNmultiClusters);
 }
 

@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include "util.h"
+#include "graph.h"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ public:
 	Representative(string clusterPath, string representativePath);
 	~Representative();
 	void Process();
-	
+	double GetRating(int userId, int itemId);
 private:
 	string mClusterPath, mReprPath;
 	map<int,int> mUsers; //<user, cluster>

@@ -82,3 +82,31 @@ void Representative::ReadRepresentatives()
 
 	mFs.close();
 }
+
+double Representative::GetRating(int userId, int itemId)
+{
+	double rating;
+	int uCluster;
+
+	uCluster = mUsers.at(userId);
+	map<int,map<int,double>>::iterator itFound = mMovieReprCluster.find(itemId);
+
+	if(itFound == mMovieReprCluster.end())
+		rating = 0;
+	else
+	{
+		Edge::iterator itEdge = mMovieReprCluster.at(itemId).find(uCluster);
+
+		if(itEdge == mMovieReprCluster.at(itemId).end())
+			rating = 0;
+		else
+		{
+			rating = mMovieReprCluster.at(itemId).at(uCluster);	
+			// cout << "\t[Selected Item] " << itemId << endl;
+			// cout << "\t\tUser cluster: " << uCluster << endl;
+			// cout << "\t\tEstimated rating per cluster: " << rating << endl;
+		}
+	}
+
+	return rating;
+}
