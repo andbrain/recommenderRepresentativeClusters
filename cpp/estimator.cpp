@@ -27,16 +27,16 @@ void Estimator::SetItemClusters(map<int,map<int,double>> *movieClusters)
 
 vector<double> Estimator::Process(int exp)
 {
-	vector<int> randomUsers = RandomTestData(1.0); //TODO: instead of get random users, return all users
-	// int nTest = randomUsers.size();
+	vector<int> randomUsers = GetUserData(); //TODO: instead of get random users, return all users
 	vector<double> result(5);
 	int nTest = 0;
 	double estimRating, realRating, diff, RMSE, MAE, error = 0, squareError = 0;
 	int uCluster;
 
+
 	for (std::vector<int>::iterator i = randomUsers.begin(); i != randomUsers.end(); ++i)
 	{
-		vector<int> randomItems = RandomItems(*i,1.0); //TODO:: get all items, cause the test file was created randomly
+		vector<int> randomItems = GetItems(*i); //TODO:: get all items, cause the test file was created randomly
 
 		cout << "User " << *i << endl;
 		for (std::vector<int>::iterator it = randomItems.begin(); it != randomItems.end(); ++it)
@@ -55,27 +55,19 @@ vector<double> Estimator::Process(int exp)
 				else
 					estimRating = mMovieReprCluster->at(*it).at(uCluster);	
 			}
-			
-			if(estimRating == 0)
-				continue;
-			
-			cout << "\t[Selected Item] " << *it << endl;
-			// cout << "\t\tItem: " << *it << endl;
-			cout << "\t\tUser cluster: " << uCluster << endl;
-
+						
 			if(estimRating == 0)
 				continue;
 
-			cout << "\t[Selected Item] " << *it << endl;
-			// cout << "\t\tItem: " << *it << endl;
-			cout << "\t\tUser cluster: " << uCluster << endl;
-			cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
 			realRating = mRatings->at(*i)->at(*it); 
-			cout << "\t\tReal rating: " << realRating << endl;
 			diff = realRating - estimRating;
-
 			error += (diff < 0)? diff*(-1): diff;
 			squareError += pow(diff, 2);
+			
+			cout << "\t[Selected Item] " << *it << endl;
+			cout << "\t\tUser cluster: " << uCluster << endl;
+			cout << "\t\tEstimated rating per cluster: " << estimRating << endl;
+			cout << "\t\tReal rating: " << realRating << endl;
 			cout << "\t\tError: " << error << " Square error: " << squareError << endl;
 			nTest++;
 		}
@@ -105,48 +97,26 @@ vector<double> Estimator::Process(int exp)
 	return result;
 }
 
-vector<int> Estimator::RandomTestData(double perc)
+vector<int> Estimator::GetUserData()
 {
-	vector<int> result, aux;
+	vector<int> result;
 
 	for(map<int,int>::iterator it = mUsers->begin(); it != mUsers->end(); ++it)
-	{
-		aux.push_back(it->first);
-	}
-
-	int rUser;
-	int totalSize = aux.size() * perc;
-	while(totalSize > 0)
-	{
-		rUser = rand() % (totalSize); // random number between 0 - size of users remaining
-		result.push_back(aux[rUser]);
-		aux.erase(aux.begin() + rUser);
-		totalSize--;
-	}
+		result.push_back(it->first);
 
 	return result;
 }
 
-vector<int> Estimator::RandomItems(int userIndex, double perc)
+vector<int> Estimator::GetItems(int userIndex)
 {
-	vector<int> result, aux;
+	vector<int> result;
 
 	Vertex *v = mRatings->at(userIndex);
 
-	for(Edge::iterator it = v->begin(); it != v->end(); ++it)
+	if(v != NULL)
 	{
-		aux.push_back(it->first);
-	}
-
-	int rItem;
-	int totalSize = ceil(aux.size() * perc);
-
-	while(totalSize > 0)
-	{
-		rItem = rand() % (aux.size()); // random number between 0 - size of users remaining
-		result.push_back(aux[rItem]);
-		aux.erase(aux.begin() + rItem);
-		totalSize--;
+		for(Edge::iterator it = v->begin(); it != v->end(); ++it)
+			result.push_back(it->first);
 	}
 
 	return result;

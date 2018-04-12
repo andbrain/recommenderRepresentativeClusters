@@ -132,7 +132,10 @@ Edge::iterator Vertex::end()
 
 Vertex* Graph::at(int v)
 {
-	return mGraph->at(v);
+	G::iterator found = mGraph->find(v);
+	if(found != mGraph->end())
+		return mGraph->at(v);
+	return NULL;
 }
 
 G::iterator Graph::begin()

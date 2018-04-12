@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
 	Parser p(ratingsPath, clusterPath, reprClusterPath);
 	p.Process();
 
+
 	Estimator est;
 	est.SetRatings(p.GetRatings());
 	est.SetUsers(p.GetUsers());
@@ -29,6 +30,7 @@ int main(int argc, char *argv[])
 		for (int j = 0; j < parcResult.size(); ++j)
 			results[j] += parcResult[j];
 	}
+
 	cout << endl;
 	cout << "**********************" << endl;
 	cout << "**********************" << endl;

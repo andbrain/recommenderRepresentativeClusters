@@ -24,8 +24,8 @@ private:
 	map<int,int> *mUsers; //<user, cluster>
 	map<int,map<int,double>> *mMovieReprCluster; //<movie, <cluster,rating>>
 
-	vector<int> RandomTestData(double perc);
-	vector<int> RandomItems(int userIndex, double perc);
+	vector<int> GetUserData();
+	vector<int> GetItems(int userIndex);
 };
 
 #endif

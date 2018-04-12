@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <climits>
 #include "graph.h"
 #include "util.h"
 
